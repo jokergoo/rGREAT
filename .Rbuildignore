@@ -1,0 +1,4 @@
+^\..*
+README.*
+test/
+check.bat

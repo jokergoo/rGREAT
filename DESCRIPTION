@@ -1,0 +1,22 @@
+Package: rGREAT
+Type: Package
+Title: Client for GREAT Analysis
+Version: 0.99.0
+Date: 2014-11-1
+Author: Zuguang Gu
+Maintainer: Zuguang Gu <z.gu@dkfz.de>
+Depends: R (>= 2.10.0), GenomicRanges, IRanges
+Imports: methods, rjson, GetoptLong, RCurl, GlobalOptions 
+Suggests: testthat (>= 0.3), knitr, circlize
+VignetteBuilder: knitr
+biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome, 
+    GenomeAnnotation
+Description: This package makes GREAT (Genomic Regions Enrichment of Annotations Tool) 
+    analysis automatic by constructing a HTTP POST 
+    request according to user's input and automatically retrieving results 
+    from GREAT web server.
+URL: https://github.com/jokergoo/rGREAT
+License: GPL (>= 2)
+Packaged: 2014-11-1 00:00:00 UTC; Administrator
+Repository: Bioconductor
+Date/Publication: 2014-11-1 00:00:00

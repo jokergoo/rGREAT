@@ -1,0 +1,154 @@
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Analyze with GREAT}
+-->
+
+Analyze with GREAT
+==================
+
+**Author**: Zuguang Gu ( z.gu@dkfz.de )
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  error = FALSE,
+  tidy = FALSE)
+```
+
+
+# Doing _GREAT_ analysis in R}
+
+## Usage
+
+_GREAT_ (http://great.stanford.edu) is a web-based tool to associate biological functions to genomic regions. 
+The *rGREAT* package constructs a HTTP POST request according to user's input and automatically retrieves
+results from _GREAT_ web server.
+
+```{r, echo = 2}
+suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
+library(rGREAT)
+```
+
+The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
+
+```{r}
+set.seed(123)
+bed = circlize::generateRandomBed(nr = 1000, nc = 0)
+head(bed)
+```
+
+Submit the job by `submitGreatJob`. Before submitting, genomic regions will be sorted and overlapping regions
+will be merged.
+
+```{r, eval = FALSE}
+job = submitGreatJob(bed)
+```
+
+```{r, echo = FALSE}
+load(paste0(system.file(package = "rGREAT"), "/extdata/job0.RData"))
+```
+
+You can get the summary of your job by calling `job` variable.
+
+```{r}
+job
+```
+
+```{r, echo = FALSE}
+load(paste0(system.file(package = "rGREAT"), "/extdata/job.RData"))
+```
+
+
+More parameters can be set for the job:
+
+```{r, eval = FALSE}
+job = submitGreatJob(bed, species = "mm9")
+job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
+job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
+job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
+job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
+```
+
+Available parameters are (following content is copied from _GREAT_ website):
+
+- `species`:  `hg19` and `hg18` for human, `mm9` for mouse and `danRer7` for zebrafish
+- `bgChoise`: Background regions. `wholeGenome` and `data`. If this value is set to `data`, `bg` argument should be specified 
+- `includeCuratedRegDoms`: Whether to include curated regulatory domains.
+- `rule`: How to associate genomic regions to genes.
+	* `basalPlusExt`: mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
+		+ `adv_upstream`: proximal extension to upstream (unit: kb)
+		+ `adv_downstream`: proximal extension to downstream (unit: kb)
+		+ `adv_span`: maximum extension (unit: kb)
+	* `twoClosest`: mode 'Two nearest genes'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the nearest gene's TSS but no more than the maximum extension in one direction.
+		+ `adv_twoDistance`: maximum extension (unit: kb)
+	* `oneClosest`: mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
+		+ `adv_oneDistance`: maximum extension (unit: kb)
+
+
+With `job`, we can now retrieve results from *GREAT*. The first and the primary results are
+the tables which contain enrichment statistics for the analysis. By default it will retrieve 
+results from three GO Ontologies and all pathway ontologies. All tables contains statistics 
+for all terms no matter they are significant or not. Users can then make filtering through self-defined cutoff.
+
+One thing that users should note is that there is no column for adjusted p-values. But it is can be
+easily done by using `p.adjust`.
+
+```{r}
+tb = getGreatTable(job)
+names(tb)
+head(tb[[1]])
+```
+
+Information stored in `job` will be updated after retrieving enrichment tables.
+
+```{r}
+job
+```
+
+
+You can get results by either specifying the ontologies or the pre-defined categories:
+
+```{r, eval = FALSE}
+tb = getGreatTable(job, ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
+tb = getGreatTable(job, category = c("GO"))
+```
+
+All available ontology names for given species can be get by `availableOntologies` and all available ontology
+categories can be get by `availableCategories`.
+
+```{r}
+availableOntologies(job)
+availableCategories(job)
+availableOntologies(job, category = "Pathway_Data")
+```
+
+Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs`.
+The function will make the three plots which are same as on *GREAT* website and returns a `GRanges` object which
+contains the associations. 
+
+```{r, fig.width = 12, fig.height = 4, fig.align = 'center'}
+par(mfrow = c(1, 3))
+res = plotRegionGeneAssociationGraphs(job)
+res
+```
+
+You can also choose only plot one of them
+
+```{r, eval = FALSE}
+plotRegionGeneAssociationGraphs(job, type = 1)
+```
+
+By specifying ontology and term ID, you can get the association in certain term.
+Here the term ID is from the first column of the data frame which is returned by `getGreatTable`.
+
+```{r, fig.width = 12, fig.height = 4}
+par(mfrow = c(1, 3))
+res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
+    termID = "GO:0004984")
+res
+```
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
