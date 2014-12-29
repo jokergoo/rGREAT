@@ -10,13 +10,17 @@ Analyze with GREAT
 
 **Date**: `r Sys.Date()`
 
+--------------------------------------------------------
+
 ```{r, echo = FALSE, message = FALSE}
+library(knitr)
 knitr::opts_chunk$set(
 	error = FALSE,
 	tidy  = FALSE,
 	message = FALSE,
 	fig.align = "center")
 options(width = 100)
+options(markdown.HTML.stylesheet = "custom.css")
 ```
 
 
