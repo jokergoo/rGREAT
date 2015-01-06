@@ -44,11 +44,11 @@ head(bed)
 Submit the job by `submitGreatJob`. Before submitting, genomic regions will be sorted and overlapping regions
 will be merged.
 
-```{r, eval = FALSE}
+```{r}
 job = submitGreatJob(bed)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = FALSE}
 load(paste0(system.file(package = "rGREAT"), "/extdata/job0.RData"))
 ```
 
@@ -58,7 +58,7 @@ You can get the summary of your job by calling `job` variable.
 job
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = FALSE}
 load(paste0(system.file(package = "rGREAT"), "/extdata/job.RData"))
 ```
 
