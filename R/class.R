@@ -10,8 +10,7 @@ GREAT_Job = setRefClass("GREAT_Job",
 
 GREAT_Job$methods(show = function() {
     
-    cat("\n")
-    cat("Submit time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\n")
+    cat("Submit time:", format(.self$parameters$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Session ID:", .self$id, "\n")
     cat("Species:", .self$parameters$species, "\n")
     cat("Background:", .self$parameters$bgChoice, "\n")

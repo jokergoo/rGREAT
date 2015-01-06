@@ -67,4 +67,6 @@ CATEGORY = list(
 )
 CATEGORY$hg18 = CATEGORY$hg19
 
-LAST_REQUEST_TIME = 0
+rGREAT_env = new.env()
+rGREAT_env$LAST_REQUEST_TIME = 0
+

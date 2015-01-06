@@ -94,7 +94,7 @@ submitGreatJob = function(gr, bg = NULL,
 
     
     # check request frequency
-    time_interval = as.numeric(Sys.time()) - as.numeric(LAST_REQUEST_TIME)
+    time_interval = as.numeric(Sys.time()) - as.numeric(rGREAT_env$LAST_REQUEST_TIME)
     if(time_interval < request_interval) {
         message(qq("Don't make too frequent requests. The time break is @{request_interval}s.\nPlease wait for @{round(request_interval - time_interval)}s for the next request.\nThe time break can be set by `GREAT.options()`.\n"))
         sleep(request_interval - time_interval)
@@ -138,7 +138,7 @@ submitGreatJob = function(gr, bg = NULL,
         }
     }
 
-    LAST_REQUEST_TIME <<- Sys.time()
+    rGREAT_env$LAST_REQUEST_TIME = Sys.time()
    
     if(any(grepl("encountered a user error", response))) {
         stop("GREAT encountered a user error, check your input (especially `species`).\n")
