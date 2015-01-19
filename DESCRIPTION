@@ -5,12 +5,10 @@ Version: 0.0.1
 Date: 2014-11-1
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
-Depends: R (>= 2.10.0)
-Imports: methods, rjson, GetoptLong, RCurl, GlobalOptions, GenomicRanges, IRanges
+Depends: R (>= 2.10.0), GenomicRanges, IRanges
+Imports: methods, rjson, GetoptLong, RCurl, GlobalOptions
 Suggests: testthat (>= 0.3), knitr, circlize
 VignetteBuilder: knitr
-biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome, 
-    GenomeAnnotation
 Description: This package makes GREAT (Genomic Regions Enrichment of Annotations Tool) 
     analysis automatic by constructing a HTTP POST 
     request according to user's input and automatically retrieving results 
