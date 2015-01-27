@@ -1,12 +1,12 @@
 \name{availableOntologies}
 \alias{availableOntologies}
 \title{
-  All available ontology names  
+  All available ontology names  
 
 
 }
 \description{
-  All available ontology names  
+  All available ontology names  
 
 
 }
@@ -14,12 +14,12 @@
 availableOntologies(job, category = NULL)
 }
 \arguments{
-  \item{job}{job object which is returned by \code{\link{submitGreatJob}}}
-  \item{category}{categories. All available categories can be get by \code{\link{availableCategories}}}
+  \item{job}{job object which is returned by \code{\link{submitGreatJob}}}
+  \item{category}{categories. All available categories can be get by \code{\link{availableCategories}}}
 
 }
 \details{
-  All valid values are:  
+  All valid values are:  
 
   \itemize{
     \item GO_Molecular_Function
@@ -50,7 +50,7 @@ availableOntologies(job, category = NULL)
 
 }
 \value{
-  A vector 
+  A vector 
 
 
 }
