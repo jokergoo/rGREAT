@@ -1,37 +1,54 @@
 
 # == title
-# Automatically send requests to GREAT web server
+# Send requests to GREAT web server
 #
 # == param
-# -gr GRanges object or a data frame which contains at least three columns (chr, start and end). Test regions.
-# -bg GRanges object or a data frame. Background regions if needed.
-# -species Species. Only four species are supported.
+# -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end). Regions for test.
+# -bg A `GenomicRanges::GRanges` object or a data frame. Background regions if needed.
+# -species Species. Only four species ("hg19", "hg18", "mm9", "danRer7") are supported.
 # -includeCuratedRegDoms  Whether to include curated regulatory domains.
 # -bgChoice  How to define background. If it is set as ``data``, ``bg`` should be set as well.
-# -rule How to associate genomic regions to genes. See details section.
-# -adv_upstream unit: kb, only used when rule is ``basalPlusExt``
-# -adv_downstream unit: kb, only used when rule is ``basalPlusExt``
-# -adv_span unit: kb, only used when rule is ``basalPlusExt``
-# -adv_twoDistance unit: kb, only used when rule is ``twoClosest``
-# -adv_oneDistance unit: kb, only used when rule is ``oneClosest``
-# -request_interval interval for two requests. Default is 300 seconds.
-# -max_tries maximum tries
+# -rule How to associate genomic regions to genes. See 'details' section.
+# -adv_upstream Unit: kb, only used when rule is ``basalPlusExt``
+# -adv_downstream Unit: kb, only used when rule is ``basalPlusExt``
+# -adv_span Unit: kb, only used when rule is ``basalPlusExt``
+# -adv_twoDistance Unit: kb, only used when rule is ``twoClosest``
+# -adv_oneDistance Unit: kb, only used when rule is ``oneClosest``
+# -request_interval Time interval for two requests. Default is 300 seconds.
+# -max_tries Maximum times trying to connect to GREAT web server.
 #
 # == details
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
 #
-# Following are copied from GREAT web site ( http://bejerano-test.stanford.edu/great/public/html/index.php )
+# Following text is copied from GREAT web site ( http://bejerano-test.stanford.edu/great/public/html/index.php )
 #
-# Explanation of ``rule``
+# Explanation of ``rule`` and settings with names started with 'adv_':
 #
-# -basalPlusExt mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
-# -twoClosest mode 'Two nearest genes'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the nearest gene's TSS but no more than the maximum extension in one direction.
-# -oneClosest mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
+# -basalPlusExt Mode 'Basal plus extension'. Gene regulatory domain definition: 
+#   Each gene is assigned a basal regulatory domain of a minimum distance upstream 
+#   and downstream of the TSS (regardless of other nearby genes, controlled by ``adv_upstream`` and 
+#   ``adv_downstream`` argument). The gene regulatory domain is extended in both directions 
+#   to the nearest gene's basal domain but no more than the maximum extension in one direction
+#   (controlled by ``adv_span``).
+# -twoClosest Mode 'Two nearest genes'. Gene regulatory domain definition: 
+#   Each gene is assigned a regulatory domain that extends in both directions to the nearest 
+#   gene's TSS (controlled by ``adv_twoDistance``) but no more than the maximum extension in one direction.
+# -oneClosest Mode 'Single nearest gene'. Gene regulatory domain definition: 
+#   Each gene is assigned a regulatory domain that extends in both directions to the midpoint 
+#   between the gene's TSS and the nearest gene's TSS (controlled by ``adv_oneDistance``) but no more than the maximum 
+#   extension in one direction.
 #
 # == value
-# a ``GREAT_Job`` object
-submitGreatJob = function(gr, bg = NULL,
+# A ``GREAT_Job`` class object which can be used to get results from GREAT server.
+#
+# == seealso
+# `GREAT_Job-class`
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
+submitGREATJob = function(gr, bg = NULL,
     species               = c("hg19", "hg18", "mm9", "danRer7"),
     includeCuratedRegDoms = TRUE,
     bgChoice              = c("wholeGenome", "data"),
@@ -150,163 +167,77 @@ submitGreatJob = function(gr, bg = NULL,
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
     jobid = as.vector(jobid)
       
-    job = new("GREAT_Job")
-    
-    job$id = jobid
-    
-    job$parameters$submit_time = Sys.time()
-    
-    job$parameters$species = species
-    job$parameters$bgChoice = bgChoice
-    job$parameters$includeCuratedRegDoms = includeCuratedRegDoms
-    job$parameters$rule = rule
-    job$parameters$adv_upstream = adv_upstream
-    job$parameters$adv_downstream = adv_downstream
-    job$parameters$adv_span = adv_span
-    job$parameters$adv_twoDistance = adv_twoDistance
-    job$parameters$adv_oneDistance = adv_oneDistance
-    job$parameters$tempdir = td
+    job = GREAT_Job(id = jobid,
+        parameters = list(
+            submit_time = Sys.time(),
+            species = species,
+            bgChoice = bgChoice,
+            includeCuratedRegDoms = includeCuratedRegDoms,
+            rule = rule,
+            adv_upstream = adv_upstream,
+            adv_downstream = adv_downstream,
+            adv_span = adv_span,
+            adv_twoDistance = adv_twoDistance,
+            adv_oneDistance = adv_oneDistance,
+            tempdir = td))
     
     return(job)
 }
 
-# == title
-# Get enrichment tables from GREAT web server
-#
-# == param
-# -job  job object which is returned by `submitGreatJob`
-# -ontology  ontology names. Valid values are in `availableOntologies`. ``ontology`` is prior to ``category`` argument.
-# -category Pre-defined categories. Valid values are in `availableCategories`
-# -request_interval interval for two requests. Default is 300 seconds.
-# -max_tries maximum tries
-#
-# == detail
-# Please note there is no FDR column in original tables. Users should calculate by themselves
-# by functions such as `stats::p.adjust`
-#
-# == value
-# a list of data frames which are as same as in GREAT website.
-getGreatTable = function(job, ontology = NULL, category = c("GO", "Pathway_Data"),
+
+GREAT_Job$methods(getEnrichmentTables = function(ontology = NULL, category = c("GO", "Pathway_Data"),
 	request_interval = 30, max_tries = 100) {
     
-    jobid = job$id
-    species = job$parameters$species
+    jobid = .self$get_id()
+    species = .self$get_param("species")
     
     if(is.null(ontology)) {
         if(is.null(category)) {
             stop("`ontology` and `category` can not be both NULL.\n")
         }
-        if(length(setdiff(category, availableCategories(job)))) {
-            stop("Only categories in `availableCategories(job)` are allowed.\n")
+        if(length(setdiff(category, .self$availableCategories()))) {
+            stop("Only categories in `job$availableCategories()` are allowed.\n")
         }
-        ontology = availableOntologies(job, category = category)
+        ontology = .self$availableOntologies(category = category)
     }
     ontology = unique(ontology)
     
-    if(length(setdiff(ontology, availableOntologies(job)))) {
-        stop("Only ontologies in `availableOntologies(job)` are allowed.\n")
+    if(length(setdiff(ontology, .self$availableOntologies()))) {
+        stop("Only ontologies in `job$availableOntologies()` are allowed.\n")
     }
     
     res = lapply(ontology, function(onto) GREAT.read.json(job, qq(URL_TEMPLATE[onto]), onto, 
 		request_interval = request_interval, max_tries = max_tries))
     names(res) = ontology
     return(res)
-}
+})
 
-# == title
-# All available ontology names
-#
-# == param
-# -job  job object which is returned by `submitGreatJob`
-# -category categories. All available categories can be get by `availableCategories`
-#
-# == detail
-# All valid values are:
-#
-# - GO_Molecular_Function
-# - GO_Biological_Process
-# - GO_Cellular_Component
-# - Mouse_Phenotype
-# - Human_Phenotype
-# - Disease_Ontology
-# - MSigDB_Cancer_Neighborhood
-# - Placenta_Disorders
-# - PANTHER_Pathway
-# - Pathway_Commons
-# - BioCyc_Pathway
-# - MSigDB_Pathway
-# - MGI_Expression_Detected
-# - MSigDB_Perturbation
-# - Transcription_Factor_Targets
-# - MSigDB_Predicted_Promoter_Motifs
-# - MSigDB_miRNA_Motifs
-# - miRNA_Targets
-# - InterPro
-# - TreeFam
-# - HGNC_Gene_Families
-# - Wiki_Pathway
-# - Zebrafish_Wildtype_Expression
-# - Zebrafish_Phenotype
-#
-# == value
-# A vector
-availableOntologies = function(job, category = NULL) {
-    species = job$parameters$species
+
+GREAT_Job$methods(availableOntologies = function(category = NULL) {
+    
+    species = .self$get_param("species")
     
     if(is.null(category)) {
         onto = unlist(CATEGORY[[species]])
         names(onto) = NULL
         return(onto)
     } else {
-        if(length(setdiff(category, availableCategories(job))) > 0) {
-            stop("Value of `category` is invalid. Please use availableCategories(job) to find supported categories.\n")
+        if(length(setdiff(category, .self$availableCategories())) > 0) {
+            stop("Value of `category` is invalid. Please use job$availableCategories() to find supported categories.\n")
         }
         onto = unlist(CATEGORY[[species]][category])
         names(onto) = NULL
         return(onto)
     }
-}
+})
 
-# == title
-# Pre-defined ontology categories
-#
-# == param
-# -job  job object which is returned by `submitGreatJob`
-#
-# == detail
-# For human (hg19 and hg18):
-#
-# -GO                               "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data_and_human_desease "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders"
-# -Pathway_Data                     "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
-# -Gene_Expression                  "MGI_Expression_Detected", "MSigDB_Perturbation"
-# -Regulatory_Motifs                "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
-# -Gene_Families"                   "InterPro", "TreeFam", "HGNC_Gene_Families"
-#
-# For mouse (mm9):
-#
-# -GO                               "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data                   "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology"
-# -Pathway_Data                     "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
-# -Gene_Expression                  "MGI_Expression_Detected", "MSigDB_Perturbation"
-# -Regulatory_Motifs                "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
-# -Gene_Families"                   "InterPro", "TreeFam"
-#
-# For zebrafish (danRer7):
-#
-# -GO                               "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data                   "Zebrafish_Phenotype"
-# -Pathway_Data                     "Wiki_Pathway"
-# -Gene_Expression                  "Zebrafish_Wildtype_Expression"
-# -Gene_Families"                   "InterPro", "TreeFam"
-#
-# == value
-# A vector
-availableCategories = function(job) {
 
-    species = job$parameters$species
+GREAT_Job$methods(availableCategories = function() {
+
+    species = .self$get_param("species")
+    
     names(CATEGORY[[species]])
-}
+})
 
 # download from `url` and save to `file`
 download = function(url, file, request_interval = 30, max_tries = 100) {
@@ -339,8 +270,8 @@ download = function(url, file, request_interval = 30, max_tries = 100) {
 }
 
 GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 100) {
-    jobid = job$id
-    TEMP_DIR = job$parameters$tempdir
+    jobid = job$get_id()
+    TEMP_DIR = job$get_param("tempdir")
 
     op = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(op))
@@ -430,42 +361,13 @@ parseRegionGeneAssociationFile = function(f1) {
     return(df)    
 }
 
-# == title
-# Plot region-gene association figures
-#
-# == param
-# -job job object which is returned by `submitGreatJob` 
-# -type type of plots, should be in ``1, 2, 3``
-# -ontology ontology name
-# -termID term id
-# -request_interval interval for two requests. Default is 300 seconds.
-# -max_tries maximum tries
-#
-# == details
-# Figures are:
-# 
-# - association between regions and genes
-# - distribution of distance to TSS
-# - distribution of absolute distance to TSS
-#
-# If ``ontology`` and ``termID`` are set, only regions and genes corresponding to selected ontology term
-# will be used. Valid value for ``ontology`` is in `availableOntologies` and valid value for ``termID`` is from
-# 'id' column in the table which is returned by `getGreatTable`.
-#
-# == value
-# a ``GRanges`` object. Columns in metadata are:
-#
-# -gene genes that are associated with corresponding regions
-# -distTSS distance from the regions to TSS of the associated gene
-#
-# The returned values corresponds to whole input regions or only regions in specified ontology term,
-# depending on user's settings.
-plotRegionGeneAssociationGraphs = function(job, type = 1:3, ontology = NULL, 
+
+GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontology = NULL, 
 	termID = NULL, request_interval = 30, max_tries = 100) {
 
-    jobid = job$id
-    species = job$parameters$species
-    TEMP_DIR = job$parameters$tempdir
+    jobid = .self$get_id()
+    species = .self$get_param("species")
+    TEMP_DIR = .self$get_param("tempdir")
 
     opqq = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(opqq))
@@ -480,8 +382,8 @@ plotRegionGeneAssociationGraphs = function(job, type = 1:3, ontology = NULL,
         ontology = ontology[1]
         termID = termID[1]
 
-        if(! ontology %in% availableOntologies(job)) {
-			stop("Value of `ontology` should be in `availableOntologies(job)`\n")
+        if(! ontology %in% .self$availableOntologies()) {
+			stop("Value of `ontology` should be in `job$availableOntologies()`\n")
 		}
     }
 
@@ -658,7 +560,7 @@ plotRegionGeneAssociationGraphs = function(job, type = 1:3, ontology = NULL,
                  distTSS = df[[5]])
 	gr = sort(gr)
     return(invisible(gr))
-}
+})
 
 # just want to print something while waiting
 sleep = function(time) {

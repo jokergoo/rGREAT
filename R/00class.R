@@ -14,15 +14,15 @@ GREAT_Job$methods(show = function() {
     cat("Session ID:", .self$id, "\n")
     cat("Species:", .self$parameters$species, "\n")
     cat("Background:", .self$parameters$bgChoice, "\n")
-    if(parameters$rule == "basalPlusExt") {
+    if(.self$parameters$rule == "basalPlusExt") {
         cat("Model:", "Basal plus extension", "\n")
         cat("  Proximal:", .self$parameters$adv_upstream, "kb upstream,", 
             .self$parameters$adv_downstream, "kb downstream,\n  plus Distal: up to", 
             .self$parameters$adv_span, "kb\n")
-    } else if(parameters$rule == "twoClosest") {
+    } else if(.self$parameters$rule == "twoClosest") {
         cat("Model:", "Two nearest genes", "\n")
         cat("  within", .self$parameters$adv_twoDistance, "kb\n")
-    } else if(parameters$rule == "oneClosest") {
+    } else if(.self$parameters$rule == "oneClosest") {
         cat("Model:", "Single nearest gene", "\n")
         cat("  within", .self$parameters$adv_oneDistance, "kb\n")
     }
@@ -39,4 +39,12 @@ GREAT_Job$methods(show = function() {
         }
     }
     cat("\n")
+})
+
+GREAT_Job$methods(get_id = function() {
+    .self$id
+})
+
+GREAT_Job$methods(get_param = function(name) {
+    .self$parameters[[name]]
 })

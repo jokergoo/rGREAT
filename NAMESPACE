@@ -1,8 +1,4 @@
 export(
-	availableCategories,
-	availableOntologies,
-	getGreatTable,
-	plotRegionGeneAssociationGraphs,
 	submitGreatJob
 )
 
@@ -11,9 +7,8 @@ importFrom("GetoptLong", qq)
 importFrom("GetoptLong", qqcat)
 importFrom("GetoptLong", qq.options)
 importFrom("rjson", fromJSON)
-importFrom("GlobalOptions", setGlobalOptions)
 import(GenomicRanges)
 import(IRanges)
-import(methods)
+importFrom("methods", setRefClass)
 exportClasses(GREAT_Job)
 
