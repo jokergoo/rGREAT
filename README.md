@@ -22,7 +22,7 @@ head(bed)
 You can get the summary of your job by calling `job` variable.
 
 ```r
-job = submitGreatJob(bed)
+job = submitGREATJob(bed)
 job
 ```
 
@@ -44,7 +44,7 @@ job
 With `job`, we can now retrieve results from **GREAT**. The first and the primary results are the tables which contain enrichment statistics for the analysis. By default it will retrieve results from three GO Ontologies and all pathway ontologies. All tables contains statistics for all terms no matter they are significant or not. Users can then make filtering through self-defined cutoff.
 
 ```r
-tb = getGreatTable(job)
+tb = job$getEnrichmentTables()
 names(tb)
 ```
 
@@ -88,11 +88,11 @@ head(tb[[1]])
 ## 6            0.0006285355                1.0000000       0.08966411
 ```
 
-Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs`. The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` object which contains the associations.
+Association between genomic regions and genes can be get by `job$plotRegionGeneAssociationGraphs()`. The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` object which contains the associations.
 
 ```r
 par(mfrow = c(1, 3))
-res = plotRegionGeneAssociationGraphs(job)
+res = job$plotRegionGeneAssociationGraphs()
 ```
 
 ![1](https://cloud.githubusercontent.com/assets/449218/5553875/96849e3c-8c33-11e4-8424-b263ee3b6818.png)
@@ -120,11 +120,11 @@ res
 ##   seqinfo: 24 sequences from an unspecified genome; no seqlengths
 ```
 
-By specifying ontology and term ID, you can get the association in certain term. Here the term ID is from the first column of the data frame which is returned by `getGreatTable`.
+By specifying ontology and term ID, you can get the association in certain term. Here the term ID is from the first column of the data frame which is returned by `job$getEnrichmentTables`.
 
 ```r
 par(mfrow = c(1, 3))
-res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
+res = job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function",
     termID = "GO:0004984")
 ```
 
