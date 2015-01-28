@@ -15,25 +15,28 @@ Analyze with GREAT
 ```{r, echo = FALSE, message = FALSE}
 library(knitr)
 knitr::opts_chunk$set(
-	error = FALSE,
-	tidy  = FALSE,
-	message = FALSE,
-	fig.align = "center")
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center")
 options(width = 100)
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
+**GREAT** (Genomic Regions Enrichment of Annotations Tool, http://great.stanford.edu) is a popular 
+web-based tool to associate biological functions to genomic regions. 
+The **rGREAT** package makes GREAT anlaysis automatic by first constructing a HTTP POST request 
+according to user's input and retrieving results from **GREAT** web server afterwards.
 
-**GREAT** (http://great.stanford.edu) is a web-based tool to associate biological functions to genomic regions. 
-The **rGREAT** package constructs a HTTP POST request according to user's input and automatically retrieves
-results from **GREAT** web server.
+Load the package:
 
 ```{r, echo = 2}
 suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
 library(rGREAT)
 ```
 
-The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
+The input data is either a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
+In following example, we use a data frame which is randomly generated.
 
 ```{r}
 set.seed(123)
@@ -41,14 +44,16 @@ bed = circlize::generateRandomBed(nr = 1000, nc = 0)
 head(bed)
 ```
 
-Submit the job by `submitGreatJob()`. Before submitting, genomic regions will be sorted and overlapping regions
-will be merged.
+Submit genomic regions by `submitGREATJob()`. Before submitting, genomic regions will be sorted and overlapping regions will be merged.
+
+The returned variable `job` is a `GREAT_Job` class instance which can be used to retrieve results from
+**GREAT** server and stored results which are already downloaded.
 
 ```{r}
-job = submitGreatJob(bed)
+job = submitGREATJob(bed)
 ```
 
-You can get the summary of your job by calling `job` variable.
+You can get the summary of your job by directly calling `job` variable.
 
 ```{r}
 job
@@ -70,26 +75,29 @@ Available parameters are (following content is copied from **GREAT** website):
 - `bgChoise`: Background regions. `wholeGenome` and `data`. If this value is set to `data`, `bg` argument should be specified 
 - `includeCuratedRegDoms`: Whether to include curated regulatory domains.
 - `rule`: How to associate genomic regions to genes.
-	* `basalPlusExt`: mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
-		+ `adv_upstream`: proximal extension to upstream (unit: kb)
-		+ `adv_downstream`: proximal extension to downstream (unit: kb)
-		+ `adv_span`: maximum extension (unit: kb)
-	* `twoClosest`: mode 'Two nearest genes'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the nearest gene's TSS but no more than the maximum extension in one direction.
-		+ `adv_twoDistance`: maximum extension (unit: kb)
-	* `oneClosest`: mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
-		+ `adv_oneDistance`: maximum extension (unit: kb)
+    * `basalPlusExt`: mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
+        + `adv_upstream`: proximal extension to upstream (unit: kb)
+        + `adv_downstream`: proximal extension to downstream (unit: kb)
+        + `adv_span`: maximum extension (unit: kb)
+    * `twoClosest`: mode 'Two nearest genes'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the nearest gene's TSS but no more than the maximum extension in one direction.
+        + `adv_twoDistance`: maximum extension (unit: kb)
+    * `oneClosest`: mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
+        + `adv_oneDistance`: maximum extension (unit: kb)
 
 
 With `job`, we can now retrieve results from **GREAT**. The first and the primary results are
 the tables which contain enrichment statistics for the analysis. By default it will retrieve 
 results from three GO Ontologies and all pathway ontologies. All tables contains statistics 
-for all terms no matter they are significant or not. Users can then make filtering through self-defined cutoff.
+for all terms no matter they are significant or not. Users can then make filtering yb self-defined cutoff.
 
 One thing that users should note is that there is no column for adjusted p-values. But it is can be
 easily done by using `p.adjust()`.
 
+The returned value of `job$getEnrichmentTables()` is a list of data frames in which each one corresponds
+to tables for single ontology. The structure of data frames are same as the tables on **GREAT** website.
+
 ```{r}
-tb = job$getGreatTable()
+tb = job$getEnrichmentTables()
 names(tb)
 head(tb[[1]])
 ```
@@ -100,16 +108,17 @@ Information stored in `job` will be updated after retrieving enrichment tables.
 job
 ```
 
-
-You can get results by either specifying the ontologies or the pre-defined categories:
+You can get results by either specifying the ontologies or by the pre-defined categories 
+(categories already contains pre-defined sets of ontologies):
 
 ```{r, eval = FALSE}
 tb = job$getGreatTable(ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
 tb = job$getGreatTable(category = c("GO"))
 ```
 
-All available ontology names for given species can be get by `job$availableOntologies()` and all available ontology
-categories can be get by `job$availableCategories()`.
+All available ontology names for given species can be get by `job$availableOntologies()` 
+and all available ontology categories can be get by `job$availableCategories()`. Here you do not
+need to provide species information because `job` already contains it.
 
 ```{r}
 job$availableOntologies()
@@ -118,8 +127,8 @@ job$availableOntologies(category = "Pathway_Data")
 ```
 
 Association between genomic regions and genes can be get by `job$plotRegionGeneAssociationGraphs()`.
-The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` object which
-contains the associations. 
+The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` 
+object which contains the gene-region associations. 
 
 ```{r, fig.width = 12, fig.height = 4, fig.align = 'center'}
 par(mfrow = c(1, 3))
@@ -127,18 +136,19 @@ res = job$plotRegionGeneAssociationGraphs()
 res
 ```
 
-You can also choose only plot one of them
+You can also choose only plotting one of them.
 
 ```{r, eval = FALSE}
 job$plotRegionGeneAssociationGraphs(type = 1)
 ```
 
-By specifying ontology and term ID, you can get the association in certain term.
-Here the term ID is from the first column of the data frame which is returned by `job$getGreatTable()`.
+By specifying ontology and term ID, you can get the association in a certain term.
+Here the term ID is from the first column of the data frame which is returned by 
+`job$getEnrichmentTables()`.
 
 ```{r, fig.width = 12, fig.height = 4}
 par(mfrow = c(1, 3))
-job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function",
+res = job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function",
     termID = "GO:0004984")
 res
 ```

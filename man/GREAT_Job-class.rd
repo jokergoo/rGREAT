@@ -6,130 +6,168 @@
 \alias{GREAT_Job-class}
 \title{Reference class to store and retrieve GREAT results}
 \description{
-	Reference class to store GREAT results
+After submitting request to GREAT server, the generated results will be 
+available on GREAT server for some time. The \code{GREAT_Job} class is defined 
+to store parameters that user has set and result tables what are retrieved 
+from GREAT server.
 }
 
-\section{Methods}{
+\section{Constructor}{
+\code{\link{submitGREATJob}} is used to generate a \code{GREAT_Job} instance.
+}
 
-Assuming \code{job} is a \code{GREAT_Job} object, it has following methods:
+\section{Instance methods}{
+
+Assuming \code{job} is a \code{GREAT_Job} instance which is returned by 
+\code{\link{submitGREATJob}}, it has following methods:
 
 \describe{
 \item{Get enrichment tables from GREAT web server}{
-	\preformatted{
-job\$getEnrichmentTables(ontology = NULL, category = c("GO", "Pathway_Data"),
-    request_interval = 30, max_tries = 100)
-}
+    \preformatted{
+job$getEnrichmentTables(ontology = NULL, category = c("GO", "Pathway_Data"),
+    request_interval = 30, max_tries = 100)}
 
-	Arguments are:
-	\describe{
-		\item{\code{ontology}}{ontology names. Valid values are in \code{availableOntologies}. \code{ontology} is prior to \code{category} argument.}
-		\item{\code{category}}{Pre-defined categories. Valid values are in \code{availableCategories}}
-		\item{\code{request_interval}}{interval for two requests. Default is 300 seconds.}
-		\item{\code{max_tries}}{maximum tries}
-	}
-		
-	Please note there is no FDR column in original tables. Users should calculate by themselves
-	by functions such as \code{\link[stats]{p.adjust}}
-		
-	a list of data frames which are as same as in GREAT website.
+    Arguments are:
+    \describe{
+        \item{\code{ontology}}{ontology names. Valid values are in 
+            \code{job$availableOntologies()}. \code{ontology} is prior to 
+            \code{category} argument.}
+        \item{\code{category}}{Pre-defined categories. A category can contain 
+            more than one ontologies. Valid values are in 
+            \code{job$availableCategories()}}
+        \item{\code{request_interval}}{time interval for two requests. Default 
+            is 300 seconds.}
+        \item{\code{max_tries}}{maximum tries}
+    }
+        
+    Please note there is no FDR column in original tables. Users should 
+    calculate by themselves by functions such as \code{\link[stats]{p.adjust}}
+        
+    The returned value is a list of data frames in which each one corresponds to 
+    result for a single ontology. The structure of the data frames are same as 
+    the tables available on GREAT website.
 }
 
 \item{All available ontology names}{
-	\preformatted{
-job\$availableOntologies(category = NULL)
-	}
+    \preformatted{
+job$availableOntologies(category = NULL)}
 
-	Arguments are:
-	\describe{
-		\item{\code{category}}{categories. All available categories can be get by \code{availableCategories}}
-	}
-	
-	All valid values are: "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", "Mouse_Phenotype",
-	"Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders",
-	"PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", "MGI_Expression_Detected",
-	"MSigDB_Perturbation", "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
-	"MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam", "HGNC_Gene_Families",
-	"Wiki_Pathway", "Zebrafish_Wildtype_Expression", "Zebrafish_Phenotype"
+    Arguments are:
+    \describe{
+        \item{\code{category}}{one or multiple categories. All available 
+            categories can be get by \code{job$availableCategories()}}
+    }
 
+    Following ontologies are supported by GREAT: for human (hg19 and hg18)
+
+    "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+    "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
+    "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
+    "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
+    "MGI_Expression_Detected", "MSigDB_Perturbation", 
+    "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
+    "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam", 
+    "HGNC_Gene_Families".
+
+    For mouse (mm9):
+
+    "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+    "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
+    "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
+    "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
+    "MGI_Expression_Detected", "MSigDB_Perturbation",
+    "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
+    "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam".
+
+    For zebrafish (danRer7):
+
+    "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+    "Wiki_Pathway", "Zebrafish_Wildtype_Expression", "Zebrafish_Phenotype", 
+    "InterPro", "TreeFam".
+
+    The returned values is a vector of ontologies.
 }
 
 
-\item{available categories}{
+\item{Available categories}{
 
-	\preformatted{
-job\$availableCategories()
-}
-	
-	For human (hg19 and hg18):
-	
-	\describe{
-		\item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
-		\item{Phenotype_data_and_human_desease}{"Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders"}
-		\item{Pathway_Data}{"PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"}
-		\item{Gene_Expression}{"MGI_Expression_Detected", "MSigDB_Perturbation"}
-		\item{Regulatory_Motifs}{"Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"}
-		\item{Gene_Families}{"InterPro", "TreeFam", "HGNC_Gene_Families"}
-	}
-	
-	For mouse (mm9):
-	
-	\describe{
-		\item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
-		\item{Phenotype_data}{"Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology"}
-		\item{Pathway_Data}{"PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"}
-		\item{Gene_Expression}{"MGI_Expression_Detected", "MSigDB_Perturbation"}
-		\item{Regulatory_Motifs}{"Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"}
-		\item{Gene_Families}{"InterPro", "TreeFam"}
-	}
-	
-	For zebrafish (danRer7):
-	
-	\describe{
-		\item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
-		\item{Phenotype_data}{"Zebrafish_Phenotype"}
-		\item{Pathway_Data}{"Wiki_Pathway"}
-		\item{Gene_Expression}{"Zebrafish_Wildtype_Expression"}
-		\item{Gene_Families}{"InterPro", "TreeFam"}
-	}
+    \preformatted{
+job$availableCategories()}
+    
+    For human (hg19 and hg18), there are following categories and corresponding
+	ontologies:
+    
+    \describe{
+        \item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
+        \item{Phenotype_data_and_human_desease}{"Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders"}
+        \item{Pathway_Data}{"PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"}
+        \item{Gene_Expression}{"MGI_Expression_Detected", "MSigDB_Perturbation"}
+        \item{Regulatory_Motifs}{"Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"}
+        \item{Gene_Families}{"InterPro", "TreeFam", "HGNC_Gene_Families"}
+    }
+    
+    For mouse (mm9):
+    
+    \describe{
+        \item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
+        \item{Phenotype_data}{"Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology"}
+        \item{Pathway_Data}{"PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"}
+        \item{Gene_Expression}{"MGI_Expression_Detected", "MSigDB_Perturbation"}
+        \item{Regulatory_Motifs}{"Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"}
+        \item{Gene_Families}{"InterPro", "TreeFam"}
+    }
+    
+    For zebrafish (danRer7):
+    
+    \describe{
+        \item{GO}{"GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"}
+        \item{Phenotype_data}{"Zebrafish_Phenotype"}
+        \item{Pathway_Data}{"Wiki_Pathway"}
+        \item{Gene_Expression}{"Zebrafish_Wildtype_Expression"}
+        \item{Gene_Families}{"InterPro", "TreeFam"}
+    }
+
+    The returned value is a vector of categories.
 }
 
 
 \item{Plot region-gene association figures}{
 
-	\preformatted{
-job\$plotRegionGeneAssociationGraphs(type = 1:3, ontology = NULL, 
+    \preformatted{
+job$plotRegionGeneAssociationGraphs(type = 1:3, ontology = NULL, 
     termID = NULL, request_interval = 30, max_tries = 100)
 } 
-	Arguments are:
-	\describe{
-		\item{\code{type}}{type of plots, should be in \code{1, 2, 3}}
-		\item{\code{ontology}}{ontology name}
-		\item{\code{termID}}{term id}
-		\item{\code{request_interval}}{interval for two requests. Default is 300 seconds.}
-		\item{\code{max_tries}}{maximum tries}
-	}
-	
-	Figures are:  
+    Arguments are:
+    \describe{
+        \item{\code{type}}{type of plots, should be in \code{1, 2, 3}}
+        \item{\code{ontology}}{ontology name}
+        \item{\code{termID}}{term id}
+        \item{\code{request_interval}}{time interval for two requests. Default is 300 seconds.}
+        \item{\code{max_tries}}{maximum tries}
+    }
+    
+    Generated figures are:  
 
-	  \itemize{
-		\item association between regions and genes
-		\item distribution of distance to TSS
-		\item distribution of absolute distance to TSS
-	  }
-	  
-	If \code{ontology} and \code{termID} are set, only regions and genes corresponding to 
-	selected ontology term will be used. Valid value for \code{ontology} is in 
-	\code{availableOntologies} and valid value for \code{termID} is from 'id' column 
-	in the table which is returned by \code{getGreatTable}.  
+      \itemize{
+        \item association between regions and genes
+        \item distribution of distance to TSS
+        \item distribution of absolute distance to TSS
+      }
+      
+    If \code{ontology} and \code{termID} are set, only regions and genes corresponding to 
+    selected ontology term will be used. Valid value for \code{ontology} is in 
+    \code{job$availableOntologies()} and valid value for \code{termID} is from 'id' column 
+    in the table which is returned by \code{job$getEnrichmentTables()}.  
 
-	 a \code{GRanges} object. Columns in metadata are:  
+     a \code{\link[GenomicRanges]{GRanges}} object. Columns in metadata are:  
 
-	\describe{
-	  \item{gene}{genes that are associated with corresponding regions}
-	  \item{distTSS}{distance from the regions to TSS of the associated gene}
-	}
-	  
-	  The returned values corresponds to whole input regions or only regions in specified ontology term, depending on user's settings. 
+    \describe{
+      \item{gene}{genes that are associated with corresponding regions}
+      \item{distTSS}{distance from the regions to TSS of the associated gene}
+    }
+      
+     The returned values corresponds to whole input regions or only regions in specified ontology term, 
+     depending on user's setting. 
 
 }
 }}
@@ -137,5 +175,21 @@ job\$plotRegionGeneAssociationGraphs(type = 1:3, ontology = NULL,
   Zuguang gu <z.gu@dkfz.de>  
 }
 \examples{
+\dontrun{
+library(rGREAT)
+set.seed(123)
+bed = circlize::generateRandomBed(nr = 1000, nc =0)
+job = submitGREATJob(bed)
+tb = job$getEnrichmentTables()
+tb = job$getEnrichmentTables(ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
+tb = job$getEnrichmentTables(category = "GO")
 
+job$availableCategories()
+job$availableOntologies()
+job$availableOntologies(category = "Pathway_Data")
+
+res = job$plotRegionGeneAssociationGraphs()
+res = job$plotRegionGeneAssociationGraphs(type = 1)
+res = job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function", termID = "GO:00004984")
+}
 }

@@ -58,8 +58,8 @@ submitGREATJob = function(gr, bg = NULL,
     adv_span              = 1000.0,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
-	request_interval = 300,
-	max_tries = 10
+    request_interval = 300,
+    max_tries = 10
     ) {
     
     species  = match.arg(species)[1]
@@ -186,7 +186,7 @@ submitGREATJob = function(gr, bg = NULL,
 
 
 GREAT_Job$methods(getEnrichmentTables = function(ontology = NULL, category = c("GO", "Pathway_Data"),
-	request_interval = 30, max_tries = 100) {
+    request_interval = 30, max_tries = 100) {
     
     jobid = .self$get_id()
     species = .self$get_param("species")
@@ -207,7 +207,7 @@ GREAT_Job$methods(getEnrichmentTables = function(ontology = NULL, category = c("
     }
     
     res = lapply(ontology, function(onto) GREAT.read.json(job, qq(URL_TEMPLATE[onto]), onto, 
-		request_interval = request_interval, max_tries = max_tries))
+        request_interval = request_interval, max_tries = max_tries))
     names(res) = ontology
     return(res)
 })
@@ -363,7 +363,7 @@ parseRegionGeneAssociationFile = function(f1) {
 
 
 GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontology = NULL, 
-	termID = NULL, request_interval = 30, max_tries = 100) {
+    termID = NULL, request_interval = 30, max_tries = 100) {
 
     jobid = .self$get_id()
     species = .self$get_param("species")
@@ -383,22 +383,22 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
         termID = termID[1]
 
         if(! ontology %in% .self$availableOntologies()) {
-			stop("Value of `ontology` should be in `job$availableOntologies()`\n")
-		}
+            stop("Value of `ontology` should be in `job$availableOntologies()`\n")
+        }
     }
 
     if(sum(c(is.null(ontology), is.null(termID))) == 1) {
         stop("You should set both of `ontology` and `termID` or neither of them.\n")
     }
-	
-	if(using_term) {
-		# check whether termID is in ontology if ontology table is already downloaded
-		if(!is.null(job$enrichment_tables[[ontology]])) {
-			if(! termID %in% job$enrichment_tables[[ontology]]$ID) {
-				stop(qq("Cannot find '@{termID}' in enrichment table of '@{ontology}'"))
-			}
-		}
-	}
+    
+    if(using_term) {
+        # check whether termID is in ontology if ontology table is already downloaded
+        if(!is.null(job$enrichment_tables[[ontology]])) {
+            if(! termID %in% job$enrichment_tables[[ontology]]$ID) {
+                stop(qq("Cannot find '@{termID}' in enrichment table of '@{ontology}'"))
+            }
+        }
+    }
     
     if(using_term) {
 
@@ -488,12 +488,12 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
         }
         
         rownames(p) = NULL
-		if(using_term) {
-			pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
+        if(using_term) {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
         } else {
-			pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS"), axes = FALSE)
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS"), axes = FALSE)
         }
-		text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
+        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         axis(side = 2)
         op = par("xpd")
         par(xpd = NA)
@@ -526,12 +526,12 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
         }
         
         rownames(p) = NULL
-		if(using_term) {
-			pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
+        if(using_term) {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
         } else {
-			pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS"), axes = FALSE)
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS"), axes = FALSE)
         }
-		text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
+        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         axis(side = 2)
         op = par("xpd")
         par(xpd = NA)
@@ -558,7 +558,7 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
                                    end = df[[3]]),
                  gene = df[[4]],
                  distTSS = df[[5]])
-	gr = sort(gr)
+    gr = sort(gr)
     return(invisible(gr))
 })
 

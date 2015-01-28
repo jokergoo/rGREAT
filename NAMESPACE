@@ -1,5 +1,5 @@
 export(
-	submitGreatJob
+    submitGREATJob
 )
 
 importFrom("RCurl", postForm)

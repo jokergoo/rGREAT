@@ -10,7 +10,8 @@ GREAT_Job = setRefClass("GREAT_Job",
 
 GREAT_Job$methods(show = function() {
     
-    cat("Submit time:", format(.self$parameters$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
+    cat("Submit time:", 
+        format(.self$parameters$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
     cat("Session ID:", .self$id, "\n")
     cat("Species:", .self$parameters$species, "\n")
     cat("Background:", .self$parameters$bgChoice, "\n")
@@ -30,7 +31,7 @@ GREAT_Job$methods(show = function() {
         cat("Include curated regulatory domains\n")
     }
     cat("\n")
-    cat("Ontologies enrichment that has been downloaded:\n")
+    cat("Enrichment tables for following ontologies have been downloaded:\n")
     if(length(.self$enrichment_tables) == 0) {
         cat("  None\n")
     } else {
