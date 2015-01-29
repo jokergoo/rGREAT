@@ -1,12 +1,12 @@
 Package: rGREAT
 Type: Package
 Title: Client for GREAT Analysis
-Version: 0.99.1
+Version: 0.99.2
 Date: 2015-1-28
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 2.10.0), GenomicRanges, IRanges
-Imports: methods, rjson, GetoptLong, RCurl
+Imports: methods, rjson, GetoptLong (>= 0.0.9), RCurl
 Suggests: testthat (>= 0.3), knitr, circlize
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,
