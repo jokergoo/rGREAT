@@ -1,5 +1,5 @@
 export(
-    submitGREATJob
+    submitGreatJob
 )
 
 importFrom("RCurl", postForm)
@@ -11,4 +11,7 @@ import(GenomicRanges)
 import(IRanges)
 importFrom("methods", setRefClass)
 exportClasses(GREAT_Job)
-
+exportMethods(getEnrichmentTables,
+	availableOntologies,
+	availableCategories,
+	plotRegionGeneAssociationGraphs)

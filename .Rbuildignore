@@ -2,3 +2,5 @@
 README.*
 test/
 check.bat
+^.*\.Rproj$
+^\.Rproj\.user$

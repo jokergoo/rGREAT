@@ -1,5 +1,5 @@
-\name{submitGREATJob}
-\alias{submitGREATJob}
+\name{submitGreatJob}
+\alias{submitGreatJob}
 \title{
   Send requests to GREAT web server  
 
@@ -11,7 +11,7 @@
 
 }
 \usage{
-submitGREATJob(gr, bg = NULL,
+submitGreatJob(gr, bg = NULL,
     species               = c("hg19", "hg18", "mm9", "danRer7"),
     includeCuratedRegDoms = TRUE,
     bgChoice              = c("wholeGenome", "data"),
@@ -95,18 +95,18 @@ set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc =0)
 \dontrun{
 job = submitGREATJob(bed)
-tb = job$getEnrichmentTables()
-tb = job$getEnrichmentTables(ontology = c("GO_Molecular_Function", 
+tb = getEnrichmentTables(job)
+tb = getEnrichmentTables(job, ontology = c("GO_Molecular_Function", 
     "BioCyc_Pathway"))
-tb = job$getEnrichmentTables(category = "GO")
+tb = getEnrichmentTables(job, category = "GO")
 
-job$availableCategories()
-job$availableOntologies()
-job$availableOntologies(category = "Pathway_Data")
+availableCategories(job)
+availableOntologies(job)
+availableOntologies(job, category = "Pathway_Data")
 
-res = job$plotRegionGeneAssociationGraphs()
-res = job$plotRegionGeneAssociationGraphs(type = 1)
-res = job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function", 
+res = plotRegionGeneAssociationGraphs(job)
+res = plotRegionGeneAssociationGraphs(job, type = 1)
+res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function", 
     termID = "GO:00004984")
 }
 }

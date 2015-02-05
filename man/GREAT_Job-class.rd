@@ -4,7 +4,11 @@
 \alias{GREAT}
 \alias{rGREAT}
 \alias{GREAT_Job-class}
-\title{Reference class to store and retrieve GREAT results}
+\alias{getEnrichmentTables}
+\alias{availableOntologies}
+\alias{availableCategories}
+\alias{plotRegionGeneAssociationGraphs}
+\title{Class to store and retrieve GREAT results}
 \description{
 After submitting request to GREAT server, the generated results will be 
 available on GREAT server for some time. The \code{GREAT_Job} class is defined 
@@ -13,22 +17,23 @@ from GREAT server.
 }
 
 \section{Constructor}{
-\code{\link{submitGREATJob}} is used to generate a \code{GREAT_Job} instance.
+\code{\link{submitGreatJob}} is used to generate a \code{GREAT_Job} instance.
 }
 
-\section{Instance methods}{
+\section{Methods}{
 
 Assuming \code{job} is a \code{GREAT_Job} instance which is returned by 
-\code{\link{submitGREATJob}}, it has following methods:
+\code{\link{submitGreatJob}}, following methods can be applied:
 
 \describe{
 \item{Get enrichment tables from GREAT web server}{
     \preformatted{
-job$getEnrichmentTables(ontology = NULL, category = c("GO", "Pathway_Data"),
+getEnrichmentTables(job, ontology = NULL, category = c("GO", "Pathway_Data"),
     request_interval = 30, max_tries = 100)}
 
     Arguments are:
     \describe{
+		\item{\code{job}}{\code{GREAT_Job} instance}
         \item{\code{ontology}}{ontology names. Valid values are in 
             \code{job$availableOntologies()}. \code{ontology} is prior to 
             \code{category} argument.}
@@ -50,10 +55,11 @@ job$getEnrichmentTables(ontology = NULL, category = c("GO", "Pathway_Data"),
 
 \item{All available ontology names}{
     \preformatted{
-job$availableOntologies(category = NULL)}
+availableOntologies(job, category = NULL)}
 
     Arguments are:
     \describe{
+		\item{\code{job}}{\code{GREAT_Job} instance}
         \item{\code{category}}{one or multiple categories. All available 
             categories can be get by \code{job$availableCategories()}}
     }
@@ -92,8 +98,13 @@ job$availableOntologies(category = NULL)}
 \item{Available categories}{
 
     \preformatted{
-job$availableCategories()}
+availableCategories(job)}
     
+	Arguments are:
+    \describe{
+		\item{\code{job}}{\code{GREAT_Job} instance}
+	}
+	
     For human (hg19 and hg18), there are following categories and corresponding
 	ontologies:
     
@@ -134,11 +145,12 @@ job$availableCategories()}
 \item{Plot region-gene association figures}{
 
     \preformatted{
-job$plotRegionGeneAssociationGraphs(type = 1:3, ontology = NULL, 
+plotRegionGeneAssociationGraphs(job, type = 1:3, ontology = NULL, 
     termID = NULL, request_interval = 30, max_tries = 100)
 } 
     Arguments are:
     \describe{
+		\item{\code{job}}{\code{GREAT_Job} instance}
         \item{\code{type}}{type of plots, should be in \code{1, 2, 3}}
         \item{\code{ontology}}{ontology name}
         \item{\code{termID}}{term id}
@@ -176,20 +188,20 @@ job$plotRegionGeneAssociationGraphs(type = 1:3, ontology = NULL,
 }
 \examples{
 \dontrun{
-library(rGREAT)
 set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc =0)
-job = submitGREATJob(bed)
-tb = job$getEnrichmentTables()
-tb = job$getEnrichmentTables(ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
-tb = job$getEnrichmentTables(category = "GO")
+job = submitGreatJob(bed)
+tb = getEnrichmentTables(job)
+tb = getEnrichmentTables(job, ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
+tb = getEnrichmentTables(job, category = "GO")
 
-job$availableCategories()
-job$availableOntologies()
-job$availableOntologies(category = "Pathway_Data")
+availableCategories(job)
+availableOntologies(job)
+availableOntologies(job, category = "Pathway_Data")
 
-res = job$plotRegionGeneAssociationGraphs()
-res = job$plotRegionGeneAssociationGraphs(type = 1)
-res = job$plotRegionGeneAssociationGraphs(ontology = "GO_Molecular_Function", termID = "GO:00004984")
+res = plotRegionGeneAssociationGraphs(job)
+res = plotRegionGeneAssociationGraphs(job, type = 1)
+res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function", 
+    termID = "GO:00004984")
 }
 }

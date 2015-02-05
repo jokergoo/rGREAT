@@ -48,7 +48,7 @@
 # == author
 # Zuguang gu <z.gu@dkfz.de>
 #
-submitGREATJob = function(gr, bg = NULL,
+submitGreatJob = function(gr, bg = NULL,
     species               = c("hg19", "hg18", "mm9", "danRer7"),
     includeCuratedRegDoms = TRUE,
     bgChoice              = c("wholeGenome", "data"),
@@ -113,7 +113,7 @@ submitGREATJob = function(gr, bg = NULL,
     # check request frequency
     time_interval = as.numeric(Sys.time()) - as.numeric(rGREAT_env$LAST_REQUEST_TIME)
     if(time_interval < request_interval) {
-        message(qq("Don't make too frequent requests. The time break is @{request_interval}s.\nPlease wait for @{round(request_interval - time_interval)}s for the next request.\nThe time break can be set by `GREAT.options()`.\n"))
+        message(qq("Don't make too frequent requests. The time break is @{request_interval}s.\nPlease wait for @{round(request_interval - time_interval)}s for the next request.\nThe time break can be set by `request_interval` argument.\n"))
         sleep(request_interval - time_interval)
     }
     
@@ -161,49 +161,86 @@ submitGREATJob = function(gr, bg = NULL,
         stop("GREAT encountered a user error, check your input (especially `species`).\n")
     }
     
-    td = tempdir()
-    dir.create(td, showWarnings = FALSE)
-    
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
     jobid = as.vector(jobid)
       
-    job = GREAT_Job(id = jobid,
-        parameters = list(
-            submit_time = Sys.time(),
-            species = species,
-            bgChoice = bgChoice,
-            includeCuratedRegDoms = includeCuratedRegDoms,
-            rule = rule,
-            adv_upstream = adv_upstream,
-            adv_downstream = adv_downstream,
-            adv_span = adv_span,
-            adv_twoDistance = adv_twoDistance,
-            adv_oneDistance = adv_oneDistance,
-            tempdir = td))
+    job = GREAT_Job()
+    job@parameters = list(
+            "species"               = species,
+            "rule"                  = rule,
+            "span"                  = adv_span,
+            "upstream"              = adv_upstream,
+            "downstream"            = adv_downstream,
+            "twoDistance"           = adv_twoDistance,
+            "oneDistance"           = adv_oneDistance,
+            "includeCuratedRegDoms" = includeCuratedRegDoms,
+            "fgChoice"              = "data",
+            "bgChoice"              = bgChoice,
+            "adv_upstream"          = adv_upstream,
+            "adv_downstream"        = adv_downstream,
+            "adv_span"              = adv_span,
+            "adv_twoDistance"       = adv_twoDistance,
+            "adv_oneDistance"       = adv_oneDistance)
     
+    job@job_env$id = jobid
+    job@job_env$submit_time = Sys.time()
+    job@job_env$gr = bed
+    job@job_env$bg = bed_bg
+
+    td = tempdir()
+    dir.create(td, showWarnings = FALSE)
+    job@tempdir = td
+
     return(job)
 }
 
+setGeneric(name = "getEnrichmentTables",
+    def = function(job, ...) {
+        standardGeneric("getEnrichmentTables")
+})
 
-GREAT_Job$methods(getEnrichmentTables = function(ontology = NULL, category = c("GO", "Pathway_Data"),
+
+# == title
+# Get enrichment tables from GREAT web server
+#
+# == param
+# -job ``GREAT_Job`` instance
+# -ontology ontology names. Valid values are in `availableOntologies`(). ``ontology`` is prior to 
+#           ``category`` argument.
+# -category Pre-defined categories. A category can contain more than one ontologies. Valid values are in 
+#            `availableCategories`()
+# -request_interval time interval for two requests. Default is 300 seconds.
+# -max_tries maximum tries
+#
+# == details     
+# Please note there is no FDR column in original tables. Users should 
+# calculate by themselves by functions such as `stats::p.adjust`
+# 
+# == value
+# The returned value is a list of data frames in which each one corresponds to 
+# result for a single ontology. The structure of the data frames are same as 
+# the tables available on GREAT website.
+setMethod(f = "getEnrichmentTables",
+    signature = "GREAT_Job",
+    definition = function(job, ontology = NULL, category = c("GO", "Pathway_Data"),
     request_interval = 30, max_tries = 100) {
     
-    jobid = .self$get_id()
-    species = .self$get_param("species")
+    jobid = id(job)
+    species = param(job, "species")
     
     if(is.null(ontology)) {
         if(is.null(category)) {
             stop("`ontology` and `category` can not be both NULL.\n")
         }
-        if(length(setdiff(category, .self$availableCategories()))) {
-            stop("Only categories in `job$availableCategories()` are allowed.\n")
+        if(length(setdiff(category, availableCategories(job)))) {
+            stop("Only categories in `availableCategories()` are allowed.\n")
         }
-        ontology = .self$availableOntologies(category = category)
+        ontology = availableOntologies(job, category = category)
     }
     ontology = unique(ontology)
     
-    if(length(setdiff(ontology, .self$availableOntologies()))) {
-        stop("Only ontologies in `job$availableOntologies()` are allowed.\n")
+    if(length(setdiff(ontology, availableOntologies(job)))) {
+        stop("Only ontologies in `availableOntologies()` are allowed.\n")
     }
     
     res = lapply(ontology, function(onto) GREAT.read.json(job, qq(URL_TEMPLATE[onto]), onto, 
@@ -212,18 +249,61 @@ GREAT_Job$methods(getEnrichmentTables = function(ontology = NULL, category = c("
     return(res)
 })
 
+setGeneric(name = "availableOntologies",
+    def = function(job, ...) {
+        standardGeneric("availableOntologies")
+})
 
-GREAT_Job$methods(availableOntologies = function(category = NULL) {
+# == title
+# All available ontology names
+#
+# == param
+# -job ``GREAT_Job`` instance
+# -category one or multiple categories. All available categories can be get by `availableCategories`()
+#
+# == details
+# Following ontologies are supported by GREAT: for human (hg19 and hg18)
+#
+# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+# "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
+# "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
+# "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
+# "MGI_Expression_Detected", "MSigDB_Perturbation", 
+# "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
+# "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam", 
+# "HGNC_Gene_Families".
+#
+# For mouse (mm9):
+#
+# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+# "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
+# "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
+# "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
+# "MGI_Expression_Detected", "MSigDB_Perturbation",
+# "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
+# "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam".
+#
+# For zebrafish (danRer7):
+#
+# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
+# "Wiki_Pathway", "Zebrafish_Wildtype_Expression", "Zebrafish_Phenotype", 
+# "InterPro", "TreeFam".
+#
+# == value
+# The returned values is a vector of ontologies.
+setMethod(f = "availableOntologies",
+    signature = "GreatJob",
+    definition = function(job, category = NULL) {
     
-    species = .self$get_param("species")
+    species = param(job, "species")
     
     if(is.null(category)) {
         onto = unlist(CATEGORY[[species]])
         names(onto) = NULL
         return(onto)
     } else {
-        if(length(setdiff(category, .self$availableCategories())) > 0) {
-            stop("Value of `category` is invalid. Please use job$availableCategories() to find supported categories.\n")
+        if(length(setdiff(category, availableCategories(job))) > 0) {
+            stop("Value of `category` is invalid. Please use availableCategories(job) to find supported categories.\n")
         }
         onto = unlist(CATEGORY[[species]][category])
         names(onto) = NULL
@@ -231,10 +311,51 @@ GREAT_Job$methods(availableOntologies = function(category = NULL) {
     }
 })
 
+# == title
+# Available categories
+#
+# == param
+# -job ``GREAT_Job`` instance
+#
+# == details
+# For human (hg19 and hg18), there are following categories and corresponding ontologies:
+#
+# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
+# -Phenotype_data_and_human_desease "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders"
+# -Pathway_Data "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
+# -Gene_Expression "MGI_Expression_Detected", "MSigDB_Perturbation"
+# -Regulatory_Motifs "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
+# -Gene_Families "InterPro", "TreeFam", "HGNC_Gene_Families"
+#   
+# For mouse (mm9):
+#   
+# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
+# -Phenotype_data "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology"
+# -Pathway_Data "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
+# -Gene_Expression "MGI_Expression_Detected", "MSigDB_Perturbation"
+# -Regulatory_Motifs "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
+# -Gene_Families "InterPro", "TreeFam"
+#   
+# For zebrafish (danRer7):
+#  
+# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
+# -Phenotype_data "Zebrafish_Phenotype"
+# -Pathway_Data "Wiki_Pathway"
+# -Gene_Expression "Zebrafish_Wildtype_Expression"
+# -Gene_Families "InterPro", "TreeFam"
+#
+# == value
+# The returned value is a vector of categories.
+setGeneric(name = "availableCategories",
+    def = function(job, ...) {
+        standardGeneric("availableCategories")
+})
 
-GREAT_Job$methods(availableCategories = function() {
+setMethod(f = "availableCategories",
+    signature = "GREAT_Job",
+    definition = function(job) {
 
-    species = .self$get_param("species")
+    species = param(job, "species")
     
     names(CATEGORY[[species]])
 })
@@ -270,8 +391,8 @@ download = function(url, file, request_interval = 30, max_tries = 100) {
 }
 
 GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 100) {
-    jobid = job$get_id()
-    TEMP_DIR = job$get_param("tempdir")
+    jobid = id(job)
+    TEMP_DIR = job@tempdir
 
     op = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(op))
@@ -280,8 +401,8 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
     
     f1 = qq("@{TEMP_DIR}/@{jobid}_@{onto}.js")
     
-    if(!is.null(job$enrichment_tables[[onto]])) {
-        res = job$enrichment_tables[[onto]]
+    if(!is.null(job@enrichment_tables[[onto]])) {
+        res = job@enrichment_tables[[onto]]
         return(res)
     }
 
@@ -316,7 +437,7 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
                       "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
                       "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
                       "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
-    job$enrichment_tables[[onto]] = res
+    job@enrichment_tables[[onto]] = res
     return(res)
 }
 
@@ -361,13 +482,52 @@ parseRegionGeneAssociationFile = function(f1) {
     return(df)    
 }
 
+setGeneric(name = "plotRegionGeneAssociationGraphs",
+    def = function(job, ...) {
+        standardGeneric("plotRegionGeneAssociationGraphs")
+})
 
-GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontology = NULL, 
+
+# == title
+# Plot region-gene association figures
+#
+# == param
+# -job ``GREAT_Job`` instance
+# -type type of plots, should be in ``1, 2, 3``
+# -ontology ontology name
+# -termID term id
+# -request_interval time interval for two requests. Default is 300 seconds.
+# -max_tries maximum tries
+#
+# == details
+# Generated figures are:  
+#
+# - association between regions and genes
+# - distribution of distance to TSS
+# - distribution of absolute distance to TSS
+#
+#     
+# If ``ontology`` and ``termID`` are set, only regions and genes corresponding to 
+# selected ontology term will be used. Valid value for ``ontology`` is in 
+# `availableOntologies`() and valid value for ``termID`` is from 'id' column 
+# in the table which is returned by `getEnrichmentTables`().  
+#
+# == value
+# a GenomicRanges::GRanges object. Columns in metadata are:  
+#
+# -gene genes that are associated with corresponding regions
+# -distTSS distance from the regions to TSS of the associated gene
+#
+# The returned values corresponds to whole input regions or only regions in specified ontology term, 
+# depending on user's setting. 
+setMethod(f = "plotRegionGeneAssociationGraphs",
+    signature = "GREAT_Job",
+    definition = function(job, type = 1:3, ontology = NULL, 
     termID = NULL, request_interval = 30, max_tries = 100) {
 
-    jobid = .self$get_id()
-    species = .self$get_param("species")
-    TEMP_DIR = .self$get_param("tempdir")
+    jobid = id(job)
+    species = param(job, "species")
+    TEMP_DIR = job@tempdir
 
     opqq = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(opqq))
@@ -382,8 +542,8 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
         ontology = ontology[1]
         termID = termID[1]
 
-        if(! ontology %in% .self$availableOntologies()) {
-            stop("Value of `ontology` should be in `job$availableOntologies()`\n")
+        if(! ontology %in% availableOntologies(job)) {
+            stop("Value of `ontology` should be in `availableOntologies()`\n")
         }
     }
 
@@ -393,8 +553,8 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
     
     if(using_term) {
         # check whether termID is in ontology if ontology table is already downloaded
-        if(!is.null(job$enrichment_tables[[ontology]])) {
-            if(! termID %in% job$enrichment_tables[[ontology]]$ID) {
+        if(!is.null(job@enrichment_tables[[ontology]])) {
+            if(! termID %in% job@enrichment_tables[[ontology]]$ID) {
                 stop(qq("Cannot find '@{termID}' in enrichment table of '@{ontology}'"))
             }
         }
@@ -407,14 +567,14 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
         f_term = gsub('[\\/:*?"<>|]', "_", f_term)
         f_term = qq("@{TEMP_DIR}/@{f_term}")
         
-        if(!is.null(job$association_tables[[qq("@{ontology}-@{termID}")]])) {
-            df_term = job$association_tables[[qq("@{ontology}-@{termID}")]]
+        if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
+            df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
             url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
             df_term = parseRegionGeneAssociationFile(f_term)
-            job$association_tables[[qq("@{ontology}-@{termID}")]] = df_term
+            job@association_tables[[qq("@{ontology}-@{termID}")]] = df_term
             file.remove(f_term)
         }
     }
@@ -422,14 +582,14 @@ GREAT_Job$methods(plotRegionGeneAssociationGraphs = function(type = 1:3, ontolog
     f_all = qq("@{TEMP_DIR}/@{jobid}-@{species}-all-region.txt")
         
     # download
-    if(!is.null(job$association_tables[["all"]])) {
-        df_all = job$association_tables[["all"]]
+    if(!is.null(job@association_tables[["all"]])) {
+        df_all = job@association_tables[["all"]]
     } else {
         url = qq("@{BASE_URL}/downloadAssociations.php?sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
         download(url, file = f_all, request_interval = request_interval, max_tries = max_tries)
         check_asso_file(f_all)
         df_all = parseRegionGeneAssociationFile(f_all)
-        job$association_tables[["all"]] = df_all
+        job@association_tables[["all"]] = df_all
         file.remove(f_all)
     }
     
