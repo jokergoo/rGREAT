@@ -13,13 +13,15 @@
 # == contructor
 # `submitGreatJob` is used to generate a ``GreatJob`` instance.
 #
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
 GreatJob = setClass("GreatJob",
     slots = list(
         job_env = "environment",
         parameters = "list",   # parameters that are sent to GREAT
         enrichment_tables = "environment",
-        association_tables = "environment",
-        tempdir = "character"),
+        association_tables = "environment"),
     prototype = list(
         job_env = new.env(),
         parameters = list(),
@@ -33,7 +35,7 @@ setMethod(f = "show",
     
     cat("Submit time:", 
         format(object@job_env$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
-    cat("Session ID:", id(object), "\n")
+    #cat("Session ID:", id(object), "\n")
     cat("Species:", param(object, "species"), "\n")
     cat("Background:", param(object, "bgChoice"), "\n")
     if(param(object, "rule") == "basalPlusExt") {

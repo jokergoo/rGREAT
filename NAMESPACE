@@ -1,6 +1,9 @@
-export(
-    submitGreatJob
-)
+exportClasses(GreatJob)
+exportMethods(availableCategories)
+exportMethods(availableOntologies)
+exportMethods(getEnrichmentTables)
+exportMethods(plotRegionGeneAssociationGraphs)
+export(submitGreatJob)
 
 importFrom("RCurl", postForm)
 importFrom("GetoptLong", qq)
@@ -10,8 +13,4 @@ importFrom("rjson", fromJSON)
 import(GenomicRanges)
 import(IRanges)
 importFrom("methods", setRefClass)
-exportClasses(GREAT_Job)
-exportMethods(getEnrichmentTables,
-	availableOntologies,
-	availableCategories,
-	plotRegionGeneAssociationGraphs)
+

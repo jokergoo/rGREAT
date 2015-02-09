@@ -112,8 +112,8 @@ You can get results by either specifying the ontologies or by the pre-defined ca
 (categories already contains pre-defined sets of ontologies):
 
 ```{r, eval = FALSE}
-tb = getGreatTable(job, ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
-tb = getGreatTable(job, category = c("GO"))
+tb = getEnrichmentTables(job, ontology = c("GO_Molecular_Function", "BioCyc_Pathway"))
+tb = getEnrichmentTables(job, category = c("GO"))
 ```
 
 All available ontology names for given species can be get by `availableOntologies()` 

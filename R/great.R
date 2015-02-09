@@ -40,10 +40,10 @@
 #   extension in one direction.
 #
 # == value
-# A ``GREAT_Job`` class object which can be used to get results from GREAT server.
+# A ``GreatJob`` class object which can be used to get results from GREAT server.
 #
 # == seealso
-# `GREAT_Job-class`
+# `GreatJob-class`
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
@@ -164,7 +164,7 @@ submitGreatJob = function(gr, bg = NULL,
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
     jobid = as.vector(jobid)
       
-    job = GREAT_Job()
+    job = GreatJob()
     job@parameters = list(
             "species"               = species,
             "rule"                  = rule,
@@ -189,7 +189,7 @@ submitGreatJob = function(gr, bg = NULL,
 
     td = tempdir()
     dir.create(td, showWarnings = FALSE)
-    job@tempdir = td
+    job@job_env$tempdir = td
 
     return(job)
 }
@@ -204,7 +204,7 @@ setGeneric(name = "getEnrichmentTables",
 # Get enrichment tables from GREAT web server
 #
 # == param
-# -job ``GREAT_Job`` instance
+# -job ``GreatJob`` instance
 # -ontology ontology names. Valid values are in `availableOntologies`(). ``ontology`` is prior to 
 #           ``category`` argument.
 # -category Pre-defined categories. A category can contain more than one ontologies. Valid values are in 
@@ -220,14 +220,24 @@ setGeneric(name = "getEnrichmentTables",
 # The returned value is a list of data frames in which each one corresponds to 
 # result for a single ontology. The structure of the data frames are same as 
 # the tables available on GREAT website.
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
 setMethod(f = "getEnrichmentTables",
-    signature = "GREAT_Job",
+    signature = "GreatJob",
     definition = function(job, ontology = NULL, category = c("GO", "Pathway_Data"),
     request_interval = 30, max_tries = 100) {
     
     jobid = id(job)
     species = param(job, "species")
-    
+
+    if(!file.exists(job@job_env$tempdir)) {
+        td = tempdir()
+        dir.create(td, showWarnings = FALSE)
+        job@job_env$tempdir = td
+    }
+
     if(is.null(ontology)) {
         if(is.null(category)) {
             stop("`ontology` and `category` can not be both NULL.\n")
@@ -258,7 +268,7 @@ setGeneric(name = "availableOntologies",
 # All available ontology names
 #
 # == param
-# -job ``GREAT_Job`` instance
+# -job ``GreatJob`` instance
 # -category one or multiple categories. All available categories can be get by `availableCategories`()
 #
 # == details
@@ -291,6 +301,10 @@ setGeneric(name = "availableOntologies",
 #
 # == value
 # The returned values is a vector of ontologies.
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
 setMethod(f = "availableOntologies",
     signature = "GreatJob",
     definition = function(job, category = NULL) {
@@ -311,11 +325,16 @@ setMethod(f = "availableOntologies",
     }
 })
 
+
+setGeneric(name = "availableCategories",
+    def = function(job, ...) {
+        standardGeneric("availableCategories")
+})
 # == title
 # Available categories
 #
 # == param
-# -job ``GREAT_Job`` instance
+# -job ``GreatJob`` instance
 #
 # == details
 # For human (hg19 and hg18), there are following categories and corresponding ontologies:
@@ -346,13 +365,12 @@ setMethod(f = "availableOntologies",
 #
 # == value
 # The returned value is a vector of categories.
-setGeneric(name = "availableCategories",
-    def = function(job, ...) {
-        standardGeneric("availableCategories")
-})
-
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
 setMethod(f = "availableCategories",
-    signature = "GREAT_Job",
+    signature = "GreatJob",
     definition = function(job) {
 
     species = param(job, "species")
@@ -392,7 +410,14 @@ download = function(url, file, request_interval = 30, max_tries = 100) {
 
 GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 100) {
     jobid = id(job)
-    TEMP_DIR = job@tempdir
+
+    if(!file.exists(job@job_env$tempdir)) {
+        td = tempdir()
+        dir.create(td, showWarnings = FALSE)
+        job@job_env$tempdir = td
+    }
+
+    TEMP_DIR = job@job_env$tempdir
 
     op = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(op))
@@ -492,7 +517,7 @@ setGeneric(name = "plotRegionGeneAssociationGraphs",
 # Plot region-gene association figures
 #
 # == param
-# -job ``GREAT_Job`` instance
+# -job ``GreatJob`` instance
 # -type type of plots, should be in ``1, 2, 3``
 # -ontology ontology name
 # -termID term id
@@ -520,14 +545,24 @@ setGeneric(name = "plotRegionGeneAssociationGraphs",
 #
 # The returned values corresponds to whole input regions or only regions in specified ontology term, 
 # depending on user's setting. 
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
 setMethod(f = "plotRegionGeneAssociationGraphs",
-    signature = "GREAT_Job",
+    signature = "GreatJob",
     definition = function(job, type = 1:3, ontology = NULL, 
     termID = NULL, request_interval = 30, max_tries = 100) {
 
+    if(!file.exists(job@job_env$tempdir)) {
+        td = tempdir()
+        dir.create(td, showWarnings = FALSE)
+        job@job_env$tempdir = td
+    }
+    
     jobid = id(job)
     species = param(job, "species")
-    TEMP_DIR = job@tempdir
+    TEMP_DIR = job@job_env$tempdir
 
     opqq = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(opqq))
