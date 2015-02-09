@@ -23,7 +23,7 @@
 #
 # Following text is copied from GREAT web site ( http://bejerano-test.stanford.edu/great/public/html/index.php )
 #
-# Explanation of ``rule`` and settings with names started with 'adv_':
+# Explanation of ``rule`` and settings with names started with 'adv_' (advanced settings):
 #
 # -basalPlusExt Mode 'Basal plus extension'. Gene regulatory domain definition: 
 #   Each gene is assigned a basal regulatory domain of a minimum distance upstream 
@@ -40,7 +40,7 @@
 #   extension in one direction.
 #
 # == value
-# A ``GreatJob`` class object which can be used to get results from GREAT server.
+# A `GreatJob` class object which can be used to get results from GREAT server.
 #
 # == seealso
 # `GreatJob-class`
@@ -204,15 +204,17 @@ setGeneric(name = "getEnrichmentTables",
 # Get enrichment tables from GREAT web server
 #
 # == param
-# -job ``GreatJob`` instance
-# -ontology ontology names. Valid values are in `availableOntologies`(). ``ontology`` is prior to 
+# -job a `GreatJob` instance
+# -ontology ontology names. Valid values are in `availableOntologies`. ``ontology`` is prior to 
 #           ``category`` argument.
-# -category Pre-defined categories. A category can contain more than one ontologies. Valid values are in 
-#            `availableCategories`()
+# -category Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in 
+#            `availableCategories`
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
 #
-# == details     
+# == details  
+# The table contains statistics for the each term in each ontology catalogue.
+#    
 # Please note there is no FDR column in original tables. Users should 
 # calculate by themselves by functions such as `stats::p.adjust`
 # 
@@ -268,11 +270,13 @@ setGeneric(name = "availableOntologies",
 # All available ontology names
 #
 # == param
-# -job ``GreatJob`` instance
-# -category one or multiple categories. All available categories can be get by `availableCategories`()
+# -job a `GreatJob` instance
+# -category one or multiple categories. All available categories can be get by `availableCategories`
 #
 # == details
-# Following ontologies are supported by GREAT: for human (hg19 and hg18)
+# Following ontologies are supported by GREAT: 
+#
+# For human (hg19 and hg18):
 #
 # "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
 # "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
@@ -331,12 +335,14 @@ setGeneric(name = "availableCategories",
         standardGeneric("availableCategories")
 })
 # == title
-# Available categories
+# Available ontology categories
 #
 # == param
-# -job ``GreatJob`` instance
+# -job a `GreatJob` instance
 #
 # == details
+# On GREAT, There are several pre-defined ontology categories:
+#
 # For human (hg19 and hg18), there are following categories and corresponding ontologies:
 #
 # -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
@@ -517,10 +523,10 @@ setGeneric(name = "plotRegionGeneAssociationGraphs",
 # Plot region-gene association figures
 #
 # == param
-# -job ``GreatJob`` instance
-# -type type of plots, should be in ``1, 2, 3``
+# -job a `GreatJob` instance
+# -type type of plots, should be in ``1, 2, 3``. See details section for explanation
 # -ontology ontology name
-# -termID term id
+# -termID term id which corresponds to the selected ontology
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
 #
@@ -534,17 +540,20 @@ setGeneric(name = "plotRegionGeneAssociationGraphs",
 #     
 # If ``ontology`` and ``termID`` are set, only regions and genes corresponding to 
 # selected ontology term will be used. Valid value for ``ontology`` is in 
-# `availableOntologies`() and valid value for ``termID`` is from 'id' column 
-# in the table which is returned by `getEnrichmentTables`().  
+# `availableOntologies` and valid value for ``termID`` is from 'id' column 
+# in the table which is returned by `getEnrichmentTables`.  
 #
 # == value
-# a GenomicRanges::GRanges object. Columns in metadata are:  
+# a `GenomicRanges::GRanges` object. Columns in metadata are:  
 #
 # -gene genes that are associated with corresponding regions
 # -distTSS distance from the regions to TSS of the associated gene
 #
 # The returned values corresponds to whole input regions or only regions in specified ontology term, 
 # depending on user's setting. 
+#
+# If there is no gene associated with the region, corresponding ``gene`` and ``distTSS``
+# columns will be ``NA``.
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>

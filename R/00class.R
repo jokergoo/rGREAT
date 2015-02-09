@@ -6,12 +6,19 @@
 #
 # == details
 # After submitting request to GREAT server, the generated results will be 
-# available on GREAT server for some time. The \code{GreatJob} class is defined 
-# to store parameters that user has set and result tables what are retrieved 
+# available on GREAT server for some time. The ``GreatJob`` class is defined 
+# to store parameters that user has set and result tables what were retrieved 
 # from GREAT server.
 #
-# == contructor
-# `submitGreatJob` is used to generate a ``GreatJob`` instance.
+# == Constructor
+# Users don't need to construct by hand, `submitGreatJob` is used to generate a ``GreatJob`` instance.
+#
+# == Workflow
+# After submitting request to GREAT server, users can perform following steps:
+#
+# - call `getEnrichmentTables` to get enrichment tables for selected ontologies catalogues.
+# - call `plotRegionGeneAssociationGraphs` to get associations between regions and genes
+#   as well as making plots.  
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>

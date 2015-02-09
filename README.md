@@ -40,7 +40,7 @@ job
 ##   None
 ```
 
-With `job`, we can now retrieve results from **GREAT**. The first and the primary results are the tables which contain enrichment statistics for the analysis. By default it will retrieve results from three GO Ontologies and all pathway ontologies. All tables contains statistics for all terms no matter they are significant or not. Users can then make filtering through self-defined cutoff.
+With `job`, we can now retrieve results from GREAT. The first and the primary results are the tables which contain enrichment statistics for the analysis. By default it will retrieve results from three GO Ontologies and all pathway ontologies. All tables contains statistics for all terms no matter they are significant or not. Users can then make filtering through self-defined cutoff.
 
 ```r
 tb = getEnrichmentTables(job)
@@ -87,7 +87,7 @@ head(tb[[1]])
 ## 6            0.0006285355                1.0000000       0.08966411
 ```
 
-Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs()`. The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` object which contains the associations.
+Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs()`. The function will make the three plots which are same as on GREAT website and returns a `GRanges` object which contains the associations.
 
 ```r
 par(mfrow = c(1, 3))

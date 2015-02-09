@@ -46,7 +46,7 @@ head(bed)
 
 Submit genomic regions by `submitGreatJob()`. Before submitting, genomic regions will be sorted and overlapping regions will be merged.
 
-The returned variable `job` is a `GREAT_Job` class instance which can be used to retrieve results from
+The returned variable `job` is a `GreatJob` class instance which can be used to retrieve results from
 **GREAT** server and stored results which are already downloaded.
 
 ```{r}
@@ -136,7 +136,10 @@ res = plotRegionGeneAssociationGraphs(job)
 res
 ```
 
-You can also choose only plotting one of them.
+For those regions that are not associated with any genes under current settings, 
+the corresponding `gene` and `distTSS` columns will be `NA`.
+
+You can also choose only plotting one of the three figures.
 
 ```{r, eval = FALSE}
 plotRegionGeneAssociationGraphs(job, type = 1)
