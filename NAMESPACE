@@ -1,0 +1,16 @@
+exportClasses(GreatJob)
+exportMethods(availableCategories)
+exportMethods(availableOntologies)
+exportMethods(getEnrichmentTables)
+exportMethods(plotRegionGeneAssociationGraphs)
+export(submitGreatJob)
+
+importFrom("RCurl", postForm)
+importFrom("GetoptLong", qq)
+importFrom("GetoptLong", qqcat)
+importFrom("GetoptLong", qq.options)
+importFrom("rjson", fromJSON)
+import(GenomicRanges)
+import(IRanges)
+importFrom("methods", setRefClass)
+
