@@ -9,13 +9,14 @@ Depends: R (>= 2.10.0), GenomicRanges, IRanges
 Imports: methods, rjson, GetoptLong (>= 0.0.9), RCurl
 Suggests: testthat (>= 0.3), knitr, circlize
 VignetteBuilder: knitr
-biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing,
-        WholeGenome, GenomeAnnotation
-Description: This package makes GREAT (Genomic Regions Enrichment of
-        Annotations Tool) analysis automatic by constructing a HTTP
-        POST request according to user's input and automatically
-        retrieving results from GREAT web server.
+biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,
+    GenomeAnnotation
+Description: This package makes GREAT (Genomic Regions Enrichment of 
+    Annotations Tool) analysis automatic by constructing a HTTP POST 
+    request according to user's input and automatically retrieving results 
+    from GREAT web server.
 URL: https://github.com/jokergoo/rGREAT
 License: GPL (>= 2)
+Packaged: 2015-1-28 00:00:00 UTC; Administrator
 Repository: Bioconductor
 Date/Publication: 2014-1-28 00:00:00
