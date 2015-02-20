@@ -1,4 +1,15 @@
-## Client for GREAT Analysis
+# Client for GREAT Analysis
+
+## Install
+
+**rGREAT** is available on Bioconductor (http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
+
+```r
+source("http://bioconductor.org/biocLite.R")
+biocLite("rGREAT")
+```
+
+## Usage
 
 The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
 
