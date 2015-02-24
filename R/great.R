@@ -1,4 +1,42 @@
 
+
+
+# == title
+# Class to store and retrieve GREAT results
+#
+# == details
+# After submitting request to GREAT server, the generated results will be 
+# available on GREAT server for some time. The ``GreatJob`` class is defined 
+# to store parameters that user has set and result tables what were retrieved 
+# from GREAT server.
+#
+# == Constructor
+# Users don't need to construct by hand, `submitGreatJob` is used to generate a ``GreatJob`` instance.
+#
+# == Workflow
+# After submitting request to GREAT server, users can perform following steps:
+#
+# - call `getEnrichmentTables` to get enrichment tables for selected ontologies catalogues.
+# - call `plotRegionGeneAssociationGraphs` to get associations between regions and genes
+#   as well as making plots.  
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
+GreatJob = setClass("GreatJob",
+    slots = list(
+        job_env = "environment",
+        parameters = "list",   # parameters that are sent to GREAT
+        enrichment_tables = "environment",
+        association_tables = "environment"),
+    prototype = list(
+        job_env = new.env(),
+        parameters = list(),
+        enrichment_tables = new.env(),
+        association_tables = new.env())
+)
+
+
 # == title
 # Send requests to GREAT web server
 #
@@ -191,14 +229,110 @@ submitGreatJob = function(gr, bg = NULL,
     dir.create(td, showWarnings = FALSE)
     job@job_env$tempdir = td
 
+    ### parse the response html code and extract the ontogolies
+    match = gregexpr("<div class=\"gc_header gc_column\">.*?<\\/div>", response)[[1]]
+    match.length = attr(match, "match.length")
+
+    category = sapply(seq_along(match), function(i) {
+            substr(response, match[i], match[i]+match.length[i]-1)
+    })
+
+    category = gsub("<.*?>", "", category)
+
+    match = gregexpr("<div class=\"gc_info_item gc_column\">.*?<\\/div>", response)[[1]]
+    match.length = attr(match, "match.length")
+
+    term = sapply(seq_along(match), function(i) {
+            substr(response, match[i], match[i]+match.length[i]-1)
+    })
+
+    term_value = gsub("^.*value=\"(\\w+?)\".*$", "\\1", term)
+    term_value = gsub("&nbsp;", "", term_value)
+    term_value = gsub("<.*?>", "", term_value)
+    term_value = gsub("^\\s+|\\s+$", "", term_value)
+
+
+    term_name = gsub("<.*?>", "", term)
+    term_name = gsub("&nbsp;", "", term_name)
+    term_name = gsub("^\\s+|\\s+$", "", term_name)
+
+    ONTOLOGY_KEYS = term_value
+    names(ONTOLOGY_KEYS) = term_name
+    ONTOLOGY_KEYS = ONTOLOGY_KEYS[ONTOLOGY_KEYS != ""]
+
+    CATEGORY = lapply(seq_along(category), function(i) {
+            index = seq_along(term_name)
+            tn = term_name[index %% length(category) == i %% length(category)]
+            tn[tn != ""]
+    })
+    names(CATEGORY) = category
+
+    job@job_env$CATEGORY = CATEGORY
+    job@job_env$ONTOLOGY_KEYS = ONTOLOGY_KEYS
+
     return(job)
 }
 
-setGeneric(name = "getEnrichmentTables",
-    def = function(job, ...) {
-        standardGeneric("getEnrichmentTables")
+## reference class for GreatJob
+
+
+setMethod(f = "show",
+          signature = "GreatJob",
+          definition = function(object) {
+    
+    cat("Submit time:", 
+        format(object@job_env$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
+    #cat("Session ID:", id(object), "\n")
+    cat("Species:", param(object, "species"), "\n")
+    cat("Background:", param(object, "bgChoice"), "\n")
+    if(param(object, "rule") == "basalPlusExt") {
+        cat("Model:", "Basal plus extension", "\n")
+        cat("  Proximal:", param(object, "adv_upstream"), "kb upstream,", 
+            param(object, "adv_downstream"), "kb downstream,\n  plus Distal: up to", 
+            param(object, "adv_span"), "kb\n")
+    } else if(param(object, "rule") == "twoClosest") {
+        cat("Model:", "Two nearest genes", "\n")
+        cat("  within", param(object, "adv_twoDistance"), "kb\n")
+    } else if(param(object, "rule") == "oneClosest") {
+        cat("Model:", "Single nearest gene", "\n")
+        cat("  within", param(object, "adv_oneDistance"), "kb\n")
+    }
+    if(param(object, "includeCuratedRegDoms")) {
+        cat("Include curated regulatory domains\n")
+    }
+    cat("\n")
+    cat("Enrichment tables for following ontologies have been downloaded:\n")
+    if(length(ls(envir = object@enrichment_tables)) == 0) {
+        cat("  None\n")
+    } else {
+        for(nm in ls( envir = object@enrichment_tables)) {
+            cat("  ", nm, "\n", sep = "")
+        }
+    }
+    cat("\n")
 })
 
+setGeneric(name = "id",
+    def = function(job) {
+        standardGeneric("id")
+})
+
+setMethod(f = "id",
+    signature = "GreatJob",
+    definition = function(job) {
+        job@job_env$id
+})
+
+setGeneric(name = "param",
+    def = function(job, name) {
+        standardGeneric("param")
+})
+
+setMethod(f = "param",
+    signature = "GreatJob",
+    definition = function(job, name) {
+        job@parameters[[name]]
+})
 
 # == title
 # Get enrichment tables from GREAT web server
@@ -223,12 +357,15 @@ setGeneric(name = "getEnrichmentTables",
 # result for a single ontology. The structure of the data frames are same as 
 # the tables available on GREAT website.
 #
+# == see also
+# `availableOntologies`, `availableCategories`
+#
 # == author
 # Zuguang gu <z.gu@dkfz.de>
 #
 setMethod(f = "getEnrichmentTables",
     signature = "GreatJob",
-    definition = function(job, ontology = NULL, category = c("GO", "Pathway_Data"),
+    definition = function(job, ontology = NULL, category = "GO",
     request_interval = 30, max_tries = 100) {
     
     jobid = id(job)
@@ -254,17 +391,15 @@ setMethod(f = "getEnrichmentTables",
     if(length(setdiff(ontology, availableOntologies(job)))) {
         stop("Only ontologies in `availableOntologies()` are allowed.\n")
     }
+
+    ONTOLOGY_KEYS = job@job_env$ONTOLOGY_KEYS
     
-    res = lapply(ontology, function(onto) GREAT.read.json(job, qq(URL_TEMPLATE[onto]), onto, 
+    res = lapply(ontology, function(onto) GREAT.read.json(job, qq("@{BASE_URL}/readJsFromFile.php?path=/scratch/great/tmp/results/@{jobid}.d/@{ONTOLOGY_KEYS[onto]}.js"), onto, 
         request_interval = request_interval, max_tries = max_tries))
     names(res) = ontology
     return(res)
 })
 
-setGeneric(name = "availableOntologies",
-    def = function(job, ...) {
-        standardGeneric("availableOntologies")
-})
 
 # == title
 # All available ontology names
@@ -274,34 +409,8 @@ setGeneric(name = "availableOntologies",
 # -category one or multiple categories. All available categories can be get by `availableCategories`
 #
 # == details
-# Following ontologies are supported by GREAT: 
-#
-# For human (hg19 and hg18):
-#
-# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
-# "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
-# "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
-# "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
-# "MGI_Expression_Detected", "MSigDB_Perturbation", 
-# "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
-# "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam", 
-# "HGNC_Gene_Families".
-#
-# For mouse (mm9):
-#
-# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
-# "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", 
-# "MSigDB_Cancer_Neighborhood", "Placenta_Disorders", "PANTHER_Pathway", 
-# "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway", 
-# "MGI_Expression_Detected", "MSigDB_Perturbation",
-# "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs",
-# "MSigDB_miRNA_Motifs", "miRNA_Targets", "InterPro", "TreeFam".
-#
-# For zebrafish (danRer7):
-#
-# "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component", 
-# "Wiki_Pathway", "Zebrafish_Wildtype_Expression", "Zebrafish_Phenotype", 
-# "InterPro", "TreeFam".
+# The values of the supported ontologies sometime change. You should run the function to get the realtime
+# values. The meaning of ontology returned is quite self-explained by the name.
 #
 # == value
 # The returned values is a vector of ontologies.
@@ -314,26 +423,23 @@ setMethod(f = "availableOntologies",
     definition = function(job, category = NULL) {
     
     species = param(job, "species")
+    CATEGORY = job@job_env$CATEGORY
     
     if(is.null(category)) {
-        onto = unlist(CATEGORY[[species]])
+        onto = unlist(CATEGORY)
         names(onto) = NULL
         return(onto)
     } else {
         if(length(setdiff(category, availableCategories(job))) > 0) {
             stop("Value of `category` is invalid. Please use availableCategories(job) to find supported categories.\n")
         }
-        onto = unlist(CATEGORY[[species]][category])
+        onto = unlist(CATEGORY[category])
         names(onto) = NULL
         return(onto)
     }
 })
 
 
-setGeneric(name = "availableCategories",
-    def = function(job, ...) {
-        standardGeneric("availableCategories")
-})
 # == title
 # Available ontology categories
 #
@@ -341,33 +447,8 @@ setGeneric(name = "availableCategories",
 # -job a `GreatJob` instance
 #
 # == details
-# On GREAT, There are several pre-defined ontology categories:
-#
-# For human (hg19 and hg18), there are following categories and corresponding ontologies:
-#
-# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data_and_human_desease "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology", "MSigDB_Cancer_Neighborhood", "Placenta_Disorders"
-# -Pathway_Data "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
-# -Gene_Expression "MGI_Expression_Detected", "MSigDB_Perturbation"
-# -Regulatory_Motifs "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
-# -Gene_Families "InterPro", "TreeFam", "HGNC_Gene_Families"
-#   
-# For mouse (mm9):
-#   
-# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data "Mouse_Phenotype", "Human_Phenotype", "Disease_Ontology"
-# -Pathway_Data "PANTHER_Pathway", "Pathway_Commons", "BioCyc_Pathway", "MSigDB_Pathway"
-# -Gene_Expression "MGI_Expression_Detected", "MSigDB_Perturbation"
-# -Regulatory_Motifs "Transcription_Factor_Targets", "MSigDB_Predicted_Promoter_Motifs", "MSigDB_miRNA_Motifs", "miRNA_Targets"
-# -Gene_Families "InterPro", "TreeFam"
-#   
-# For zebrafish (danRer7):
-#  
-# -GO "GO_Molecular_Function", "GO_Biological_Process", "GO_Cellular_Component"
-# -Phenotype_data "Zebrafish_Phenotype"
-# -Pathway_Data "Wiki_Pathway"
-# -Gene_Expression "Zebrafish_Wildtype_Expression"
-# -Gene_Families "InterPro", "TreeFam"
+# The values of the supported categories sometime change. You should run the function to get the realtime
+# values. The meaning of categories returned is quite self-explained by the name.
 #
 # == value
 # The returned value is a vector of categories.
@@ -380,8 +461,9 @@ setMethod(f = "availableCategories",
     definition = function(job) {
 
     species = param(job, "species")
+    CATEGORY = job@job_env$CATEGORY
     
-    names(CATEGORY[[species]])
+    names(CATEGORY)
 })
 
 # download from `url` and save to `file`
@@ -513,11 +595,6 @@ parseRegionGeneAssociationFile = function(f1) {
     return(df)    
 }
 
-setGeneric(name = "plotRegionGeneAssociationGraphs",
-    def = function(job, ...) {
-        standardGeneric("plotRegionGeneAssociationGraphs")
-})
-
 
 # == title
 # Plot region-gene association figures
@@ -603,6 +680,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             }
         }
     }
+
+    ONTOLOGY_KEYS = job@job_env$ONTOLOGY_KEYS
     
     if(using_term) {
 
