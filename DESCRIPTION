@@ -1,7 +1,7 @@
 Package: rGREAT
 Type: Package
 Title: Client for GREAT Analysis
-Version: 0.99.3
+Version: 0.99.4
 Date: 2015-1-28
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
