@@ -1,8 +1,8 @@
-exportClasses(GreatJob)
 exportMethods(availableCategories)
 exportMethods(availableOntologies)
-exportMethods(getEnrichmentTables)
 exportMethods(plotRegionGeneAssociationGraphs)
+exportMethods(getEnrichmentTables)
+exportClasses(GreatJob)
 export(submitGreatJob)
 
 importFrom("RCurl", postForm)
