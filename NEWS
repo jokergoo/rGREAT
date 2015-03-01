@@ -1,3 +1,9 @@
+CHANGES IN VERSION 0.99.5
+
+* because analysis depends on internet connection, jump to 
+  next version to enforce rebuilding of the vignette on bioconductor.
+------------------------------------------------------------
+
 CHANGES IN VERSION 0.99.4
 
 * retrieve categories and corresponding ontologies from GREAT
