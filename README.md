@@ -1,3 +1,5 @@
+![](https://travis-ci.org/jokergoo/rGREAT.svg?branch=master)
+
 # Client for GREAT Analysis
 
 ## Install
