@@ -1,0 +1,19 @@
+language: r
+
+sudo: required
+
+# Be strict when checking our package
+warnings_are_errors: true
+
+r-packages:
+- GetoptLong
+- rjson
+- RCurl
+- testthat
+- circlize
+- knitr
+
+bioc_packages:
+- GenomicRanges
+
+bioc_required: true
