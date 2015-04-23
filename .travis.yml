@@ -17,3 +17,6 @@ bioc_packages:
 - GenomicRanges
 
 bioc_required: true
+
+r_check_args: --no-build-vignettes --no-vignettes
+
