@@ -11,6 +11,13 @@ source("http://bioconductor.org/biocLite.R")
 biocLite("rGREAT")
 ```
 
+If you want the latest version, install it directly from GitHub:
+
+```{r}
+library(devtools)
+install_github("jokergoo/rGREAT")
+```
+
 ## Usage
 
 The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
