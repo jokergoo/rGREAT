@@ -1,4 +1,5 @@
-![](https://travis-ci.org/jokergoo/rGREAT.svg?branch=master)
+[![ Status](https://travis-ci.org/jokergoo/rGREAT.svg)](https://travis-ci.org/jokergoo/rGREAT)
+
 
 # Client for GREAT Analysis
 
