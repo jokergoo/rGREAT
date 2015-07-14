@@ -1,8 +1,8 @@
 Package: rGREAT
 Type: Package
 Title: Client for GREAT Analysis
-Version: 1.1.0
-Date: 2015-4-23
+Version: 1.1.1
+Date: 2015-7-14
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 2.10.0), GenomicRanges, IRanges
@@ -17,6 +17,6 @@ Description: This package makes GREAT (Genomic Regions Enrichment of
     from GREAT web server.
 URL: https://github.com/jokergoo/rGREAT
 License: GPL (>= 2)
-Packaged: 2015-1-28 00:00:00 UTC; Administrator
+Packaged: 2015-7-14 00:00:00 UTC; Administrator
 Repository: Bioconductor
-Date/Publication: 2014-1-28 00:00:00
+Date/Publication: 2015-7-14 00:00:00
