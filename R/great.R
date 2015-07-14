@@ -28,12 +28,7 @@ GreatJob = setClass("GreatJob",
         job_env = "environment",
         parameters = "list",   # parameters that are sent to GREAT
         enrichment_tables = "environment",
-        association_tables = "environment"),
-    prototype = list(
-        job_env = new.env(),
-        parameters = list(),
-        enrichment_tables = new.env(),
-        association_tables = new.env())
+        association_tables = "environment")
 )
 
 
@@ -203,6 +198,10 @@ submitGreatJob = function(gr, bg = NULL,
     jobid = as.vector(jobid)
       
     job = GreatJob()
+    job@job_env = new.env()
+    job@enrichment_tables = new.env()
+    job@association_tables = new.env()
+    
     job@parameters = list(
             "species"               = species,
             "rule"                  = rule,
