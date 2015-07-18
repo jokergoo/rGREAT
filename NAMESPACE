@@ -13,4 +13,6 @@ importFrom("rjson", fromJSON)
 import(GenomicRanges)
 import(IRanges)
 importFrom("methods", setRefClass)
-
+importFrom("utils", download.file)
+importFrom("utils", read.table)
+importFrom("utils", txtProgressBar)
