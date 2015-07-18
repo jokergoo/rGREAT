@@ -1,3 +1,8 @@
+CHANGES in VERSION 1.1.2
+
+* add dependency to base packages
+-----------------------------------------------------------
+
 CHANGES in VERSION 1.1.1
 
 * enrivonment for the slots in `GreatJob` object are initialized
