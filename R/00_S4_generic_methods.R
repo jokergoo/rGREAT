@@ -1,8 +1,8 @@
 
-setGeneric('plotRegionGeneAssociationGraphs', function(object, ...) standardGeneric('plotRegionGeneAssociationGraphs'))
+setGeneric('plotRegionGeneAssociationGraphs', function(job, ...) standardGeneric('plotRegionGeneAssociationGraphs'))
 
-setGeneric('availableCategories', function(object, ...) standardGeneric('availableCategories'))
+setGeneric('availableCategories', function(job, ...) standardGeneric('availableCategories'))
 
-setGeneric('getEnrichmentTables', function(object, ...) standardGeneric('getEnrichmentTables'))
+setGeneric('getEnrichmentTables', function(job, ...) standardGeneric('getEnrichmentTables'))
 
-setGeneric('availableOntologies', function(object, ...) standardGeneric('availableOntologies'))
+setGeneric('availableOntologies', function(job, ...) standardGeneric('availableOntologies'))
