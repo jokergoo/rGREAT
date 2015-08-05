@@ -84,7 +84,7 @@ GreatJob = setClass("GreatJob",
 submitGreatJob = function(gr, bg = NULL,
     species               = c("hg19", "hg18", "mm9", "danRer7"),
     includeCuratedRegDoms = TRUE,
-    bgChoice              = c("wholeGenome", "data"),
+    bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
     adv_downstream        = 1.0,
@@ -97,7 +97,6 @@ submitGreatJob = function(gr, bg = NULL,
     
     species  = match.arg(species)[1]
     rule     = match.arg(rule)[1]
-    bgChoice = match.arg(bgChoice)[1]
     includeCuratedRegDoms = as.numeric(includeCuratedRegDoms[1])
     
     op = qq.options(READ.ONLY = FALSE)
@@ -110,6 +109,10 @@ submitGreatJob = function(gr, bg = NULL,
                                        end = gr[[3]]))
     }
     gr = reduce(sort(gr))
+
+    if(!bgChoice %in% c("wholeGenome", "data")) {
+        stop("`bgChoice` should be one of 'wholeGenome' and 'data'.")
+    }
     
     if(bgChoice == "data") {
         if(is.null(bg)) {
@@ -149,7 +152,7 @@ submitGreatJob = function(gr, bg = NULL,
         message(qq("Don't make too frequent requests. The time break is @{request_interval}s.\nPlease wait for @{round(request_interval - time_interval)}s for the next request.\nThe time break can be set by `request_interval` argument.\n"))
         sleep(request_interval - time_interval)
     }
-    
+
     #message("sending request to GREAT web server...")
     i_try = 0
     while(1) {
@@ -189,9 +192,14 @@ submitGreatJob = function(gr, bg = NULL,
     }
 
     rGREAT_env$LAST_REQUEST_TIME = Sys.time()
-   
+
     if(any(grepl("encountered a user error", response))) {
-        stop("GREAT encountered a user error, check your input (especially `species`).\n")
+        msg = gsub("^.*<blockquote>(.*?)<\\/blockquote>.*$", "\\1", response)
+        msg = gsub("<.*?>", "", msg)
+        msg = gsub(" +", " ", msg)
+        msg = strwrap(msg)
+        msg = paste(msg, collapse = "\n")
+        stop(paste0("GREAT encountered a user error:\n", msg))
     }
     
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
