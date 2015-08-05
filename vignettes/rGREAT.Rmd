@@ -63,7 +63,7 @@ More parameters can be set for the job:
 
 ```{r, eval = FALSE}
 job = submitGreatJob(bed, species = "mm9")
-job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
+job = submitGreatJob(bed, bg, species = "mm9")
 job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
 job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
 job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
