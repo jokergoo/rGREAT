@@ -1,11 +1,20 @@
+CHANGES in VERSION 1.1.4
+
+* minor changes to adjust to github mirror
+
+----------------------------------------------------------
+
 CHANGES in VERSION 1.1.3
 
 * error message is extract from GREAT now.
 * default value of `bgChoice` depeneds on `gr` 
 
+-----------------------------------------------------------
+
 CHANGES in VERSION 1.1.2
 
 * add dependency to base packages
+
 -----------------------------------------------------------
 
 CHANGES in VERSION 1.1.1
@@ -19,9 +28,11 @@ CHANGES IN VERSION 0.99.5
 
 * because analysis depends on internet connection, jump to 
   next version to enforce rebuilding of the vignette on bioconductor.
+
 ------------------------------------------------------------
 
 CHANGES IN VERSION 0.99.4
 
 * retrieve categories and corresponding ontologies from GREAT
+
 ------------------------------------------------------------

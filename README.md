@@ -63,6 +63,7 @@ job
 
 With `job`, we can now retrieve results from GREAT. The first and the primary results are the tables which contain enrichment statistics for the analysis. By default it will retrieve results from three GO Ontologies and all pathway ontologies. All tables contains statistics for all terms no matter they are significant or not. Users can then make filtering by a self-defined cutoff.
 
+
 ```r
 tb = getEnrichmentTables(job)
 names(tb)

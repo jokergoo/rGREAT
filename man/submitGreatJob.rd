@@ -2,11 +2,9 @@
 \alias{submitGreatJob}
 \title{
 Send requests to GREAT web server
-
 }
 \description{
 Send requests to GREAT web server
-
 }
 \usage{
 submitGreatJob(gr, bg = NULL,
@@ -20,7 +18,8 @@ submitGreatJob(gr, bg = NULL,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
-    max_tries = 10)}
+    max_tries = 10)
+}
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
@@ -36,6 +35,7 @@ submitGreatJob(gr, bg = NULL,
   \item{adv_oneDistance}{Unit: kb, only used when rule is \code{oneClosest}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
+
 }
 \details{
 Note it is not the standard GREAT API. This function directly send data to GREAT web server
@@ -50,22 +50,17 @@ Explanation of \code{rule} and settings with names started with 'adv_' (advanced
   \item{twoClosest}{Mode 'Two nearest genes'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the nearest gene's TSS (controlled by \code{adv_twoDistance}) but no more than the maximum extension in one direction.}
   \item{oneClosest}{Mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS (controlled by \code{adv_oneDistance}) but no more than the maximum extension in one direction.}
 }
-
 }
 \value{
-A \code{\link{GreatJob}} class object which can be used to get results from GREAT server.
-
+A \code{\link{GreatJob-class}} class object which can be used to get results from GREAT server.
 }
 \seealso{
 \code{\link{GreatJob-class}}
-
 }
 \author{
 Zuguang gu <z.gu@dkfz.de>
-
 }
 \examples{
-
 set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc = 0)
 job = submitGreatJob(bed)
@@ -78,4 +73,5 @@ job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000
 job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
 job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
 }
+
 }
