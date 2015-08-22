@@ -18,7 +18,8 @@ submitGreatJob(gr, bg = NULL,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
-    max_tries = 10)}
+    max_tries = 10)
+}
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
