@@ -34,7 +34,6 @@ After submitting request to GREAT server, users can perform following steps:
   \item call \code{\link{plotRegionGeneAssociationGraphs}} to get associations between regions and genesas well as making plots.  
 }
 
-
 }
 \author{
 Zuguang gu <z.gu@dkfz.de>

@@ -9,7 +9,9 @@ Get enrichment tables from GREAT web server
 }
 \usage{
 \S4method{getEnrichmentTables}{GreatJob}(job, ontology = NULL, category = "GO",
-    request_interval = 30, max_tries = 100)}
+    request_interval = 30, max_tries = 100)
+}
+>>>>>>> 9e889df41020b0cbb6c80a3318e710e3460c5a6b
 \arguments{
 
   \item{job}{a \code{\link{GreatJob-class}} instance}
@@ -17,6 +19,7 @@ Get enrichment tables from GREAT web server
   \item{category}{Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in \code{\link{availableCategories}}}
   \item{request_interval}{time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{maximum tries}
+
 }
 \details{
 The table contains statistics for the each term in each ontology catalogue.
