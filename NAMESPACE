@@ -3,7 +3,6 @@ exportMethods(availableOntologies)
 exportMethods(plotRegionGeneAssociationGraphs)
 exportMethods(getEnrichmentTables)
 exportClasses(GreatJob)
-export(GreatJob)
 export(submitGreatJob)
 
 importFrom("RCurl", postForm)
@@ -17,4 +16,5 @@ import(methods)
 importFrom("utils", download.file)
 importFrom("utils", read.table)
 importFrom("utils", txtProgressBar)
+importFrom("utils", setTxtProgressBar)
 
