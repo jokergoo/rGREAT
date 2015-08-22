@@ -6,12 +6,12 @@
 #
 # == details
 # After submitting request to GREAT server, the generated results will be 
-# available on GREAT server for some time. The ``GreatJob`` class is defined 
+# available on GREAT server for some time. The ``GreatJob-class`` is defined 
 # to store parameters that user has set and result tables what were retrieved 
 # from GREAT server.
 #
 # == Constructor
-# Users don't need to construct by hand, `submitGreatJob` is used to generate a ``GreatJob`` instance.
+# Users don't need to construct by hand, `submitGreatJob` is used to generate a ``GreatJob-class`` instance.
 #
 # == Workflow
 # After submitting request to GREAT server, users can perform following steps:
@@ -73,7 +73,7 @@ GreatJob = setClass("GreatJob",
 #   extension in one direction.
 #
 # == value
-# A `GreatJob` class object which can be used to get results from GREAT server.
+# A `GreatJob-class` class object which can be used to get results from GREAT server.
 #
 # == seealso
 # `GreatJob-class`
@@ -97,6 +97,7 @@ submitGreatJob = function(gr, bg = NULL,
     
     species  = match.arg(species)[1]
     rule     = match.arg(rule)[1]
+
     includeCuratedRegDoms = as.numeric(includeCuratedRegDoms[1])
     
     op = qq.options(READ.ONLY = FALSE)
@@ -200,6 +201,7 @@ submitGreatJob = function(gr, bg = NULL,
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
         stop(paste0("GREAT encountered a user error:\n", msg))
+
     }
     
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
@@ -345,7 +347,7 @@ setMethod(f = "param",
 # Get enrichment tables from GREAT web server
 #
 # == param
-# -job a `GreatJob` instance
+# -job a `GreatJob-class` instance
 # -ontology ontology names. Valid values are in `availableOntologies`. ``ontology`` is prior to 
 #           ``category`` argument.
 # -category Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in 
@@ -412,7 +414,7 @@ setMethod(f = "getEnrichmentTables",
 # All available ontology names
 #
 # == param
-# -job a `GreatJob` instance
+# -job a `GreatJob-class` instance
 # -category one or multiple categories. All available categories can be get by `availableCategories`
 #
 # == details
@@ -451,7 +453,7 @@ setMethod(f = "availableOntologies",
 # Available ontology categories
 #
 # == param
-# -job a `GreatJob` instance
+# -job a `GreatJob-class` instance
 #
 # == details
 # The values of the supported categories sometime change. You should run the function to get the realtime
@@ -607,7 +609,7 @@ parseRegionGeneAssociationFile = function(f1) {
 # Plot region-gene association figures
 #
 # == param
-# -job a `GreatJob` instance
+# -job a `GreatJob-class` instance
 # -type type of plots, should be in ``1, 2, 3``. See details section for explanation
 # -ontology ontology name
 # -termID term id which corresponds to the selected ontology
