@@ -30,5 +30,4 @@ Zuguang gu <z.gu@dkfz.de>
 job = readRDS(paste0(system.file("extdata", package = "rGREAT"), "/job.rds"))
 availableOntologies(job)
 availableOntologies(job, category = "Pathway Data")
-
 }

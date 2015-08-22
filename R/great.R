@@ -201,7 +201,6 @@ submitGreatJob = function(gr, bg = NULL,
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
         stop(paste0("GREAT encountered a user error:\n", msg))
-
     }
     
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)

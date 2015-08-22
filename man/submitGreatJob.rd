@@ -18,8 +18,7 @@ submitGreatJob(gr, bg = NULL,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
-    max_tries = 10)
-}
+    max_tries = 10)}
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
@@ -35,7 +34,6 @@ submitGreatJob(gr, bg = NULL,
   \item{adv_oneDistance}{Unit: kb, only used when rule is \code{oneClosest}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
-
 }
 \details{
 Note it is not the standard GREAT API. This function directly send data to GREAT web server

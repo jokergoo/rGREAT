@@ -8,12 +8,10 @@ Available ontology categories
 Available ontology categories
 }
 \usage{
-\S4method{availableCategories}{GreatJob}(job)
-}
+\S4method{availableCategories}{GreatJob}(job)}
 \arguments{
 
   \item{job}{a \code{\link{GreatJob-class}} instance}
-
 }
 \details{
 The values of the supported categories sometime change. You should run the function to get the realtime

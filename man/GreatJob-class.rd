@@ -15,6 +15,7 @@ from GREAT server.
 }
 \section{Constructor}{
 Users don't need to construct by hand, \code{\link{submitGreatJob}} is used to generate a \code{GreatJob-class} instance.}
+
 \section{Workflow}{
 After submitting request to GREAT server, users can perform following steps:
 
@@ -32,11 +33,14 @@ After submitting request to GREAT server, users can perform following steps:
   \item call \code{\link{getEnrichmentTables}} to get enrichment tables for selected ontologies catalogues.
   \item call \code{\link{plotRegionGeneAssociationGraphs}} to get associations between regions and genesas well as making plots.  
 }
+
+
 }
 \author{
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
+
 # please refer to page of `submitGreatJob`
 
 }
