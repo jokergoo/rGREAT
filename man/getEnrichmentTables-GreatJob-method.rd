@@ -11,7 +11,6 @@ Get enrichment tables from GREAT web server
 \S4method{getEnrichmentTables}{GreatJob}(job, ontology = NULL, category = "GO",
     request_interval = 30, max_tries = 100)
 }
->>>>>>> 9e889df41020b0cbb6c80a3318e710e3460c5a6b
 \arguments{
 
   \item{job}{a \code{\link{GreatJob-class}} instance}
@@ -34,6 +33,10 @@ the tables available on GREAT website.
 }
 \section{See}{
 \code{\link{availableOntologies}}, \code{\link{availableCategories}}}
+\seealso{
+\code{\link{availableOntologies}}, \code{\link{availableCategories}}
+
+}
 \author{
 Zuguang gu <z.gu@dkfz.de>
 }
