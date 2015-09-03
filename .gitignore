@@ -6,3 +6,5 @@
 *.md
 figure
 cache
+.DS_Store
+
