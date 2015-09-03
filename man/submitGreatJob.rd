@@ -35,6 +35,7 @@ submitGreatJob(gr, bg = NULL,
   \item{adv_oneDistance}{Unit: kb, only used when rule is \code{oneClosest}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
+
 }
 \details{
 Note it is not the standard GREAT API. This function directly send data to GREAT web server

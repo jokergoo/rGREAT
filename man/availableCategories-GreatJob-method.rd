@@ -13,6 +13,7 @@ Available ontology categories
 \arguments{
 
   \item{job}{a \code{\link{GreatJob-class}} instance}
+
 }
 \details{
 The values of the supported categories sometime change. You should run the function to get the realtime
