@@ -49,6 +49,8 @@ GreatJob = setClass("GreatJob",
 # -adv_oneDistance Unit: kb, only used when rule is ``oneClosest``
 # -request_interval Time interval for two requests. Default is 300 seconds.
 # -max_tries Maximum times trying to connect to GREAT web server.
+# -version version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers
+#          can also be used, such as using "3" or "3.0" is same as "3.0.0".
 #
 # == details
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
@@ -82,7 +84,7 @@ GreatJob = setClass("GreatJob",
 # Zuguang gu <z.gu@dkfz.de>
 #
 submitGreatJob = function(gr, bg = NULL,
-    species               = c("hg19", "hg18", "mm9", "danRer7"),
+    species               = "hg19",
     includeCuratedRegDoms = TRUE,
     bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
@@ -92,11 +94,19 @@ submitGreatJob = function(gr, bg = NULL,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
-    max_tries = 10
+    max_tries = 10,
+    version = "default"
     ) {
-    
-    species  = match.arg(species)[1]
-    rule     = match.arg(rule)[1]
+        
+    version = version[1]
+    if(!version %in% names(SPECIES)) {
+        stop(paste0("'version' should be in ", paste(names(SPECIES), collapse = ", "), "."))
+    }
+    species  = species[1]
+    if(!species %in% SPECIES[[version]]) {
+        stop(paste0("GREAT with version '", version, "' only supports following species:\n  ", paste(SPECIES[[version]], collapse = ", ")))
+    }
+    rule = match.arg(rule)[1]
 
     includeCuratedRegDoms = as.numeric(includeCuratedRegDoms[1])
     
@@ -155,6 +165,8 @@ submitGreatJob = function(gr, bg = NULL,
     }
 
     #message("sending request to GREAT web server...")
+    BASE_URL = BASE_URL_LIST[version]
+
     i_try = 0
     while(1) {
         
@@ -226,7 +238,8 @@ submitGreatJob = function(gr, bg = NULL,
             "adv_downstream"        = adv_downstream,
             "adv_span"              = adv_span,
             "adv_twoDistance"       = adv_twoDistance,
-            "adv_oneDistance"       = adv_oneDistance)
+            "adv_oneDistance"       = adv_oneDistance,
+            "version"               = version)
     
     job@job_env$id = jobid
     job@job_env$submit_time = Sys.time()
@@ -290,6 +303,7 @@ setMethod(f = "show",
     
     cat("Submit time:", 
         format(object@job_env$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
+    cat("Version:", param(object, "version"), "\n")
     #cat("Session ID:", id(object), "\n")
     cat("Species:", param(object, "species"), "\n")
     cat("Background:", param(object, "bgChoice"), "\n")
@@ -378,6 +392,8 @@ setMethod(f = "getEnrichmentTables",
     
     jobid = id(job)
     species = param(job, "species")
+    version = param(job, "version")
+    BASE_URL = BASE_URL_LIST[version]
 
     if(!file.exists(job@job_env$tempdir)) {
         td = tempdir()
@@ -657,6 +673,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     jobid = id(job)
     species = param(job, "species")
     TEMP_DIR = job@job_env$tempdir
+    version = param(job, "version")
+    BASE_URL = BASE_URL_LIST[version]
 
     opqq = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(opqq))
