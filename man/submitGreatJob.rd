@@ -8,7 +8,7 @@ Send requests to GREAT web server
 }
 \usage{
 submitGreatJob(gr, bg = NULL,
-    species               = c("hg19", "hg18", "mm9", "danRer7"),
+    species               = "hg19",
     includeCuratedRegDoms = TRUE,
     bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
@@ -18,7 +18,8 @@ submitGreatJob(gr, bg = NULL,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
-    max_tries = 10)
+    max_tries = 10,
+    version = "default")
 }
 \arguments{
 
@@ -35,6 +36,7 @@ submitGreatJob(gr, bg = NULL,
   \item{adv_oneDistance}{Unit: kb, only used when rule is \code{oneClosest}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
+  \item{version}{version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numberscan also be used, such as using "3" or "3.0" is same as "3.0.0".}
 
 }
 \details{

@@ -69,6 +69,13 @@ job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
 job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
 ```
 
+Also you can choose different versions of GREAT for the analysis.
+
+```{r, eval = FALSE}
+job = submitGreatJob(bed, version = "3.0")
+job = submitGreatJob(bed, version = "2.0")
+```
+
 Available parameters are (following content is copied from **GREAT** website):
 
 - `species`:  `hg19` and `hg18` for human, `mm9` for mouse and `danRer7` for zebrafish
