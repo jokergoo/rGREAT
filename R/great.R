@@ -206,6 +206,7 @@ submitGreatJob = function(gr, bg = NULL,
 
     rGREAT_env$LAST_REQUEST_TIME = Sys.time()
 
+    # parsing error
     if(any(grepl("encountered a user error", response))) {
         msg = gsub("^.*<blockquote>(.*?)<\\/blockquote>.*$", "\\1", response)
         msg = gsub("<.*?>", "", msg)
@@ -213,6 +214,16 @@ submitGreatJob = function(gr, bg = NULL,
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
         stop(paste0("GREAT encountered a user error:\n", msg))
+    }
+
+    # parsing warning
+    if(any(grepl("<strong>Warning:<\\/strong>", response))) {
+        msg = gsub("^.*<strong>Warning:<\\/strong>(.*?)<\\/p>.*$", "\\1", response)
+        msg = gsub("<.*?>", "", msg)
+        msg = gsub(" +", " ", msg)
+        msg = strwrap(msg)
+        msg = paste(msg, collapse = "\n")
+        warning(paste0("GREAT gives a warning:\n", msg))
     }
     
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
@@ -723,6 +734,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
             df_term = parseRegionGeneAssociationFile(f_term)
+            df_term$gene[df_term$gene == ""] = NA
             job@association_tables[[qq("@{ontology}-@{termID}")]] = df_term
             file.remove(f_term)
         }
@@ -738,10 +750,11 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         download(url, file = f_all, request_interval = request_interval, max_tries = max_tries)
         check_asso_file(f_all)
         df_all = parseRegionGeneAssociationFile(f_all)
+        df_all$gene[df_all$gene == ""] = NA
         job@association_tables[["all"]] = df_all
         file.remove(f_all)
     }
-    
+
     # some values of gene is NA
     if(using_term) {
         df_term_NA = df_term[is.na(df_term$gene), , drop = FALSE]
