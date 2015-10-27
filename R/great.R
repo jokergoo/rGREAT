@@ -580,11 +580,17 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
         }
     }
     res = as.data.frame(lt, stringsAsFactors = FALSE)
-    
-    colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
-                      "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
-                      "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
-                      "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+
+    if (param(job, "bgChoice") == "data") {
+      colnames(res) = c("ID", "name", "Hyper_Total_Regions", "Hyper_Expected", "Hyper_Foreground_Region_Hits",
+                        "Hyper_Fold_Enrichment", "Hyper_Region_Set_Coverage", "Hyper_Term_Region_Coverage",
+                        "Hyper_Foreground_Gene_Hits", "Hyper_Background_Gene_Hits", "Total_Genes_Annotated", "Hyper_Raw_PValue")
+    } else {
+      colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
+                        "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
+                        "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
+                        "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+    }
     job@enrichment_tables[[onto]] = res
     return(res)
 }
