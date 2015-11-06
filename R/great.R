@@ -182,7 +182,7 @@ submitGreatJob = function(gr, bg = NULL,
                     "fgChoice"              = "data",
                     "fgData"                = qq("@{bed[[1]]}\t@{bed[[2]]}\t@{bed[[3]]}\t@{bed[[1]]}:@{bed[[2]]}-@{bed[[3]]}\n"),
                     "bgChoice"              = bgChoice,
-                    "bgData"                = ifelse(bgChoice == "wholeGenome", "", qq("@{bed_bg[[1]]}\t@{bed_bg[[2]]}\t@{bed_bg[[3]]}\n")),
+                    "bgData"                = ifelse(bgChoice == "wholeGenome", "", qq("@{bed_bg[[1]]}\t@{bed_bg[[2]]}\t@{bed_bg[[3]]}\t@{bed_bg[[1]]}:@{bed_bg[[2]]}-@{bed_bg[[3]]}\n")),
                     "adv_upstream"          = adv_upstream,
                     "adv_downstream"        = adv_downstream,
                     "adv_span"              = adv_span,
@@ -206,6 +206,7 @@ submitGreatJob = function(gr, bg = NULL,
 
     rGREAT_env$LAST_REQUEST_TIME = Sys.time()
 
+    # parsing error
     if(any(grepl("encountered a user error", response))) {
         msg = gsub("^.*<blockquote>(.*?)<\\/blockquote>.*$", "\\1", response)
         msg = gsub("<.*?>", "", msg)
@@ -213,6 +214,16 @@ submitGreatJob = function(gr, bg = NULL,
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
         stop(paste0("GREAT encountered a user error:\n", msg))
+    }
+
+    # parsing warning
+    if(any(grepl("<strong>Warning:<\\/strong>", response))) {
+        msg = gsub("^.*<strong>Warning:<\\/strong>(.*?)<\\/p>.*$", "\\1", response)
+        msg = gsub("<.*?>", "", msg)
+        msg = gsub(" +", " ", msg)
+        msg = strwrap(msg)
+        msg = paste(msg, collapse = "\n")
+        warning(paste0("GREAT gives a warning:\n", msg))
     }
     
     jobid = gsub("^.*var _sessionName = \"(.*?)\";.*$", "\\1",  response)
@@ -569,11 +580,17 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
         }
     }
     res = as.data.frame(lt, stringsAsFactors = FALSE)
-    
-    colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
-                      "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
-                      "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
-                      "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+
+    if (param(job, "bgChoice") == "data") {
+      colnames(res) = c("ID", "name", "Hyper_Total_Regions", "Hyper_Expected", "Hyper_Foreground_Region_Hits",
+                        "Hyper_Fold_Enrichment", "Hyper_Region_Set_Coverage", "Hyper_Term_Region_Coverage",
+                        "Hyper_Foreground_Gene_Hits", "Hyper_Background_Gene_Hits", "Total_Genes_Annotated", "Hyper_Raw_PValue")
+    } else {
+      colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
+                        "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
+                        "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
+                        "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+    }
     job@enrichment_tables[[onto]] = res
     return(res)
 }
@@ -719,10 +736,15 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
-            url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+            if (param(job, "bgChoice") != "data") {
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+            } else {
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=user-provided%20data&table=region")
+            }
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
             df_term = parseRegionGeneAssociationFile(f_term)
+            df_term$gene[df_term$gene == ""] = NA
             job@association_tables[[qq("@{ontology}-@{termID}")]] = df_term
             file.remove(f_term)
         }
@@ -738,10 +760,11 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         download(url, file = f_all, request_interval = request_interval, max_tries = max_tries)
         check_asso_file(f_all)
         df_all = parseRegionGeneAssociationFile(f_all)
+        df_all$gene[df_all$gene == ""] = NA
         job@association_tables[["all"]] = df_all
         file.remove(f_all)
     }
-    
+
     # some values of gene is NA
     if(using_term) {
         df_term_NA = df_term[is.na(df_term$gene), , drop = FALSE]
@@ -759,14 +782,14 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             vt[is.na(vt)] = 0
             v = c(vt[1:10], sum(vt[10:length(vt)]))
             names(v) = c(as.character(1:10), ">10")
-            p = v/(nrow(df_term) + nrow(df_term_NA))
+            p = v/sum(v)
             pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\n@{ontology}\n@{termID}"))
             text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         } else {
             tb = table(table(paste(df_all$chr, df_all$start, df_all$end, sep = ",")))
             v = c(nrow(df_all_NA), tb["1"], tb["2"], sum(tb[as.numeric(names(tb)) > 2]))
             names(v) = c("0", "1", "2", "> 3")
-            p = v/(nrow(df_all) + nrow(df_all_NA))
+            p = v/sum(v)
             pos = barplot(p, col = c("red", "grey", "grey", "grey"), xlab = "Number of associated genes per region", ylab = "Genomic regions", ylim = c(0, max(p)*1.5), main = "Number of associated genes per region")
             text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), col = c("red", "black", "black", "black"), cex = 0.8)
             legend("topright", pch = 15, col = c("grey", "red"), legend = c("Genomic regions associated with one or more genes", "Genomic regions not associated with any genes"), cex = 0.8)
@@ -782,7 +805,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
               "5 to 50"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
               "50 to 500"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
               "> 500"       = sum(df_all$distTSS > 500000)))
-        p = v/(nrow(df_all) + nrow(df_all_NA))
+        p = v/sum(v)
         if(using_term) {
             v = cbind( 
             c("<-500"       = sum(df_term$distTSS <= -500000),
@@ -793,7 +816,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
               "5 to 50"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
               "50 to 500"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
               "> 500"       = sum(df_term$distTSS > 500000)), v)
-            p = v/c(rep(nrow(df_term) + nrow(df_term_NA), nrow(v)), rep(nrow(df_all) + nrow(df_all_NA), nrow(v)))
+            p = v/sum(v)
         }
         
         rownames(p) = NULL
@@ -824,14 +847,14 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
               "5 to 50"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
               "50 to 500"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
               "> 500"       = sum(abs(df_all$distTSS) > 500000)))
-        p = v/(nrow(df_all) + nrow(df_all_NA))
+        p = v/sum(v)
         if(using_term) {
             v = cbind( 
             c("0 to 5"      = sum(abs(df_term$distTSS) > 0       & abs(df_term$distTSS) <= 5000),
               "5 to 50"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
               "50 to 500"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
               "> 500"       = sum(abs(df_term$distTSS) > 500000)), v)
-            p = v/c(rep(nrow(df_term) + nrow(df_term_NA), nrow(v)), rep(nrow(df_all) + nrow(df_all_NA), nrow(v)))
+            p = v/sum(v)
         }
         
         rownames(p) = NULL

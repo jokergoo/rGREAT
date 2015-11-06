@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.3.1
+
+* fixed a bug when gene symbol annotated by GREAT is ''
+* print warnings when GREAT gives warnings
+
+--------------------------------------------------------
+
 CHANGES in VERSION 1.1.6
 
 * versions of GREAT can be selected
