@@ -162,3 +162,10 @@ res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
     termID = "GO:0004984")
 res
 ```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
