@@ -182,7 +182,7 @@ submitGreatJob = function(gr, bg = NULL,
                     "fgChoice"              = "data",
                     "fgData"                = qq("@{bed[[1]]}\t@{bed[[2]]}\t@{bed[[3]]}\t@{bed[[1]]}:@{bed[[2]]}-@{bed[[3]]}\n"),
                     "bgChoice"              = bgChoice,
-                    "bgData"                = ifelse(bgChoice == "wholeGenome", "", qq("@{bed_bg[[1]]}\t@{bed_bg[[2]]}\t@{bed_bg[[3]]}\n")),
+                    "bgData"                = ifelse(bgChoice == "wholeGenome", "", qq("@{bed_bg[[1]]}\t@{bed_bg[[2]]}\t@{bed_bg[[3]]}\t@{bed_bg[[1]]}:@{bed_bg[[2]]}-@{bed_bg[[3]]}\n")),
                     "adv_upstream"          = adv_upstream,
                     "adv_downstream"        = adv_downstream,
                     "adv_span"              = adv_span,
@@ -580,11 +580,17 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
         }
     }
     res = as.data.frame(lt, stringsAsFactors = FALSE)
-    
-    colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
-                      "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
-                      "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
-                      "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+
+    if (param(job, "bgChoice") == "data") {
+      colnames(res) = c("ID", "name", "Hyper_Total_Regions", "Hyper_Expected", "Hyper_Foreground_Region_Hits",
+                        "Hyper_Fold_Enrichment", "Hyper_Region_Set_Coverage", "Hyper_Term_Region_Coverage",
+                        "Hyper_Foreground_Gene_Hits", "Hyper_Background_Gene_Hits", "Total_Genes_Annotated", "Hyper_Raw_PValue")
+    } else {
+      colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
+                        "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
+                        "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
+                        "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+    }
     job@enrichment_tables[[onto]] = res
     return(res)
 }
@@ -730,7 +736,11 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
-            url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+            if (param(job, "bgChoice") != "data") {
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+            } else {
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=user-provided%20data&table=region")
+            }
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
             df_term = parseRegionGeneAssociationFile(f_term)
