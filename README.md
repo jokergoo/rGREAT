@@ -1,9 +1,12 @@
 [![ Status](https://travis-ci.org/jokergoo/rGREAT.svg)](https://travis-ci.org/jokergoo/rGREAT)
 
 
-# Client for GREAT Analysis
+## Client for GREAT Analysis
 
-## Install
+This package makes [GREAT](http://great.stanford.edu) (Genomic Regions Enrichment of Annotations Tool) 
+analysis automatic by constructing a HTTP POST request according to user's input and automatically retrieving results from GREAT web server.
+
+### Install
 
 **rGREAT** is available on Bioconductor (http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
@@ -19,7 +22,7 @@ library(devtools)
 install_github("jokergoo/rGREAT")
 ```
 
-## Usage
+### Usage
 
 The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
 
@@ -149,3 +152,8 @@ res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
 ```
 
 ![2](https://cloud.githubusercontent.com/assets/449218/5553879/bd7fa216-8c33-11e4-8638-ee3d8348d5c0.png)
+
+
+### License
+
+GPL (>= 2)
