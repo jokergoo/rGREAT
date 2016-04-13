@@ -41,7 +41,7 @@ In following example, we use a data frame which is randomly generated.
 ```{r}
 set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc = 0)
-head[1:2, ]
+bed[1:2, ]
 ```
 
 Submit genomic regions by `submitGreatJob()`. Before submitting, genomic regions will be sorted and overlapping regions will be merged.
