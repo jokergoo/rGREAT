@@ -1,13 +1,7 @@
-library(GetoptLong)
-library(rjson)
-library(RCurl)
-library(GenomicRanges)
-library(GlobalOptions)
 
-source("class.R")
-source("global.R")
-source("great.R")
+if(0) {
 
+	
 GREAT.options(sleep.time = 60)
 
 set.seed(123)
@@ -51,3 +45,6 @@ availableOntologies(job)
 tb = getGreatTable(job)
 df = plotRegionGeneAssociationGraphs(job)
 df = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function", termID = "GO:0004984")
+
+
+}

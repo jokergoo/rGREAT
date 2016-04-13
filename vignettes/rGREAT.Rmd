@@ -23,7 +23,7 @@ options(width = 100)
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
-**GREAT** (Genomic Regions Enrichment of Annotations Tool, http://great.stanford.edu) is a popular 
+**GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a popular 
 web-based tool to associate biological functions to genomic regions. 
 The **rGREAT** package makes GREAT anlaysis automatic by first constructing a HTTP POST request 
 according to user's input and retrieving results from **GREAT** web server afterwards.
@@ -41,7 +41,7 @@ In following example, we use a data frame which is randomly generated.
 ```{r}
 set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc = 0)
-head(bed)
+bed[1:2, ]
 ```
 
 Submit genomic regions by `submitGreatJob()`. Before submitting, genomic regions will be sorted and overlapping regions will be merged.
@@ -106,7 +106,7 @@ to tables for single ontology. The structure of data frames are same as the tabl
 ```{r}
 tb = getEnrichmentTables(job)
 names(tb)
-head(tb[[1]])
+tb[[1]][1:2, ]
 ```
 
 Information stored in `job` will be updated after retrieving enrichment tables.
@@ -140,7 +140,7 @@ object which contains the gene-region associations.
 ```{r, fig.width = 12, fig.height = 4, fig.align = 'center'}
 par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job)
-res
+res[1:2, ]
 ```
 
 For those regions that are not associated with any genes under current settings, 
@@ -160,7 +160,7 @@ Here the term ID is from the first column of the data frame which is returned by
 par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
     termID = "GO:0004984")
-res
+res[1:2, ]
 ```
 
 ## Session info

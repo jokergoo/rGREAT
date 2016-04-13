@@ -38,7 +38,7 @@ GreatJob = setClass("GreatJob",
 # == param
 # -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end). Regions for test.
 # -bg A `GenomicRanges::GRanges` object or a data frame. Background regions if needed.
-# -species Species. Only four species ("hg19", "hg18", "mm9", "danRer7") are supported.
+# -species Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
 # -includeCuratedRegDoms  Whether to include curated regulatory domains.
 # -bgChoice  How to define background. If it is set as ``data``, ``bg`` should be set as well.
 # -rule How to associate genomic regions to genes. See 'details' section.
@@ -444,7 +444,7 @@ setMethod(f = "getEnrichmentTables",
 # -category one or multiple categories. All available categories can be get by `availableCategories`
 #
 # == details
-# The values of the supported ontologies sometime change. You should run the function to get the realtime
+# The values of the supported ontologies sometime change. You should run the function to get the real-time
 # values. The meaning of ontology returned is quite self-explained by the name.
 #
 # == value
@@ -482,7 +482,7 @@ setMethod(f = "availableOntologies",
 # -job a `GreatJob-class` instance
 #
 # == details
-# The values of the supported categories sometime change. You should run the function to get the realtime
+# The values of the supported categories sometime change. You should run the function to get the real-time
 # values. The meaning of categories returned is quite self-explained by the name.
 #
 # == value
