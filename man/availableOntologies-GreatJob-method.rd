@@ -17,7 +17,7 @@ All available ontology names
 
 }
 \details{
-The values of the supported ontologies sometime change. You should run the function to get the realtime
+The values of the supported ontologies sometime change. You should run the function to get the real-time
 values. The meaning of ontology returned is quite self-explained by the name.
 }
 \value{
@@ -27,7 +27,7 @@ The returned values is a vector of ontologies.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-job = readRDS(paste0(system.file("extdata", package = "rGREAT"), "/job.rds"))
+job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 availableOntologies(job)
 availableOntologies(job, category = "Pathway Data")
 

@@ -5,6 +5,7 @@ exportMethods(getEnrichmentTables)
 exportClasses(GreatJob)
 export(submitGreatJob)
 
+
 importFrom("RCurl", postForm)
 importFrom("GetoptLong", qq)
 importFrom("GetoptLong", qqcat)
@@ -17,4 +18,5 @@ importFrom("utils", download.file)
 importFrom("utils", read.table)
 importFrom("utils", txtProgressBar)
 importFrom("utils", setTxtProgressBar)
+
 
