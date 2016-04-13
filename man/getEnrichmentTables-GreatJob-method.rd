@@ -14,8 +14,8 @@ Get enrichment tables from GREAT web server
 \arguments{
 
   \item{job}{a \code{\link{GreatJob-class}} instance}
-  \item{ontology}{ontology names. Valid values are in \code{\link{availableOntologies}}. \code{ontology} is prior to \code{category} argument.}
-  \item{category}{Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in \code{\link{availableCategories}}}
+  \item{ontology}{ontology names. Valid values are in \code{\link{availableOntologies}}. \code{ontology} is prior to  \code{category} argument.}
+  \item{category}{Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in  \code{\link{availableCategories}}}
   \item{request_interval}{time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{maximum tries}
 
@@ -41,7 +41,7 @@ the tables available on GREAT website.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-job = readRDS(paste0(system.file("extdata", package = "rGREAT"), "/job.rds"))
+job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 tb = getEnrichmentTables(job)
 names(tb)
 head(tb[[1]])

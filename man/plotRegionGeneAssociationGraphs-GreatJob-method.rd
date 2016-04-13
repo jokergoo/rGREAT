@@ -53,7 +53,7 @@ columns will be \code{NA}.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-job = readRDS(paste0(system.file("extdata", package = "rGREAT"), "/job.rds"))
+job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 
 op = par("mfrow")
 par(mfrow = c(1, 3))
