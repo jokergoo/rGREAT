@@ -136,7 +136,11 @@ submitGreatJob = function(gr, bg = NULL,
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
         }
-        bg = reduce(sort(bg))
+        
+        # check whether all grs are subsets of bg
+        mtch = as.matrix(findOverlaps(gr, bg))
+        gr = reduce(gr[unique(mtch[, 1])])
+        bg = reduce(bg[unique(mtch[, 2])])
     }
 
     # check seqnames should have 'chr' prefix
