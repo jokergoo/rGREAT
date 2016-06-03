@@ -136,6 +136,15 @@ submitGreatJob = function(gr, bg = NULL,
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
         }
+        
+        # check whether all grs are subsets of bg
+        ov = findOverlaps(gr, bg)
+        if(length(ov) == 0) {
+            stop("No overlapping between `gr` and `bg`.")
+        }
+        mtch = as.matrix(ov)
+        
+        gr = reduce(sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]])))
         bg = reduce(sort(bg))
     }
 
