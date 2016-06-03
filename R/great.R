@@ -138,9 +138,14 @@ submitGreatJob = function(gr, bg = NULL,
         }
         
         # check whether all grs are subsets of bg
-        mtch = as.matrix(findOverlaps(gr, bg))
-        gr = reduce(gr[unique(mtch[, 1])])
-        bg = reduce(bg[unique(mtch[, 2])])
+        ov = findOverlaps(gr, bg)
+        if(length(ov) == 0) {
+            stop("No overlapping between `gr` and `bg`.")
+        }
+        mtch = as.matrix(ov)
+        
+        gr = reduce(sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]])))
+        bg = reduce(sort(bg))
     }
 
     # check seqnames should have 'chr' prefix
