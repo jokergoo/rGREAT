@@ -3,7 +3,6 @@ exportMethods(availableOntologies)
 exportMethods(plotRegionGeneAssociationGraphs)
 exportMethods(getEnrichmentTables)
 exportClasses(GreatJob)
-export(GreatJob)
 export(submitGreatJob)
 
 
@@ -20,6 +19,4 @@ importFrom("utils", download.file)
 importFrom("utils", read.table)
 importFrom("utils", txtProgressBar)
 importFrom("utils", setTxtProgressBar)
-
-
-
+importFrom("graphics", "arrows", "axis", "barplot", "legend", "lines", "par", "text")
