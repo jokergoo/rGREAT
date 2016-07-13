@@ -55,6 +55,37 @@ Explanation of \code{rule} and settings with names started with 'adv_' (advanced
 }
 \value{
 A \code{\link{GreatJob-class}} class object which can be used to get results from GREAT server.
+
+When \code{bg} is set, some pre-processing is applied before submitting to GREAT server for the reason
+that GREAT needs \code{gr} should be exactly subsets of \code{bg}, which means for any region in \code{gr}, there
+must be a region in \code{bg} which is exactly the same. Taking following example:
+
+for \code{gr}:
+
+  \preformatted{
+    chr1 200 300
+    chr1 250 400  }
+
+for \code{bg}:
+
+  \preformatted{
+    chr1 100 250
+    chr1 300 500
+    chr1 400 600  }
+
+They will be transformed as: for \code{gr}:
+
+  \preformatted{
+    chr1 200 250
+    chr1 300 400  }
+
+for \code{bg}:
+
+  \preformatted{
+    chr1 100 199
+    chr1 200 250
+    chr1 300 400
+    chr1 401 600  }
 }
 \seealso{
 \code{\link{GreatJob-class}}

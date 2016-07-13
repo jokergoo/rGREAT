@@ -77,6 +77,33 @@ GreatJob = setClass("GreatJob",
 # == value
 # A `GreatJob-class` class object which can be used to get results from GREAT server.
 #
+# When ``bg`` is set, some pre-processing is applied before submitting to GREAT server for the reason
+# that GREAT needs ``gr`` should be exactly subsets of ``bg``, which means for any region in ``gr``, there
+# must be a region in ``bg`` which is exactly the same. Taking following example:
+#
+# for ``gr``:
+#
+#     chr1 200 300
+#     chr1 250 400
+#
+# for ``bg``:
+#
+#     chr1 100 250
+#     chr1 300 500
+#     chr1 400 600
+#
+# They will be transformed as: for ``gr``:
+#
+#     chr1 200 250
+#     chr1 300 400
+#
+# for ``bg``:
+#
+#     chr1 100 199
+#     chr1 200 250
+#     chr1 300 400
+#     chr1 401 600
+#
 # == seealso
 # `GreatJob-class`
 #
@@ -148,8 +175,10 @@ submitGreatJob = function(gr, bg = NULL,
             warn("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
         }
         
-        gr = reduce(sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]])))
-        bg = reduce(sort(bg))
+        # gr should be exactly subset of bg
+        gr = sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]]))
+
+        bg = sort(c(gr, setdiff(bg, gr)))
     }
 
     # check seqnames should have 'chr' prefix
