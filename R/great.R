@@ -143,6 +143,10 @@ submitGreatJob = function(gr, bg = NULL,
             stop("No overlapping between `gr` and `bg`.")
         }
         mtch = as.matrix(ov)
+
+        if(length(setdiff(gr, bg)) != 0) {
+            warn("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
+        }
         
         gr = reduce(sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]])))
         bg = reduce(sort(bg))
