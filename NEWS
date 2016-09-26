@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.5.3
+
+* if background is provided, input regions are automaticially adjusted
+  to make sure all input regions are subset of backgrounds.
+
+------------------------------------------------------
+
 CHANGES in VERSION 1.3.3
 
 * documentations were improved.
