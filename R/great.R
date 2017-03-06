@@ -146,6 +146,7 @@ submitGreatJob = function(gr, bg = NULL,
                      ranges = IRanges(start = gr[[2]],
                                        end = gr[[3]]))
     }
+    mcols(gr) = NULL
     gr = reduce(sort(gr))
 
     if(!bgChoice %in% c("wholeGenome", "data")) {
@@ -163,7 +164,8 @@ submitGreatJob = function(gr, bg = NULL,
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
         }
-        
+        mcols(bg) = NULL
+
         # check whether all grs are subsets of bg
         ov = findOverlaps(gr, bg)
         if(length(ov) == 0) {
@@ -177,6 +179,7 @@ submitGreatJob = function(gr, bg = NULL,
         
         # gr should be exactly subset of bg
         gr = sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]]))
+        mcols(gr) = NULL
 
         bg = sort(c(gr, setdiff(bg, gr)))
     }
