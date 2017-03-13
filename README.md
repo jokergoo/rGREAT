@@ -1,4 +1,8 @@
-[![ Status](https://travis-ci.org/jokergoo/rGREAT.svg)](https://travis-ci.org/jokergoo/rGREAT) [![codecov](https://img.shields.io/codecov/c/github/jokergoo/rGREAT.svg)](https://codecov.io/github/jokergoo/rGREAT) [![bioc](http://www.bioconductor.org/shields/downloads/rGREAT.svg)](http://bioconductor.org/packages/stats/bioc/rGREAT.html) ![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)
+[![ Status](https://travis-ci.org/jokergoo/rGREAT.svg)](https://travis-ci.org/jokergoo/rGREAT)
+[![codecov](https://img.shields.io/codecov/c/github/jokergoo/rGREAT.svg)](https://codecov.io/github/jokergoo/rGREAT)
+[![bioc](http://www.bioconductor.org/shields/downloads/rGREAT.svg)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
+[![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=rGREAT)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
+[![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)](http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
 ## Client for GREAT Analysis
 
