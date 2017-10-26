@@ -51,12 +51,13 @@ GreatJob = setClass("GreatJob",
 # -max_tries Maximum times trying to connect to GREAT web server.
 # -version version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers
 #          can also be used, such as using "3" or "3.0" is same as "3.0.0".
+# -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
 #
 # == details
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
 #
-# Following text is copied from GREAT web site ( http://bejerano-test.stanford.edu/great/public/html/index.php )
+# Following text is copied from GREAT web site ( http://great.stanford.edu/public/html/ )
 #
 # Explanation of ``rule`` and settings with names started with 'adv_' (advanced settings):
 #
@@ -122,7 +123,8 @@ submitGreatJob = function(gr, bg = NULL,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
     max_tries = 10,
-    version = "default"
+    version = "default",
+    base_url = "http://great.stanford.edu/public/cgi-bin/"
     ) {
         
     version = version[1]
@@ -174,7 +176,7 @@ submitGreatJob = function(gr, bg = NULL,
         mtch = as.matrix(ov)
 
         if(length(setdiff(gr, bg)) != 0) {
-            warn("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
+            warning("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
         }
         
         # gr should be exactly subset of bg
@@ -210,7 +212,11 @@ submitGreatJob = function(gr, bg = NULL,
     }
 
     #message("sending request to GREAT web server...")
-    BASE_URL = BASE_URL_LIST[version]
+    if(missing(base_url)) {
+        BASE_URL = BASE_URL_LIST[version]
+    } else {
+        BASE_URL = base_url
+    }
 
     i_try = 0
     while(1) {

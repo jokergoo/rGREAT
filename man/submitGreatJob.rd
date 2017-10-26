@@ -19,7 +19,8 @@ submitGreatJob(gr, bg = NULL,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
     max_tries = 10,
-    version = "default")
+    version = "default",
+    base_url = "http://great.stanford.edu/public/cgi-bin/")
 }
 \arguments{
 
@@ -37,13 +38,14 @@ submitGreatJob(gr, bg = NULL,
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
   \item{version}{version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "3" or "3.0" is same as "3.0.0".}
+  \item{base_url}{the url of \code{cgi-bin} path, only used when explicitly specified.}
 
 }
 \details{
 Note it is not the standard GREAT API. This function directly send data to GREAT web server
 by HTTP POST.
 
-Following text is copied from GREAT web site ( \url{http://bejerano-test.stanford.edu/great/public/html/index.php} )
+Following text is copied from GREAT web site ( \url{http://great.stanford.edu/public/html/} )
 
 Explanation of \code{rule} and settings with names started with 'adv_' (advanced settings):
 

@@ -1,6 +1,7 @@
 \name{GreatJob-class}
 \docType{class}
 \alias{GreatJob-class}
+\alias{GreatJob}
 \title{
 Class to store and retrieve GREAT results
 }

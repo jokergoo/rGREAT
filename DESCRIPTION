@@ -1,8 +1,8 @@
 Package: rGREAT
 Type: Package
 Title: Client for GREAT Analysis
-Version: 1.9.0
-Date: 2017-2-8
+Version: 1.9.1
+Date: 2017-10-26
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), GenomicRanges, IRanges, methods
@@ -15,8 +15,8 @@ Description: This package makes GREAT (Genomic Regions Enrichment of
     Annotations Tool) analysis automatic by constructing a HTTP POST 
     request according to user's input and automatically retrieving results 
     from GREAT web server.
-URL: https://github.com/jokergoo/rGREAT
+URL: https://github.com/jokergoo/rGREAT, http://great.stanford.edu/public/html/
 License: GPL (>= 2)
-Packaged: 2017-2-8 00:00:00 UTC; Administrator
+Packaged: 2017-10-26 00:00:00 UTC; Administrator
 Repository: Bioconductor
-Date/Publication: 2017-2-8 00:00:00
+Date/Publication: 2017-10-26 00:00:00
