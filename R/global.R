@@ -1,5 +1,5 @@
 
-BASE_URL_LIST = c("default" = "http://great.stanford.edu/public/cgi-bin/",
+BASE_URL_LIST = c("default" = "http://great.stanford.edu/public/cgi-bin",
 	         "3.0.0" = "http://great.stanford.edu/public-3.0.0/cgi-bin",
 	         "2.0.2" = "http://great.stanford.edu/public-2.0.2/cgi-bin")
 BASE_URL_LIST["3.0"] = BASE_URL_LIST["3"] = BASE_URL_LIST["3.0.0"]

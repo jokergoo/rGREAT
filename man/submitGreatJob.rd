@@ -20,7 +20,7 @@ submitGreatJob(gr, bg = NULL,
     request_interval = 300,
     max_tries = 10,
     version = "default",
-    base_url = "http://great.stanford.edu/public/cgi-bin/")
+    base_url = "http://great.stanford.edu/public/cgi-bin")
 }
 \arguments{
 

@@ -97,8 +97,7 @@ the tables which contain enrichment statistics for the analysis. By default it w
 results from three GO Ontologies and all pathway ontologies. All tables contains statistics 
 for all terms no matter they are significant or not. Users can then make filtering yb self-defined cutoff.
 
-One thing that users should note is that there is no column for adjusted p-values. But it is can be
-easily done by using `p.adjust()`.
+There is a column for adjusted p-values by "BH" method. Other p-value adjustment methods can be applied by `p.adjust()`.
 
 The returned value of `getEnrichmentTables()` is a list of data frames in which each one corresponds
 to tables for single ontology. The structure of data frames are same as the tables on **GREAT** website.

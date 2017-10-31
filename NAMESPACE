@@ -19,4 +19,4 @@ importFrom("utils", download.file)
 importFrom("utils", read.table)
 importFrom("utils", setTxtProgressBar)
 importFrom("utils", txtProgressBar)
-
+importFrom("stats", p.adjust)

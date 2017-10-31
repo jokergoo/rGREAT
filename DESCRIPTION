@@ -6,7 +6,7 @@ Date: 2017-10-26
 Author: Zuguang Gu
 Maintainer: Zuguang Gu <z.gu@dkfz.de>
 Depends: R (>= 3.1.2), GenomicRanges, IRanges, methods
-Imports: rjson, GetoptLong (>= 0.0.9), RCurl, utils
+Imports: rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats
 Suggests: testthat (>= 0.3), knitr, circlize
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,
