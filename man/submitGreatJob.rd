@@ -10,7 +10,6 @@ Send requests to GREAT web server
 submitGreatJob(gr, bg = NULL,
     species               = "hg19",
     includeCuratedRegDoms = TRUE,
-    bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
     adv_downstream        = 1.0,
@@ -25,10 +24,9 @@ submitGreatJob(gr, bg = NULL,
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
-  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed.}
+  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
   \item{species}{Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains.}
-  \item{bgChoice}{How to define background. If it is set as \code{data}, \code{bg} should be set as well.}
   \item{rule}{How to associate genomic regions to genes. See 'details' section.}
   \item{adv_upstream}{Unit: kb, only used when rule is \code{basalPlusExt}}
   \item{adv_downstream}{Unit: kb, only used when rule is \code{basalPlusExt}}
