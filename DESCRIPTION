@@ -16,7 +16,7 @@ Description: This package makes GREAT (Genomic Regions Enrichment of
     request according to user's input and automatically retrieving results 
     from GREAT web server.
 URL: https://github.com/jokergoo/rGREAT, http://great.stanford.edu/public/html/
-License: GPL (>= 2)
+License: MIT
 Packaged: 2018-2-20 00:00:00 UTC; Administrator
 Repository: Bioconductor
 Date/Publication: 2018-2-20 00:00:00
