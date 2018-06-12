@@ -887,6 +887,10 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     df_all_NA = df_all[is.na(df_all$gene), , drop = FALSE]
     df_all = df_all[!is.na(df_all$gene), , drop = FALSE]
 
+    op = par("mfrow")
+    on.exit(par(mfrow = op))
+    par(mforw = c(length(intersect(1:3, type)), 1))
+
     # make plots
     if(1 %in% type) {
         if(using_term) {
