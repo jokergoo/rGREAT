@@ -14,8 +14,9 @@ analysis automatic by constructing a HTTP POST request according to user's input
 **rGREAT** is available on Bioconductor (http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
 ```r
-source("http://bioconductor.org/biocLite.R")
-biocLite("rGREAT")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("rGREAT")
 ```
 
 If you want the latest version, install it directly from GitHub:
