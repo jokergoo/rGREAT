@@ -37,10 +37,9 @@ GreatJob = setClass("GreatJob",
 #
 # == param
 # -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end). Regions for test.
-# -bg A `GenomicRanges::GRanges` object or a data frame. Background regions if needed.
+# -bg A `GenomicRanges::GRanges` object or a data frame. Background regions if needed. Note ``gr`` should be exactly subset of ``bg`` for all columns in ``gr``. Check http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F for more explanation.
 # -species Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
 # -includeCuratedRegDoms  Whether to include curated regulatory domains.
-# -bgChoice  How to define background. If it is set as ``data``, ``bg`` should be set as well.
 # -rule How to associate genomic regions to genes. See 'details' section.
 # -adv_upstream Unit: kb, only used when rule is ``basalPlusExt``
 # -adv_downstream Unit: kb, only used when rule is ``basalPlusExt``
@@ -51,12 +50,13 @@ GreatJob = setClass("GreatJob",
 # -max_tries Maximum times trying to connect to GREAT web server.
 # -version version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers
 #          can also be used, such as using "3" or "3.0" is same as "3.0.0".
+# -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
 #
 # == details
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
 #
-# Following text is copied from GREAT web site ( http://bejerano-test.stanford.edu/great/public/html/index.php )
+# Following text is copied from GREAT web site ( http://great.stanford.edu/public/html/ )
 #
 # Explanation of ``rule`` and settings with names started with 'adv_' (advanced settings):
 #
@@ -113,7 +113,6 @@ GreatJob = setClass("GreatJob",
 submitGreatJob = function(gr, bg = NULL,
     species               = "hg19",
     includeCuratedRegDoms = TRUE,
-    bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
     adv_downstream        = 1.0,
@@ -122,7 +121,8 @@ submitGreatJob = function(gr, bg = NULL,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
     max_tries = 10,
-    version = "default"
+    version = "default",
+    base_url = "http://great.stanford.edu/public/cgi-bin"
     ) {
         
     version = version[1]
@@ -145,43 +145,46 @@ submitGreatJob = function(gr, bg = NULL,
         gr = GRanges(seqnames = gr[[1]],
                      ranges = IRanges(start = gr[[2]],
                                        end = gr[[3]]))
+    } else if(inherits(gr, "character")) {
+        gr = read.table(gr, stringsAsFactors = FALSE)
+        gr = GRanges(seqnames = gr[[1]],
+                     ranges = IRanges(start = gr[[2]],
+                                       end = gr[[3]]))
     }
     mcols(gr) = NULL
-    gr = reduce(sort(gr))
+    # gr = reduce(sort(gr))
 
-    if(!bgChoice %in% c("wholeGenome", "data")) {
-        stop("`bgChoice` should be one of 'wholeGenome' and 'data'.")
-    }
-    
-    if(bgChoice == "data") {
-        if(is.null(bg)) {
-            stop("Since you set `bgChoice` to `data`, you need to provide values for `bg`.\n")
-        }
-    }
+    bgChoice = ifelse(is.null(bg), "wholeGenome", "file")
+
     if(!is.null(bg)) {
         if(inherits(bg, "data.frame")) {
+            bg = GRanges(seqnames = bg[[1]],
+                         ranges = IRanges(start = bg[[2]],
+                                           end = bg[[3]]))
+        } else if(inherits(bg, "character")) {
+            bg = read.table(bg, stringsAsFactors = FALSE)
             bg = GRanges(seqnames = bg[[1]],
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
         }
         mcols(bg) = NULL
 
-        # check whether all grs are subsets of bg
-        ov = findOverlaps(gr, bg)
-        if(length(ov) == 0) {
-            stop("No overlapping between `gr` and `bg`.")
-        }
-        mtch = as.matrix(ov)
+        # # check whether all grs are subsets of bg
+        # ov = findOverlaps(gr, bg)
+        # if(length(ov) == 0) {
+        #     stop("No overlapping between `gr` and `bg`.")
+        # }
+        # mtch = as.matrix(ov)
 
-        if(length(setdiff(gr, bg)) != 0) {
-            warn("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
-        }
+        # if(length(setdiff(gr, bg)) != 0) {
+        #     warning("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
+        # }
         
-        # gr should be exactly subset of bg
-        gr = sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]]))
-        mcols(gr) = NULL
+        # # gr should be exactly subset of bg
+        # gr = sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]]))
+        # mcols(gr) = NULL
 
-        bg = sort(c(gr, setdiff(bg, gr)))
+        # bg = sort(c(gr, setdiff(bg, gr)))
     }
 
     # check seqnames should have 'chr' prefix
@@ -198,10 +201,9 @@ submitGreatJob = function(gr, bg = NULL,
     bed = as.data.frame(gr)
     bed_bg = NULL
     if(!is.null(bg)) {
-        bed_bg = as.data.frame(bg)
+        bed_bg = as.data.frame(bg)[, 1:3]
     }
 
-    
     # check request frequency
     time_interval = as.numeric(Sys.time()) - as.numeric(rGREAT_env$LAST_REQUEST_TIME)
     if(time_interval < request_interval) {
@@ -210,12 +212,31 @@ submitGreatJob = function(gr, bg = NULL,
     }
 
     #message("sending request to GREAT web server...")
-    BASE_URL = BASE_URL_LIST[version]
+    if(missing(base_url)) {
+        BASE_URL = BASE_URL_LIST[version]
+    } else {
+        BASE_URL = base_url
+    }
+
+    # save file into temporary files
+    bed = cbind(bed[, 1:3], name = paste(bed[[1]], ":", bed[[2]], "-", bed[[3]], sep = ""))
+    f_bed = tempfile(fileext = ".gz")
+    con = gzcon(file(f_bed, "wb"))
+    write.table(bed, con, sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+    close(con)
+    if(!is.null(bed_bg)) {
+        bed_bg = cbind(bed_bg[, 1:3], name = paste(bed_bg[[1]], ":", bed_bg[[2]], "-", bed_bg[[3]], sep = ""))
+        f_bed_bg = tempfile(fileext = ".gz")
+        con = gzcon(file(f_bed_bg, "wb"))
+        write.table(bed_bg, con, sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+        close(con)
+    }
 
     i_try = 0
     while(1) {
         
-        error = try(response <- postForm(qq("@{BASE_URL}/greatWeb.php"),
+        if(bgChoice == "wholeGenome") {
+            error = try(response <- postForm(qq("@{BASE_URL}/greatWeb.php"),
                     "species"               = species,
                     "rule"                  = rule,
                     "span"                  = adv_span,
@@ -224,16 +245,37 @@ submitGreatJob = function(gr, bg = NULL,
                     "twoDistance"           = adv_twoDistance,
                     "oneDistance"           = adv_oneDistance,
                     "includeCuratedRegDoms" = includeCuratedRegDoms,
-                    "fgChoice"              = "data",
-                    "fgData"                = qq("@{bed[[1]]}\t@{bed[[2]]}\t@{bed[[3]]}\t@{bed[[1]]}:@{bed[[2]]}-@{bed[[3]]}\n"),
+                    "fgChoice"              = "file",
+                    "fgFile"                = fileUpload(f_bed),
                     "bgChoice"              = bgChoice,
-                    "bgData"                = ifelse(bgChoice == "wholeGenome", "", qq("@{bed_bg[[1]]}\t@{bed_bg[[2]]}\t@{bed_bg[[3]]}\t@{bed_bg[[1]]}:@{bed_bg[[2]]}-@{bed_bg[[3]]}\n")),
                     "adv_upstream"          = adv_upstream,
                     "adv_downstream"        = adv_downstream,
                     "adv_span"              = adv_span,
                     "adv_twoDistance"       = adv_twoDistance,
                     "adv_oneDistance"       = adv_oneDistance
                     ))
+        } else {
+            error = try(response <- postForm(qq("@{BASE_URL}/greatWeb.php"),
+                    "species"               = species,
+                    "rule"                  = rule,
+                    "span"                  = adv_span,
+                    "upstream"              = adv_upstream,
+                    "downstream"            = adv_downstream,
+                    "twoDistance"           = adv_twoDistance,
+                    "oneDistance"           = adv_oneDistance,
+                    "includeCuratedRegDoms" = includeCuratedRegDoms,
+                    "fgChoice"              = "file",
+                    "fgFile"                = fileUpload(f_bed),
+                    "bgChoice"              = "file",
+                    "bgFile"                = fileUpload(f_bed_bg),
+                    "adv_upstream"          = adv_upstream,
+                    "adv_downstream"        = adv_downstream,
+                    "adv_span"              = adv_span,
+                    "adv_twoDistance"       = adv_twoDistance,
+                    "adv_oneDistance"       = adv_oneDistance
+                    ))
+        }
+        
         i_try = i_try + 1
         
         if(class(error) != "try-error") {
@@ -243,10 +285,15 @@ submitGreatJob = function(gr, bg = NULL,
             if(i_try > max_tries) {
                 stop(qq("max try: @{max_tries} reached. Stop with error.\n"))
             } else {
-                message(qq("failed with the request, try after @{ceiling(request_interval/60)} min (@{i_try}th try)"))
+                message(qq("failed with the request, try after @{ceiling(request_interval/60)} min (@{i_try}@{ifelse(i_try %% 10 == 1, 'st', ifelse(i_try %% 10 == 2, 'nd', 'th'))} try)"))
                 sleep(request_interval)
             }
         }
+    }
+
+    file.remove(f_bed)
+    if(!is.null(bg)) {
+        file.remove(f_bed_bg)
     }
 
     rGREAT_env$LAST_REQUEST_TIME = Sys.time()
@@ -262,7 +309,12 @@ submitGreatJob = function(gr, bg = NULL,
         msg = gsub(" +", " ", msg)
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
-        stop(paste0("GREAT encountered a user error:\n", msg))
+
+        if(grepl("The foreground set is not a subset of the background set", msg)) {
+            msg = paste0(msg, "\nVisit http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain%3F for more explanation.\n")
+        }
+
+        stop(paste0("GREAT encountered a user error (message from GREAT web server):\n", msg))
     }
 
     # parsing warning
@@ -270,8 +322,10 @@ submitGreatJob = function(gr, bg = NULL,
         msg = gsub("^.*<strong>Warning:<\\/strong>(.*?)<\\/p>.*$", "\\1", response)
         msg = gsub("<.*?>", "", msg)
         msg = gsub(" +", " ", msg)
+
         msg = strwrap(msg)
         msg = paste(msg, collapse = "\n")
+
         warning(paste0("GREAT gives a warning:\n", msg))
     }
     
@@ -299,7 +353,9 @@ submitGreatJob = function(gr, bg = NULL,
             "adv_span"              = adv_span,
             "adv_twoDistance"       = adv_twoDistance,
             "adv_oneDistance"       = adv_oneDistance,
+            "n_region"              = nrow(bed),
             "version"               = version)
+    job@parameters$n_bg = nrow(bed_bg)
     
     job@job_env$id = jobid
     job@job_env$submit_time = Sys.time()
@@ -366,7 +422,12 @@ setMethod(f = "show",
     cat("Version:", param(object, "version"), "\n")
     #cat("Session ID:", id(object), "\n")
     cat("Species:", param(object, "species"), "\n")
-    cat("Background:", param(object, "bgChoice"), "\n")
+    cat("Inputs:", param(object, "n_region"), "regions\n")
+    if(param(object, "bgChoice") == "wholeGenome") {
+        cat("Background:", param(object, "bgChoice"), "\n")
+    } else {
+        cat("Background: user-defined,", param(object, "n_bg"), "regions\n")
+    }
     if(param(object, "rule") == "basalPlusExt") {
         cat("Model:", "Basal plus extension", "\n")
         cat("  Proximal:", param(object, "adv_upstream"), "kb upstream,", 
@@ -597,6 +658,7 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
 
     
     f1 = qq("@{TEMP_DIR}/@{jobid}_@{onto}.js")
+    f1 = gsub(" ", "_", f1)
     
     if(!is.null(job@enrichment_tables[[onto]])) {
         res = job@enrichment_tables[[onto]]
@@ -630,15 +692,22 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
     }
     res = as.data.frame(lt, stringsAsFactors = FALSE)
 
-    if (param(job, "bgChoice") == "data") {
+    if (param(job, "bgChoice") == "file") {
       colnames(res) = c("ID", "name", "Hyper_Total_Regions", "Hyper_Expected", "Hyper_Foreground_Region_Hits",
                         "Hyper_Fold_Enrichment", "Hyper_Region_Set_Coverage", "Hyper_Term_Region_Coverage",
                         "Hyper_Foreground_Gene_Hits", "Hyper_Background_Gene_Hits", "Total_Genes_Annotated", "Hyper_Raw_PValue")
+      res$Hyper_Adjp_BH = p.adjust(res$Hyper_Raw_PValue, method = "BH")
     } else {
       colnames(res) = c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
                         "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Hyper_Total_Genes", "Hyper_Expected",
                         "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
                         "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue")
+      res$Binom_Adjp_BH = p.adjust(res$Binom_Raw_PValue, method = "BH")
+      res$Hyper_Adjp_BH = p.adjust(res$Hyper_Raw_PValue, method = "BH")
+      res = res[, c("ID", "name", "Binom_Genome_Fraction", "Binom_Expected", "Binom_Observed_Region_Hits", "Binom_Fold_Enrichment",
+                        "Binom_Region_Set_Coverage", "Binom_Raw_PValue", "Binom_Adjp_BH", "Hyper_Total_Genes", "Hyper_Expected",
+                        "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
+                        "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue", "Hyper_Adjp_BH")]
     }
     job@enrichment_tables[[onto]] = res
     return(res)
@@ -821,6 +890,10 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     }
     df_all_NA = df_all[is.na(df_all$gene), , drop = FALSE]
     df_all = df_all[!is.na(df_all$gene), , drop = FALSE]
+
+    op_mfrow = par("mfrow")
+    on.exit(par(mfrow = op_mfrow))
+    par(mfrow = c(length(intersect(1:3, type)), 1))
 
     # make plots
     if(1 %in% type) {

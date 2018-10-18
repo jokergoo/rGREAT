@@ -2,6 +2,26 @@ CHANGES in VERSION 1.13.3
 
 * parse error message from GREAT
 
+---------------------------------------------------
+
+CHANGES in VERSION 1.13.1
+
+* `plotRegionGeneAssociationGraphs()`: `par(mfrow)` is automatically set
+  according to the length of `type`.
+
+----------------------------------------------------
+
+CHANGES in VERSION 1.11.1
+
+* save regions in gzip file then submit to GREAT
+* will not change the content of the input regions
+
+----------------------------------------------------
+
+CHANGES in VERSION 1.9.1
+
+* change url according to changes on GREAT website
+
 -----------------------------------------------------
 
 CHANGES in VERSION 1.7.1

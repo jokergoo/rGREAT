@@ -10,7 +10,6 @@ Send requests to GREAT web server
 submitGreatJob(gr, bg = NULL,
     species               = "hg19",
     includeCuratedRegDoms = TRUE,
-    bgChoice              = ifelse(is.null(bg), "wholeGenome", "data"),
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
     adv_downstream        = 1.0,
@@ -19,15 +18,15 @@ submitGreatJob(gr, bg = NULL,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
     max_tries = 10,
-    version = "default")
+    version = "default",
+    base_url = "http://great.stanford.edu/public/cgi-bin")
 }
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
-  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed.}
+  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
   \item{species}{Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains.}
-  \item{bgChoice}{How to define background. If it is set as \code{data}, \code{bg} should be set as well.}
   \item{rule}{How to associate genomic regions to genes. See 'details' section.}
   \item{adv_upstream}{Unit: kb, only used when rule is \code{basalPlusExt}}
   \item{adv_downstream}{Unit: kb, only used when rule is \code{basalPlusExt}}
@@ -37,13 +36,14 @@ submitGreatJob(gr, bg = NULL,
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
   \item{version}{version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "3" or "3.0" is same as "3.0.0".}
+  \item{base_url}{the url of \code{cgi-bin} path, only used when explicitly specified.}
 
 }
 \details{
 Note it is not the standard GREAT API. This function directly send data to GREAT web server
 by HTTP POST.
 
-Following text is copied from GREAT web site ( \url{http://bejerano-test.stanford.edu/great/public/html/index.php} )
+Following text is copied from GREAT web site ( \url{http://great.stanford.edu/public/html/} )
 
 Explanation of \code{rule} and settings with names started with 'adv_' (advanced settings):
 
