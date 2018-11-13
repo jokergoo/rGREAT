@@ -889,7 +889,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
 
     op_mfrow = par("mfrow")
     on.exit(par(mfrow = op_mfrow))
-    par(mfrow = c(length(intersect(1:3, type)), 1))
+    par(mfrow = c(1, length(intersect(type, 1:3))))
 
     # make plots
     if(1 %in% type) {
