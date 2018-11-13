@@ -2,6 +2,12 @@ CHANGES in VERSION 1.15.1
 
 * `plotRegionGeneAssociationGraphs()`: fixe a bug of wrong value of `par(mfrow)`.
 
+-------------------------------------------------
+
+CHANGES in VERSION 1.13.3
+
+* parse error message from GREAT
+
 ---------------------------------------------------
 
 CHANGES in VERSION 1.13.1
@@ -16,6 +22,7 @@ CHANGES in VERSION 1.11.1
 * save regions in gzip file then submit to GREAT
 * will not change the content of the input regions
 
+----------------------------------------------------
 
 CHANGES in VERSION 1.9.1
 

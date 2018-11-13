@@ -300,7 +300,11 @@ submitGreatJob = function(gr, bg = NULL,
 
     # parsing error
     if(any(grepl("encountered a user error", response))) {
-        msg = gsub("^.*<blockquote>(.*?)<\\/blockquote>.*$", "\\1", response)
+        if(grepl("^.*<blockquote><b>Error details:<\\/b>(.*?)<\\/blockquote>.*$", response)) {
+            msg = gsub("^.*<blockquote><b>Error details:<\\/b>(.*?)<\\/blockquote>.*$", "\\1", response)
+        } else {
+            msg = gsub("^.*<blockquote>(.*?)<\\/blockquote>.*$", "\\1", response)
+        }
         msg = gsub("<.*?>", "", msg)
         msg = gsub(" +", " ", msg)
         msg = strwrap(msg)
