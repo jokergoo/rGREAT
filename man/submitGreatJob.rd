@@ -23,8 +23,8 @@ submitGreatJob(gr, bg = NULL,
 }
 \arguments{
 
-  \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
-  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
+  \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
+  \item{bg}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
   \item{species}{Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains.}
   \item{rule}{How to associate genomic regions to genes. See 'details' section.}

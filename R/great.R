@@ -31,6 +31,25 @@ GreatJob = setClass("GreatJob",
         association_tables = "environment")
 )
 
+# == title
+# Constructor method for GreatJob class
+#
+# == param
+# -... arguments.
+#
+# == details
+# There is no public constructor method for the `GreatJob-class`.
+#
+# == value
+# No value is returned.
+#
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+GreatJob = function(...) {
+    new("GreatJob", ...)
+}
+
 
 # == title
 # Send requests to GREAT web server

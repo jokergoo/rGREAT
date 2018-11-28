@@ -1,6 +1,7 @@
 CHANGES in VERSION 1.15.1
 
 * `plotRegionGeneAssociationGraphs()`: fixe a bug of wrong value of `par(mfrow)`.
+* fixed warnings of Rd files.
 
 -------------------------------------------------
 
