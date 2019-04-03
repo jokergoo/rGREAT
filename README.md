@@ -160,4 +160,4 @@ res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
 
 ### License
 
-GPL (>= 2)
+MIT @ Zuguang Gu
