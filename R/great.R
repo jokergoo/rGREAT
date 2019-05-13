@@ -243,6 +243,7 @@ submitGreatJob = function(gr, bg = NULL,
     con = gzcon(file(f_bed, "wb"))
     write.table(bed, con, sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
     close(con)
+    f_bed_bg = ""
     if(!is.null(bed_bg)) {
         bed_bg = cbind(bed_bg[, 1:3], name = paste(bed_bg[[1]], ":", bed_bg[[2]], "-", bed_bg[[3]], sep = ""))
         f_bed_bg = tempfile(fileext = ".gz")
@@ -373,7 +374,9 @@ submitGreatJob = function(gr, bg = NULL,
             "adv_twoDistance"       = adv_twoDistance,
             "adv_oneDistance"       = adv_oneDistance,
             "n_region"              = nrow(bed),
-            "version"               = version)
+            "version"               = version,
+            "f_bed"                 = f_bed,
+            "f_bed_bg"              = f_bed_bg)
     job@parameters$n_bg = nrow(bed_bg)
     
     job@job_env$id = jobid
@@ -784,6 +787,7 @@ parseRegionGeneAssociationFile = function(f1) {
 # -termID term id which corresponds to the selected ontology
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
+# -verbose whether show message
 #
 # == details
 # Generated figures are:  
@@ -816,7 +820,7 @@ parseRegionGeneAssociationFile = function(f1) {
 setMethod(f = "plotRegionGeneAssociationGraphs",
     signature = "GreatJob",
     definition = function(job, type = 1:3, ontology = NULL, 
-    termID = NULL, request_interval = 30, max_tries = 100) {
+    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE) {
 
     if(!file.exists(job@job_env$tempdir)) {
         td = tempdir()
@@ -862,7 +866,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     }
 
     ONTOLOGY_KEYS = job@job_env$ONTOLOGY_KEYS
-    
+
     if(using_term) {
 
         # prepare file names for local table
@@ -874,9 +878,9 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
             if (param(job, "bgChoice") != "data") {
-              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             } else {
-              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=user-provided%20data&table=region")
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             }
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
@@ -885,6 +889,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             job@association_tables[[qq("@{ontology}-@{termID}")]] = df_term
             file.remove(f_term)
         }
+        if(verbose) qqcat("The webpage for '@{ONTOLOGY_KEYS[ontology]}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
+
     }
     
     f_all = qq("@{TEMP_DIR}/@{jobid}-@{species}-all-region.txt")
@@ -893,7 +899,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     if(!is.null(job@association_tables[["all"]])) {
         df_all = job@association_tables[["all"]]
     } else {
-        url = qq("@{BASE_URL}/downloadAssociations.php?sessionName=@{jobid}&species=@{species}&foreName=user-provided%20data&backName=&table=region")
+        url = qq("@{BASE_URL}/downloadAssociations.php?sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
         download(url, file = f_all, request_interval = request_interval, max_tries = max_tries)
         check_asso_file(f_all)
         df_all = parseRegionGeneAssociationFile(f_all)
@@ -1052,7 +1058,7 @@ sort_chr = function(x) {
 check_asso_file = function(file) {
 
     # for downloading association tables
-    if(file.info(file)$size < 10000) {
+    if(file.info(file)$size < 1000) {
 
         # if session expires, there is a error page
         file_text = readLines(file)

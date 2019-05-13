@@ -1,3 +1,9 @@
+CHANGES in VERSION 1.17.1
+
+* assign to foreName and backName when querying GREAT
+
+------------------------------------------------
+
 CHANGES in VERSION 1.15.1
 
 * `plotRegionGeneAssociationGraphs()`: fixe a bug of wrong value of `par(mfrow)`.

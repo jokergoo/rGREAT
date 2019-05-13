@@ -9,7 +9,7 @@ Plot region-gene association figures
 }
 \usage{
 \S4method{plotRegionGeneAssociationGraphs}{GreatJob}(job, type = 1:3, ontology = NULL,
-    termID = NULL, request_interval = 30, max_tries = 100)
+    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE)
 }
 \arguments{
 
@@ -19,6 +19,7 @@ Plot region-gene association figures
   \item{termID}{term id which corresponds to the selected ontology}
   \item{request_interval}{time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{maximum tries}
+  \item{verbose}{whether show message}
 
 }
 \details{
@@ -55,19 +56,13 @@ Zuguang gu <z.gu@dkfz.de>
 \examples{
 job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 
-op = par("mfrow")
-par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job)
 res
 
-par(mfrow = c(1, 1))
 plotRegionGeneAssociationGraphs(job, type = 1)
 
-par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
     termID = "GO:0004984")
 res
-
-par(mfrow = op)
 
 }
