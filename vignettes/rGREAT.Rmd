@@ -1,16 +1,16 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Analyze with GREAT}
--->
-
-Analyze with GREAT
-==================
-
-**Author**: Zuguang Gu ( z.gu@dkfz.de )
-
-**Date**: `r Sys.Date()`
-
---------------------------------------------------------
+---
+title: "Analyze with GREAT"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: "`r Sys.Date()`"
+output: 
+    rmarkdown::html_vignette:
+        width: 8
+        fig_width: 5
+vignette: >
+  %\VignetteIndexEntry{Analyze with GREAT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r, echo = FALSE, message = FALSE}
 library(knitr)
@@ -136,7 +136,7 @@ Association between genomic regions and genes can be get by `plotRegionGeneAssoc
 The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` 
 object which contains the gene-region associations. 
 
-```{r, fig.width = 12, fig.height = 4, fig.align = 'center'}
+```{r, fig.width = 10, fig.height = 10/3, fig.align = 'center'}
 res = plotRegionGeneAssociationGraphs(job)
 res[1:2, ]
 ```
@@ -154,7 +154,7 @@ By specifying ontology and term ID, you can get the association in a certain ter
 Here the term ID is from the first column of the data frame which is returned by 
 `getEnrichmentTables()`.
 
-```{r, fig.width = 12, fig.height = 4}
+```{r, fig.width = 10, fig.height = 10/3}
 res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
     termID = "GO:0004984")
 res[1:2, ]
