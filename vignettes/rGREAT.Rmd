@@ -23,6 +23,10 @@ options(width = 100)
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
+**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) where it supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
+takes `hg19` as default. `hg38` can be specified by the `species = "hg38"` argument.
+To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3.0.0")`.**
+
 **GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a popular 
 web-based tool to associate biological functions to genomic regions. 
 The **rGREAT** package makes GREAT anlaysis automatic by first constructing a HTTP POST request 
@@ -78,7 +82,7 @@ job = submitGreatJob(bed, version = "2.0")
 
 Available parameters are (following content is copied from **GREAT** website):
 
-- `species`:  `hg19` and `hg18` for human, `mm9` for mouse and `danRer7` for zebrafish
+- `species`:  "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
 - `bgChoise`: Background regions. `wholeGenome` and `data`. If this value is set to `data`, `bg` argument should be specified 
 - `includeCuratedRegDoms`: Whether to include curated regulatory domains.
 - `rule`: How to associate genomic regions to genes.
@@ -129,7 +133,7 @@ need to provide species information because `job` already contains it.
 ```{r}
 availableOntologies(job)
 availableCategories(job)
-availableOntologies(job, category = "Pathway Data")
+availableOntologies(job, category = "GO")
 ```
 
 Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs()`.

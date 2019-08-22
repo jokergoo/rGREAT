@@ -18,14 +18,14 @@ submitGreatJob(gr, bg = NULL,
     adv_oneDistance       = 1000.0,
     request_interval = 300,
     max_tries = 10,
-    version = "default",
+    version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin")
 }
 \arguments{
 
-  \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
-  \item{bg}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
-  \item{species}{Species. "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
+  \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
+  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
+  \item{species}{Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains.}
   \item{rule}{How to associate genomic regions to genes. See 'details' section.}
   \item{adv_upstream}{Unit: kb, only used when rule is \code{basalPlusExt}}
@@ -35,7 +35,7 @@ submitGreatJob(gr, bg = NULL,
   \item{adv_oneDistance}{Unit: kb, only used when rule is \code{oneClosest}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
-  \item{version}{version of GREAT. The value should be "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "3" or "3.0" is same as "3.0.0".}
+  \item{version}{version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "4" or "4.0" is same as "4.0.4".}
   \item{base_url}{the url of \code{cgi-bin} path, only used when explicitly specified.}
 
 }
