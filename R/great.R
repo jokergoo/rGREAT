@@ -879,6 +879,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
+            if(verbose) qqcat("The webpage for '@{ONTOLOGY_KEYS[ontology]}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
+
             if (param(job, "bgChoice") != "data") {
               url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             } else {
@@ -891,8 +893,6 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             job@association_tables[[qq("@{ontology}-@{termID}")]] = df_term
             file.remove(f_term)
         }
-        if(verbose) qqcat("The webpage for '@{ONTOLOGY_KEYS[ontology]}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
-
     }
     
     f_all = qq("@{TEMP_DIR}/@{jobid}-@{species}-all-region.txt")
