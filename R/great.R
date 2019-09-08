@@ -1070,7 +1070,7 @@ check_asso_file = function(file) {
         
         # wrong termID returns a table only contain a newline
         if(all(grepl("^\\s*$", file_text))) {
-            stop("Empty data, probably your 'termID' is invalid.\n")
+            stop("Empty data, probably your 'termID' is invalid. Please check the URL above.\n")
         }
     }
 
