@@ -37,7 +37,7 @@ selected ontology term will be used. Valid value for \code{ontology} is in
 in the table which is returned by \code{\link{getEnrichmentTables}}.
 }
 \value{
-a \code{\link[GenomicRanges]{GRanges}} object. Columns in metadata are:
+a \code{\link[GenomicRanges:GRanges-class]{GRanges}} object. Columns in metadata are:
 
 \describe{
   \item{gene}{genes that are associated with corresponding regions}

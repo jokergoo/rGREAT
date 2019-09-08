@@ -23,8 +23,8 @@ submitGreatJob(gr, bg = NULL,
 }
 \arguments{
 
-  \item{gr}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
-  \item{bg}{A \code{\link[GenomicRanges]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
+  \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame which contains at least three columns (chr, start and end). Regions for test.}
+  \item{bg}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame. Background regions if needed. Note \code{gr} should be exactly subset of \code{bg} for all columns in \code{gr}. Check \url{http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F} for more explanation.}
   \item{species}{Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains.}
   \item{rule}{How to associate genomic regions to genes. See 'details' section.}
@@ -55,37 +55,6 @@ Explanation of \code{rule} and settings with names started with 'adv_' (advanced
 }
 \value{
 A \code{\link{GreatJob-class}} class object which can be used to get results from GREAT server.
-
-When \code{bg} is set, some pre-processing is applied before submitting to GREAT server for the reason
-that GREAT needs \code{gr} should be exactly subsets of \code{bg}, which means for any region in \code{gr}, there
-must be a region in \code{bg} which is exactly the same. Taking following example:
-
-for \code{gr}:
-
-  \preformatted{
-    chr1 200 300
-    chr1 250 400  }
-
-for \code{bg}:
-
-  \preformatted{
-    chr1 100 250
-    chr1 300 500
-    chr1 400 600  }
-
-They will be transformed as: for \code{gr}:
-
-  \preformatted{
-    chr1 200 250
-    chr1 300 400  }
-
-for \code{bg}:
-
-  \preformatted{
-    chr1 100 199
-    chr1 200 250
-    chr1 300 400
-    chr1 401 600  }
 }
 \seealso{
 \code{\link{GreatJob-class}}
