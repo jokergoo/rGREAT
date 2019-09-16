@@ -3,6 +3,7 @@ CHANGES in VERSION 1.17.1
 * assign to foreName and backName when querying GREAT
 * use rmarkdown for vignette
 * support GREAT version 4.0.4
+* add startup messages
 
 ------------------------------------------------
 
