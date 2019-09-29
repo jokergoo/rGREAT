@@ -26,7 +26,7 @@ The returned value is a vector of categories.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
+# note the `job` was generated from GREAT 3.0.0
 job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 availableCategories(job)
-
 }

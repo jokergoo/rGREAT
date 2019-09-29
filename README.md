@@ -1,15 +1,20 @@
+# Client for GREAT Analysis
+
 [![ Status](https://travis-ci.org/jokergoo/rGREAT.svg)](https://travis-ci.org/jokergoo/rGREAT)
 [![codecov](https://img.shields.io/codecov/c/github/jokergoo/rGREAT.svg)](https://codecov.io/github/jokergoo/rGREAT)
 [![bioc](https://bioconductor.org/shields/downloads/devel/rGREAT.svg)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
 [![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=rGREAT)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)](http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
-## Client for GREAT Analysis
+**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) where it supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
+takes `hg19` as default. `hg38` can be specified by the `species = "hg38"` argument.
+To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3.0.0")`.**
+
 
 This package makes [GREAT](http://great.stanford.edu) (Genomic Regions Enrichment of Annotations Tool) 
 analysis automatic by constructing a HTTP POST request according to user's input and automatically retrieving results from GREAT web server.
 
-### Install
+## Install
 
 **rGREAT** is available on Bioconductor (http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
@@ -26,7 +31,7 @@ library(devtools)
 install_github("jokergoo/rGREAT")
 ```
 
-### Usage
+## Usage
 
 The input data is a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
 
@@ -118,7 +123,6 @@ head(tb[[1]])
 Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs()`. The function will make the three plots which are same as on GREAT website and returns a `GRanges` object which contains the associations.
 
 ```r
-par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job)
 ```
 
@@ -150,7 +154,6 @@ res
 By specifying ontology and term ID, you can get the association in certain term. Here the term ID is from the first column of the data frame which is returned by `getEnrichmentTables()`.
 
 ```r
-par(mfrow = c(1, 3))
 res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
     termID = "GO:0004984")
 ```
@@ -158,6 +161,6 @@ res = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function",
 ![2](https://cloud.githubusercontent.com/assets/449218/5553879/bd7fa216-8c33-11e4-8638-ee3d8348d5c0.png)
 
 
-### License
+## License
 
 MIT @ Zuguang Gu

@@ -41,6 +41,7 @@ the tables available on GREAT website.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
+# note the `job` was generated from GREAT 3.0.0
 job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 tb = getEnrichmentTables(job)
 names(tb)
@@ -49,5 +50,4 @@ job
 
 tb = getEnrichmentTables(job, ontology = "GO Molecular Function")
 tb = getEnrichmentTables(job, category = "GO")
-
 }

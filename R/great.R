@@ -72,6 +72,10 @@ GreatJob = function(...) {
 # -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
 #
 # == details
+# **Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History  where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
+# takes ``hg19`` as default. ``hg38`` can be specified by the ``species = "hg38"`` argument.
+# To use the older versions such as 3.0.0, specify as ``submitGreatJob(..., version = "3.0.0")``.**
+#
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
 #
@@ -101,6 +105,22 @@ GreatJob = function(...) {
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
+#
+# == example
+# set.seed(123)
+# bed = circlize::generateRandomBed(nr = 1000, nc = 0)
+# job = submitGreatJob(bed, version = "3.0.0")
+# job
+#
+# # more parameters can be set for the job
+# if(FALSE) { # suppress running it when building the package
+#     # current GREAT version is 4.0.1
+#     job = submitGreatJob(bed, species = "mm9")
+#     job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
+#     job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
+#     job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
+#     job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
+# }
 #
 submitGreatJob = function(gr, bg = NULL,
     species               = "hg19",
@@ -503,6 +523,17 @@ setMethod(f = "param",
 # == author
 # Zuguang gu <z.gu@dkfz.de>
 #
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# tb = getEnrichmentTables(job)
+# names(tb)
+# head(tb[[1]])
+# job
+#
+# tb = getEnrichmentTables(job, ontology = "GO Molecular Function")
+# tb = getEnrichmentTables(job, category = "GO")
+#
 setMethod(f = "getEnrichmentTables",
     signature = "GreatJob",
     definition = function(job, ontology = NULL, category = "GO",
@@ -560,6 +591,12 @@ setMethod(f = "getEnrichmentTables",
 # == author
 # Zuguang gu <z.gu@dkfz.de>
 #
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# availableOntologies(job)
+# availableOntologies(job, category = "Pathway Data")
+#
 setMethod(f = "availableOntologies",
     signature = "GreatJob",
     definition = function(job, category = NULL) {
@@ -597,6 +634,11 @@ setMethod(f = "availableOntologies",
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
+#
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# availableCategories(job)
 #
 setMethod(f = "availableCategories",
     signature = "GreatJob",
@@ -791,6 +833,19 @@ parseRegionGeneAssociationFile = function(f1) {
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
+#
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+#
+# res = plotRegionGeneAssociationGraphs(job)
+# res
+#
+# plotRegionGeneAssociationGraphs(job, type = 1)
+#
+# res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
+#     termID = "GO:0004984")
+# res
 #
 setMethod(f = "plotRegionGeneAssociationGraphs",
     signature = "GreatJob",

@@ -54,6 +54,7 @@ columns will be \code{NA}.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
+# note the `job` was generated from GREAT 3.0.0
 job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 
 res = plotRegionGeneAssociationGraphs(job)
@@ -64,5 +65,4 @@ plotRegionGeneAssociationGraphs(job, type = 1)
 res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
     termID = "GO:0004984")
 res
-
 }

@@ -40,6 +40,12 @@ submitGreatJob(gr, bg = NULL,
 
 }
 \details{
+
+}
+\section{Note}{
+takes \code{hg19} as default. \code{hg38} can be specified by the \code{species = "hg38"} argument.
+To use the older versions such as 3.0.0, specify as \code{submitGreatJob(..., version = "3.0.0")}.**
+
 Note it is not the standard GREAT API. This function directly send data to GREAT web server
 by HTTP POST.
 
@@ -51,8 +57,7 @@ Explanation of \code{rule} and settings with names started with 'adv_' (advanced
   \item{basalPlusExt}{Mode 'Basal plus extension'. Gene regulatory domain definition:  Each gene is assigned a basal regulatory domain of a minimum distance upstream  and downstream of the TSS (regardless of other nearby genes, controlled by \code{adv_upstream} and  \code{adv_downstream} argument). The gene regulatory domain is extended in both directions  to the nearest gene's basal domain but no more than the maximum extension in one direction (controlled by \code{adv_span}).}
   \item{twoClosest}{Mode 'Two nearest genes'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the nearest  gene's TSS (controlled by \code{adv_twoDistance}) but no more than the maximum extension in one direction.}
   \item{oneClosest}{Mode 'Single nearest gene'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the midpoint  between the gene's TSS and the nearest gene's TSS (controlled by \code{adv_oneDistance}) but no more than the maximum  extension in one direction.}
-}
-}
+}}
 \value{
 A \code{\link{GreatJob-class}} class object which can be used to get results from GREAT server.
 }
@@ -65,15 +70,16 @@ Zuguang gu <z.gu@dkfz.de>
 \examples{
 set.seed(123)
 bed = circlize::generateRandomBed(nr = 1000, nc = 0)
-job = submitGreatJob(bed)
+job = submitGreatJob(bed, version = "3.0.0")
+job
 
 # more parameters can be set for the job
-\dontrun{
-job = submitGreatJob(bed, species = "mm9")
-job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
-job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
-job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
-job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
+if(FALSE) { # suppress running it when building the package
+    # current GREAT version is 4.0.1
+    job = submitGreatJob(bed, species = "mm9")
+    job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
+    job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
+    job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
+    job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
 }
-
 }
