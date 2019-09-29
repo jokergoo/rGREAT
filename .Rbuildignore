@@ -8,3 +8,4 @@ check.bat
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+build_pkg_site.R

@@ -10,6 +10,9 @@ if(file.exists(".Rbuildignore")) {
 	if(!any(ln == "^pkgdown$")) {
 		ln = c(ln, "^pkgdown$")
 	}
+	if(!any(ln == "build_pkg_site.R")) {
+		ln = c(ln, "build_pkg_site.R")
+	}
 	writeLines(ln, ".Rbuildignore")
 } else {
 	writeLines("
