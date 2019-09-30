@@ -2,9 +2,7 @@
 ^.
 *.gz
 *.Rcheck
-*.html
 *.md
-figure
 cache
 .DS_Store
 
