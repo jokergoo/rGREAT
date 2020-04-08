@@ -850,7 +850,8 @@ parseRegionGeneAssociationFile = function(f1) {
 setMethod(f = "plotRegionGeneAssociationGraphs",
     signature = "GreatJob",
     definition = function(job, type = 1:3, ontology = NULL, 
-    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE) {
+    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE,
+    plot = TRUE) {
 
     if(!file.exists(job@job_env$tempdir)) {
         td = tempdir()
@@ -946,9 +947,13 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     df_all_NA = df_all[is.na(df_all$gene), , drop = FALSE]
     df_all = df_all[!is.na(df_all$gene), , drop = FALSE]
 
-    op_mfrow = par("mfrow")
-    on.exit(par(mfrow = op_mfrow))
-    par(mfrow = c(1, length(intersect(type, 1:3))))
+    if(plot) {
+        op_mfrow = par("mfrow")
+        on.exit(par(mfrow = op_mfrow))
+        par(mfrow = c(1, length(intersect(type, 1:3))))
+    } else {
+        type = 0
+    }
 
     # make plots
     if(1 %in% type) {
@@ -1101,6 +1106,52 @@ check_asso_file = function(file) {
             stop("Empty data, probably your 'termID' is invalid. Please check the URL above.\n")
         }
     }
-
-
 }
+
+
+# == title
+# Add region-gene association to the internal enrichment tables
+#
+# == param
+# -job a `GreatJob-class` instance
+# -ontology ontology name
+# -verbose whether show message
+#
+# == details
+# After successfully run this function, users need to rerun `getEnrichmentTables` to 
+# get the enrichment tables that contains the new gene association column.
+setMethod(f = "addRegionGeneAssociation",
+    signature = "GreatJob",
+    definition = function(job, ontology = names(job@enrichment_tables), verbose = TRUE) {
+
+    if(length(ontology) == 0) {
+        stop("You should run `getEnrichmentTables()` first.")
+    }
+    ontology = intersect(ontology, names(job@enrichment_tables))
+    if(length(ontology) == 0) {
+        stop("Cannot find some of the ontologies.")
+    }
+
+    for(onto in ontology) {
+        enrichment_tb = job@enrichment_tables[[onto]]
+        all_termID = enrichment_tb$ID
+        n_term = length(all_termID)
+
+        genes = character(n_term)
+        for(i in seq_along(all_termID)) {
+            tid = all_termID[i]
+            if(verbose) {
+                qqcat("Downloading associated genes for @{onto}, @{tid}, @{i}/@{n_term}...\n")
+            }
+            gr = plotRegionGeneAssociationGraphs(job, ontology = onto, termID = tid, request_interval = 5, verbose = FALSE, plot = FALSE)
+            genes[i] = paste(unique(sort(gr$gene)), collapse = ",")
+        }
+        enrichment_tb$Asso_Genes = genes
+        job@enrichment_tables[[onto]] = enrichment_tb
+    }
+    if(verbose) {
+        cat("Done. Please rerun `getEnrichmentTables()` to get the tables.\n")
+    }
+    invisible(NULL)
+})
+

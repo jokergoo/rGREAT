@@ -9,7 +9,8 @@ Plot region-gene association figures
 }
 \usage{
 \S4method{plotRegionGeneAssociationGraphs}{GreatJob}(job, type = 1:3, ontology = NULL,
-    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE)
+    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE,
+    plot = TRUE)
 }
 \arguments{
 
