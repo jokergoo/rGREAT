@@ -21,6 +21,7 @@ Plot region-gene association figures
   \item{request_interval}{time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{maximum tries}
   \item{verbose}{whether show message}
+  \item{plot}{whether make plots}
 
 }
 \details{

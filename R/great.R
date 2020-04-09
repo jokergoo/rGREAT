@@ -805,6 +805,7 @@ parseRegionGeneAssociationFile = function(f1) {
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
 # -verbose whether show message
+# -plot whether make plots
 #
 # == details
 # Generated figures are:  
