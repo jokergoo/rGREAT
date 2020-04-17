@@ -18,6 +18,7 @@ Get enrichment tables from GREAT web server
   \item{category}{Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in  \code{\link{availableCategories}}}
   \item{request_interval}{time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{maximum tries}
+  \item{download_by}{internally used.}
 
 }
 \details{

@@ -131,7 +131,7 @@ submitGreatJob = function(gr, bg = NULL,
     adv_span              = 1000.0,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
-    request_interval = 300,
+    request_interval = 60,
     max_tries = 10,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin"
@@ -505,6 +505,7 @@ setMethod(f = "param",
 #            `availableCategories`
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
+# -download_by Internally used.
 #
 # == details  
 # The table contains statistics for the each term in each ontology catalogue.
@@ -537,7 +538,7 @@ setMethod(f = "param",
 setMethod(f = "getEnrichmentTables",
     signature = "GreatJob",
     definition = function(job, ontology = NULL, category = "GO",
-    request_interval = 30, max_tries = 100) {
+    request_interval = 10, max_tries = 100, download_by = c("json", "tsv")) {
     
     jobid = id(job)
     species = param(job, "species")
@@ -567,12 +568,74 @@ setMethod(f = "getEnrichmentTables",
 
     ONTOLOGY_KEYS = job@job_env$ONTOLOGY_KEYS
     
-    res = lapply(ontology, function(onto) GREAT.read.json(job, qq("@{BASE_URL}/readJsFromFile.php?path=/scratch/great/tmp/results/@{jobid}.d/@{ONTOLOGY_KEYS[onto]}.js"), onto, 
-        request_interval = request_interval, max_tries = max_tries))
+    download_by = match.arg(download_by)[1]
+
+    res = lapply(ontology, function(onto) {
+        if(!is.null(job@enrichment_tables[[onto]])) {
+            res = job@enrichment_tables[[onto]]
+            return(res)
+        } else {
+            if(download_by == "json") {
+                GREAT.read.json(job, qq("@{BASE_URL}/readJsFromFile.php?path=/scratch/great/tmp/results/@{jobid}.d/@{ONTOLOGY_KEYS[onto]}.js"), onto, 
+                    request_interval = request_interval, max_tries = max_tries)
+            } else {
+                download_enrichment_table(job, ONTOLOGY_KEYS[onto], request_interval = request_interval, max_tries = max_tries)
+            }
+        }
+    })
     names(res) = ontology
     return(res)
 })
 
+
+download_enrichment_table = function(job, onto, request_interval = 10, max_tries = 100) {
+    jobid = id(job)
+    species = param(job, "species")
+    bgChoice = param(job, "bgChoice")
+    version = param(job, "version")
+    BASE_URL = BASE_URL_LIST[version]
+
+    i_try = 0
+    while(1) {
+        error = try(
+            response <- postForm(qq("@{BASE_URL}/downloadAllTSV.php"),
+                outputDir = qq("/scratch/great/tmp/results/@{jobid}.d/"),
+                outputPath = qq("/tmp/results/@{jobid}.d/"),
+                ontoName = onto,
+                species = species,
+                ontoList = qq("@{onto}@1-Inf"),
+                binom = ifelse(bgChoice == "wholeGenome", "true", "false")
+            )
+        )
+            
+        i_try = i_try + 1
+            
+        if(class(error) != "try-error") {
+            break
+        } else {
+                
+            if(i_try > max_tries) {
+                stop(qq("max try: @{max_tries} reached. Stop with an error.\n"))
+            } else {
+                message("failed to download, try after 30s")
+                sleep(request_interval)
+            }
+        }
+    }
+
+    response = strsplit(response, "\n")[[1]]
+    response = response[-(1:3)]
+    response[[1]] = gsub("^#", "", response[1])
+    response = response[!grepl("^#", response)]
+    response = paste(response, collapse = "\n")
+    error = try(tb <- read.table(textConnection(response), sep = "\t", quote = "", header = TRUE))
+    if(inherits(error, "try-error")) {
+        stop("downloading enrichment table failed.")
+    }
+
+    job@enrichment_tables[[onto]] = tb
+    return(tb)
+}
 
 # == title
 # All available ontology names
@@ -651,7 +714,7 @@ setMethod(f = "availableCategories",
 })
 
 # download from `url` and save to `file`
-download = function(url, file, request_interval = 30, max_tries = 100) {
+download = function(url, file, request_interval = 10, max_tries = 100) {
 
     op = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(op))
@@ -680,7 +743,7 @@ download = function(url, file, request_interval = 30, max_tries = 100) {
     }
 }
 
-GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 100) {
+GREAT.read.json = function(job, url, onto, request_interval = 10, max_tries = 100) {
     jobid = id(job)
 
     if(!file.exists(job@job_env$tempdir)) {
@@ -698,11 +761,6 @@ GREAT.read.json = function(job, url, onto, request_interval = 30, max_tries = 10
     
     f1 = qq("@{TEMP_DIR}/@{jobid}_@{onto}.js")
     f1 = gsub(" ", "_", f1)
-    
-    if(!is.null(job@enrichment_tables[[onto]])) {
-        res = job@enrichment_tables[[onto]]
-        return(res)
-    }
 
     download(url, file = f1, request_interval = request_interval, max_tries = max_tries)
 
@@ -851,7 +909,7 @@ parseRegionGeneAssociationFile = function(f1) {
 setMethod(f = "plotRegionGeneAssociationGraphs",
     signature = "GreatJob",
     definition = function(job, type = 1:3, ontology = NULL, 
-    termID = NULL, request_interval = 30, max_tries = 100, verbose = TRUE,
+    termID = NULL, request_interval = 10, max_tries = 100, verbose = TRUE,
     plot = TRUE) {
 
     if(!file.exists(job@job_env$tempdir)) {
@@ -1110,49 +1168,49 @@ check_asso_file = function(file) {
 }
 
 
-# == title
-# Add region-gene association to the internal enrichment tables
-#
-# == param
-# -job a `GreatJob-class` instance
-# -ontology ontology name
-# -verbose whether show message
-#
-# == details
-# After successfully run this function, users need to rerun `getEnrichmentTables` to 
-# get the enrichment tables that contains the new gene association column.
-setMethod(f = "addRegionGeneAssociation",
-    signature = "GreatJob",
-    definition = function(job, ontology = names(job@enrichment_tables), verbose = TRUE) {
+# # == title
+# # Add region-gene association to the internal enrichment tables
+# #
+# # == param
+# # -job a `GreatJob-class` instance
+# # -ontology ontology name
+# # -verbose whether show message
+# #
+# # == details
+# # After successfully run this function, users need to rerun `getEnrichmentTables` to 
+# # get the enrichment tables that contains the new gene association column.
+# setMethod(f = "addRegionGeneAssociation",
+#     signature = "GreatJob",
+#     definition = function(job, ontology = names(job@enrichment_tables), verbose = TRUE) {
 
-    if(length(ontology) == 0) {
-        stop("You should run `getEnrichmentTables()` first.")
-    }
-    ontology = intersect(ontology, names(job@enrichment_tables))
-    if(length(ontology) == 0) {
-        stop("Cannot find some of the ontologies.")
-    }
+#     if(length(ontology) == 0) {
+#         stop("You should run `getEnrichmentTables()` first.")
+#     }
+#     ontology = intersect(ontology, names(job@enrichment_tables))
+#     if(length(ontology) == 0) {
+#         stop("Cannot find some of the ontologies.")
+#     }
 
-    for(onto in ontology) {
-        enrichment_tb = job@enrichment_tables[[onto]]
-        all_termID = enrichment_tb$ID
-        n_term = length(all_termID)
+#     for(onto in ontology) {
+#         enrichment_tb = job@enrichment_tables[[onto]]
+#         all_termID = enrichment_tb$ID
+#         n_term = length(all_termID)
 
-        genes = character(n_term)
-        for(i in seq_along(all_termID)) {
-            tid = all_termID[i]
-            if(verbose) {
-                qqcat("Downloading associated genes for @{onto}, @{tid}, @{i}/@{n_term}...\n")
-            }
-            gr = plotRegionGeneAssociationGraphs(job, ontology = onto, termID = tid, request_interval = 5, verbose = FALSE, plot = FALSE)
-            genes[i] = paste(unique(sort(gr$gene)), collapse = ",")
-        }
-        enrichment_tb$Asso_Genes = genes
-        job@enrichment_tables[[onto]] = enrichment_tb
-    }
-    if(verbose) {
-        cat("Done. Please rerun `getEnrichmentTables()` to get the tables.\n")
-    }
-    invisible(NULL)
-})
+#         genes = character(n_term)
+#         for(i in seq_along(all_termID)) {
+#             tid = all_termID[i]
+#             if(verbose) {
+#                 qqcat("Downloading associated genes for @{onto}, @{tid}, @{i}/@{n_term}...\n")
+#             }
+#             gr = plotRegionGeneAssociationGraphs(job, ontology = onto, termID = tid, request_interval = 5, verbose = FALSE, plot = FALSE)
+#             genes[i] = paste(unique(sort(gr$gene)), collapse = ",")
+#         }
+#         enrichment_tb$Asso_Genes = genes
+#         job@enrichment_tables[[onto]] = enrichment_tb
+#     }
+#     if(verbose) {
+#         cat("Done. Please rerun `getEnrichmentTables()` to get the tables.\n")
+#     }
+#     invisible(NULL)
+# })
 
