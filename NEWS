@@ -1,6 +1,6 @@
 CHANGES in VERSION 1.19.1
 
-* add `addRegionGeneAssociation()`
+* add 'tsv' option in `getEnrichmentTables()`
 
 ------------------------------------------------
 

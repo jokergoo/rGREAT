@@ -16,7 +16,7 @@ submitGreatJob(gr, bg = NULL,
     adv_span              = 1000.0,
     adv_twoDistance       = 1000.0,
     adv_oneDistance       = 1000.0,
-    request_interval = 300,
+    request_interval = 60,
     max_tries = 10,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin")
@@ -40,7 +40,22 @@ submitGreatJob(gr, bg = NULL,
 
 }
 \details{
+Note: [On Aug 19 2019 GREAT released version 4](\url{http://great.stanford.edu/help/display/GREAT/Version+History}  where it supports \code{hg38} genome and removes some ontologies such pathways. \code{\link{submitGreatJob}} still
+takes \code{hg19} as default. \code{hg38} can be specified by the \code{species = "hg38"} argument.
+To use the older versions such as 3.0.0, specify as \code{submitGreatJob(..., version = "3.0.0")}.
 
+Note it is not the standard GREAT API. This function directly send data to GREAT web server
+by HTTP POST.
+
+Following text is copied from GREAT web site ( \url{http://great.stanford.edu/public/html/} )
+
+Explanation of \code{rule} and settings with names started with 'adv_' (advanced settings):
+
+\describe{
+  \item{basalPlusExt}{Mode 'Basal plus extension'. Gene regulatory domain definition:  Each gene is assigned a basal regulatory domain of a minimum distance upstream  and downstream of the TSS (regardless of other nearby genes, controlled by \code{adv_upstream} and  \code{adv_downstream} argument). The gene regulatory domain is extended in both directions  to the nearest gene's basal domain but no more than the maximum extension in one direction (controlled by \code{adv_span}).}
+  \item{twoClosest}{Mode 'Two nearest genes'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the nearest  gene's TSS (controlled by \code{adv_twoDistance}) but no more than the maximum extension in one direction.}
+  \item{oneClosest}{Mode 'Single nearest gene'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the midpoint  between the gene's TSS and the nearest gene's TSS (controlled by \code{adv_oneDistance}) but no more than the maximum  extension in one direction.}
+}
 }
 \section{Note}{
 takes \code{hg19} as default. \code{hg38} can be specified by the \code{species = "hg38"} argument.
@@ -57,7 +72,8 @@ Explanation of \code{rule} and settings with names started with 'adv_' (advanced
   \item{basalPlusExt}{Mode 'Basal plus extension'. Gene regulatory domain definition:  Each gene is assigned a basal regulatory domain of a minimum distance upstream  and downstream of the TSS (regardless of other nearby genes, controlled by \code{adv_upstream} and  \code{adv_downstream} argument). The gene regulatory domain is extended in both directions  to the nearest gene's basal domain but no more than the maximum extension in one direction (controlled by \code{adv_span}).}
   \item{twoClosest}{Mode 'Two nearest genes'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the nearest  gene's TSS (controlled by \code{adv_twoDistance}) but no more than the maximum extension in one direction.}
   \item{oneClosest}{Mode 'Single nearest gene'. Gene regulatory domain definition:  Each gene is assigned a regulatory domain that extends in both directions to the midpoint  between the gene's TSS and the nearest gene's TSS (controlled by \code{adv_oneDistance}) but no more than the maximum  extension in one direction.}
-}}
+}
+}
 \value{
 A \code{\link{GreatJob-class}} class object which can be used to get results from GREAT server.
 }

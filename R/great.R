@@ -72,9 +72,9 @@ GreatJob = function(...) {
 # -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
 #
 # == details
-# **Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History  where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
+# Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History  where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
 # takes ``hg19`` as default. ``hg38`` can be specified by the ``species = "hg38"`` argument.
-# To use the older versions such as 3.0.0, specify as ``submitGreatJob(..., version = "3.0.0")``.**
+# To use the older versions such as 3.0.0, specify as ``submitGreatJob(..., version = "3.0.0")``.
 #
 # Note it is not the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
@@ -506,6 +506,7 @@ setMethod(f = "param",
 # -request_interval time interval for two requests. Default is 300 seconds.
 # -max_tries maximum tries
 # -download_by Internally used.
+# -verbose Whether print messages.
 #
 # == details  
 # The table contains statistics for the each term in each ontology catalogue.
@@ -538,7 +539,8 @@ setMethod(f = "param",
 setMethod(f = "getEnrichmentTables",
     signature = "GreatJob",
     definition = function(job, ontology = NULL, category = "GO",
-    request_interval = 10, max_tries = 100, download_by = c("json", "tsv")) {
+    request_interval = 10, max_tries = 100, download_by = c("json", "tsv"),
+    verbose = TRUE) {
     
     jobid = id(job)
     species = param(job, "species")
@@ -570,23 +572,37 @@ setMethod(f = "getEnrichmentTables",
     
     download_by = match.arg(download_by)[1]
 
+    if(download_by == "json" && verbose) {
+        message_wrap("The default enrichment tables contain no associated genes for the input regions.",
+            "You can set `download_by = 'tsv'` to download the complete table,",
+            "but note only the top 500 regions can be retreived. See the following link:\n\n",
+            "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n")
+    }
+
     res = lapply(ontology, function(onto) {
-        if(!is.null(job@enrichment_tables[[onto]])) {
+        if(!is.null(job@enrichment_tables[[onto]]) && download_by == "json") {
             res = job@enrichment_tables[[onto]]
             return(res)
         } else {
             if(download_by == "json") {
-                GREAT.read.json(job, qq("@{BASE_URL}/readJsFromFile.php?path=/scratch/great/tmp/results/@{jobid}.d/@{ONTOLOGY_KEYS[onto]}.js"), onto, 
+                res = GREAT.read.json(job, qq("@{BASE_URL}/readJsFromFile.php?path=/scratch/great/tmp/results/@{jobid}.d/@{ONTOLOGY_KEYS[onto]}.js"), onto, 
                     request_interval = request_interval, max_tries = max_tries)
+                job@enrichment_tables[[onto]] = res
             } else {
-                download_enrichment_table(job, ONTOLOGY_KEYS[onto], request_interval = request_interval, max_tries = max_tries)
+                res = download_enrichment_table(job, ONTOLOGY_KEYS[onto], request_interval = request_interval, max_tries = max_tries)
             }
+            return(res)
         }
     })
     names(res) = ontology
     return(res)
 })
 
+message_wrap = function (...)  {
+    x = paste(..., collapse = " ")
+    x = paste(strwrap(x), collapse = "\n")
+    message(x)
+}
 
 download_enrichment_table = function(job, onto, request_interval = 10, max_tries = 100) {
     jobid = id(job)
@@ -628,12 +644,11 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
     response[[1]] = gsub("^#", "", response[1])
     response = response[!grepl("^#", response)]
     response = paste(response, collapse = "\n")
-    error = try(tb <- read.table(textConnection(response), sep = "\t", quote = "", header = TRUE))
+    error = try(tb <- read.table(textConnection(response), sep = "\t", quote = "", header = TRUE), stringsAsFactors = FALSE)
     if(inherits(error, "try-error")) {
         stop("downloading enrichment table failed.")
     }
 
-    job@enrichment_tables[[onto]] = tb
     return(tb)
 }
 
@@ -806,7 +821,6 @@ GREAT.read.json = function(job, url, onto, request_interval = 10, max_tries = 10
                         "Hyper_Observed_Gene_Hits", "Hyper_Fold_Enrichment", "Hyper_Gene_Set_Coverage",
                         "Hyper_Term_Gene_Coverage", "Hyper_Raw_PValue", "Hyper_Adjp_BH")]
     }
-    job@enrichment_tables[[onto]] = res
     return(res)
 }
 

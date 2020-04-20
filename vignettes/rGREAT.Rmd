@@ -106,7 +106,7 @@ There is a column for adjusted p-values by "BH" method. Other p-value adjustment
 The returned value of `getEnrichmentTables()` is a list of data frames in which each one corresponds
 to tables for single ontology. The structure of data frames are same as the tables on **GREAT** website.
 
-```{r}
+```{r, message = TRUE}
 tb = getEnrichmentTables(job)
 names(tb)
 tb[[1]][1:2, ]
@@ -124,6 +124,16 @@ You can get results by either specifying the ontologies or by the pre-defined ca
 ```{r, eval = FALSE}
 tb = getEnrichmentTables(job, ontology = c("GO Molecular Function", "BioCyc Pathway"))
 tb = getEnrichmentTables(job, category = c("GO"))
+```
+
+As you have seen in the previous messages and results, The enrichment tables contain no associated genes. 
+However, you can set `download_by = 'tsv'` in `getEnrichmentTables()` to download the complete
+tables, but due to [the restriction from GREAT web server](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport), only the top 500 regions can be retreived.
+
+```{r, message = TRUE}
+tb2 = getEnrichmentTables(job, download_by = "tsv")
+nrow(tb2[["GO Molecular Function"]])
+head(tb2[["GO Molecular Function"]])
 ```
 
 All available ontology names for given species can be get by `availableOntologies()` 
