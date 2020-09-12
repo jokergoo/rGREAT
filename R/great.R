@@ -70,6 +70,7 @@ GreatJob = function(...) {
 # -version version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers
 #          can also be used, such as using "4" or "4.0" is same as "4.0.4".
 # -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
+# -help Whether to print help messages.
 #
 # == details
 # Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History  where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
@@ -134,7 +135,8 @@ submitGreatJob = function(gr, bg = NULL,
     request_interval = 60,
     max_tries = 10,
     version = DEFAULT_VERSION,
-    base_url = "http://great.stanford.edu/public/cgi-bin"
+    base_url = "http://great.stanford.edu/public/cgi-bin",
+    help = TRUE
     ) {
         
     version = version[1]
@@ -146,6 +148,16 @@ submitGreatJob = function(gr, bg = NULL,
         stop(paste0("GREAT with version '", version, "' only supports following species:\n  ", paste(SPECIES[[version]], collapse = ", ")))
     }
     rule = match.arg(rule)[1]
+
+    if(help) {
+        cl = as.list(match.call())
+        if(version == "4.0.4" && (!"species" %in% names(cl))) {
+            message_wrap('Note: On Aug 19 2019 GREAT released version 4 which supports hg38 genome and removes some ontologies such
+pathways. submitGreatJob() still takes hg19 as default. hg38 can be specified by argument `species = "hg38"`. To use
+the older versions such as 3.0.0, specify as submitGreatJob(..., version = "3"). Set argument `help` to `FALSE`
+to turn off this message.')
+        }
+    }
 
     includeCuratedRegDoms = as.numeric(includeCuratedRegDoms[1])
     
@@ -841,7 +853,7 @@ parseRegionGeneAssociationFile = function(f1) {
             gene = c(gene, NA)
             distance = c(distance, NA)
         } else {
-            r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]\\d+)\\)", data[i, 2], perl = TRUE)[[1]]
+            r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]?\\d+)\\)", data[i, 2], perl = TRUE)[[1]]
             capture.start = attr(r, "capture.start")
             capture.length = attr(r, "capture.length")
             k = nrow(capture.start)
@@ -850,7 +862,7 @@ parseRegionGeneAssociationFile = function(f1) {
             distance = c(distance, substr(rep(data[i, 2], k), capture.start[, 2], capture.start[, 2] + capture.length[, 2] - 1))
         }
     }
-    
+
     da = strsplit(region, "[-:]")
     chr = sapply(da, function(x) x[1])
     start = as.integer(sapply(da, function(x) x[2]))
@@ -1037,6 +1049,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             vt[is.na(vt)] = 0
             v = c(vt[1:10], sum(vt[10:length(vt)]))
             names(v) = c(as.character(1:10), ">10")
+            v[is.na(v)] = 0
             p = v/sum(v)
             pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\n@{ontology}\n@{termID}"))
             text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
@@ -1044,6 +1057,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             tb = table(table(paste(df_all$chr, df_all$start, df_all$end, sep = ",")))
             v = c(nrow(df_all_NA), tb["1"], tb["2"], sum(tb[as.numeric(names(tb)) > 2]))
             names(v) = c("0", "1", "2", "> 3")
+            v[is.na(v)] = 0
             p = v/sum(v)
             pos = barplot(p, col = c("red", "grey", "grey", "grey"), xlab = "Number of associated genes per region", ylab = "Genomic regions", ylim = c(0, max(p)*1.5), main = "Number of associated genes per region")
             text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), col = c("red", "black", "black", "black"), cex = 0.8)
@@ -1055,8 +1069,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             c("<-500"       = sum(df_all$distTSS <= -500000),
               "-500 to -50" = sum(df_all$distTSS > -500000 & df_all$distTSS <= -50000),
               "-50 to -5"   = sum(df_all$distTSS > -50000  & df_all$distTSS <= -5000),
-              "-5 to 0"     = sum(df_all$distTSS > -5000   & df_all$distTSS <= 0),
-              "0 to 5"      = sum(df_all$distTSS > 0       & df_all$distTSS <= 5000),
+              "-5 to 0"     = sum(df_all$distTSS > -5000   & df_all$distTSS < 0),
+              "0 to 5"      = sum(df_all$distTSS >= 0       & df_all$distTSS <= 5000),
               "5 to 50"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
               "50 to 500"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
               "> 500"       = sum(df_all$distTSS > 500000)))
@@ -1066,14 +1080,15 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
             c("<-500"       = sum(df_term$distTSS <= -500000),
               "-500 to -50" = sum(df_term$distTSS > -500000 & df_term$distTSS <= -50000),
               "-50 to -5"   = sum(df_term$distTSS > -50000  & df_term$distTSS <= -5000),
-              "-5 to 0"     = sum(df_term$distTSS > -5000   & df_term$distTSS <= 0),
-              "0 to 5"      = sum(df_term$distTSS > 0       & df_term$distTSS <= 5000),
+              "-5 to 0"     = sum(df_term$distTSS > -5000   & df_term$distTSS < 0),
+              "0 to 5"      = sum(df_term$distTSS >= 0       & df_term$distTSS <= 5000),
               "5 to 50"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
               "50 to 500"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
               "> 500"       = sum(df_term$distTSS > 500000)), v)
             p = v/sum(v)
         }
         
+        p[is.na(p)] = 0
         rownames(p) = NULL
         if(using_term) {
             pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
@@ -1098,20 +1113,20 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     }
     if(3 %in% type) {
         v = cbind(
-            c("0 to 5"      = sum(abs(df_all$distTSS) > 0       & abs(df_all$distTSS) <= 5000),
+            c("0 to 5"      = sum(abs(df_all$distTSS) >= 0       & abs(df_all$distTSS) <= 5000),
               "5 to 50"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
               "50 to 500"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
               "> 500"       = sum(abs(df_all$distTSS) > 500000)))
         p = v/sum(v)
         if(using_term) {
             v = cbind( 
-            c("0 to 5"      = sum(abs(df_term$distTSS) > 0       & abs(df_term$distTSS) <= 5000),
+            c("0 to 5"      = sum(abs(df_term$distTSS) >= 0       & abs(df_term$distTSS) <= 5000),
               "5 to 50"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
               "50 to 500"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
               "> 500"       = sum(abs(df_term$distTSS) > 500000)), v)
             p = v/sum(v)
         }
-        
+        p[is.na(p)] = 0
         rownames(p) = NULL
         if(using_term) {
             pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)

@@ -23,9 +23,9 @@ options(width = 100)
 options(markdown.HTML.stylesheet = "custom.css")
 ```
 
-**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) where it supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
-takes `hg19` as default. `hg38` can be specified by the `species = "hg38"` argument.
-To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3.0.0")`.**
+**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) which supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
+takes `hg19` as default. `hg38` can be specified by argument `species = "hg38"`.
+To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3")`.**
 
 **GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a popular 
 web-based tool to associate biological functions to genomic regions. 

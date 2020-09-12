@@ -6,9 +6,9 @@
 [![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=rGREAT)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)](http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
-**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) where it supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
-takes `hg19` as default. `hg38` can be specified by the `species = "hg38"` argument.
-To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3.0.0")`.**
+**Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) which supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
+takes `hg19` as default. `hg38` can be specified by argument `species = "hg38"`.
+To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3")`.**
 
 
 This package makes [GREAT](http://great.stanford.edu) (Genomic Regions Enrichment of Annotations Tool) 

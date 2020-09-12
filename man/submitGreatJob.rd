@@ -19,7 +19,8 @@ submitGreatJob(gr, bg = NULL,
     request_interval = 60,
     max_tries = 10,
     version = DEFAULT_VERSION,
-    base_url = "http://great.stanford.edu/public/cgi-bin")
+    base_url = "http://great.stanford.edu/public/cgi-bin",
+    help = TRUE)
 }
 \arguments{
 
@@ -37,7 +38,7 @@ submitGreatJob(gr, bg = NULL,
   \item{max_tries}{Maximum times trying to connect to GREAT web server.}
   \item{version}{version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "4" or "4.0" is same as "4.0.4".}
   \item{base_url}{the url of \code{cgi-bin} path, only used when explicitly specified.}
-
+  \item{help}{Whether to print help messages.}
 }
 \details{
 Note: [On Aug 19 2019 GREAT released version 4](\url{http://great.stanford.edu/help/display/GREAT/Version+History}  where it supports \code{hg38} genome and removes some ontologies such pathways. \code{\link{submitGreatJob}} still
