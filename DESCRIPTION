@@ -1,10 +1,11 @@
 Package: rGREAT
 Type: Package
 Title: Client for GREAT Analysis
-Version: 1.25.0
-Date: 2020-09-12
+Version: 1.25.2
+Date: 2021-09-30
 Author: Zuguang Gu
-Maintainer: Zuguang Gu <z.gu@dkfz.de>
+Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
+                  comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.1.2), GenomicRanges, IRanges, methods
 Imports: rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats
 Suggests: testthat (>= 0.3), knitr, circlize (>= 0.4.8), rmarkdown
