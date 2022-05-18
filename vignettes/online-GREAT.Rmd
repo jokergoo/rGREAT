@@ -1,13 +1,14 @@
 ---
-title: "Analyze with GREAT"
+title: "Analyze with online GREAT"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
-date: "`r Sys.Date()`"
-output: 
-    rmarkdown::html_vignette:
-        width: 8
-        fig_width: 5
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
 vignette: >
-  %\VignetteIndexEntry{Analyze with GREAT}
+  %\VignetteIndexEntry{1. Analyze with online GREAT}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,8 +20,6 @@ knitr::opts_chunk$set(
     tidy  = FALSE,
     message = FALSE,
     fig.align = "center")
-options(width = 100)
-options(markdown.HTML.stylesheet = "custom.css")
 ```
 
 **Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) which supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
@@ -32,6 +31,8 @@ web-based tool to associate biological functions to genomic regions.
 The **rGREAT** package makes GREAT anlaysis automatic by first constructing a HTTP POST request 
 according to user's input and retrieving results from **GREAT** web server afterwards.
 
+## Submit the job
+
 Load the package:
 
 ```{r, echo = 2}
@@ -40,21 +41,21 @@ library(rGREAT)
 ```
 
 The input data is either a `GRanges` object or a _BED_-format data frame, no matter it is sorted or not.
-In following example, we use a data frame which is randomly generated.
+In following example, we use a `GRanges` object which is randomly generated.
 
 ```{r}
 set.seed(123)
-bed = circlize::generateRandomBed(nr = 1000, nc = 0)
-bed[1:2, ]
+gr = randomRegions(nr = 1000)
+head(gr)
 ```
 
-Submit genomic regions by `submitGreatJob()`. Before submitting, genomic regions will be sorted and overlapping regions will be merged.
+Submit genomic regions by `submitGreatJob()`.
 
 The returned variable `job` is a `GreatJob` class instance which can be used to retrieve results from
 **GREAT** server and stored results which are already downloaded.
 
 ```{r}
-job = submitGreatJob(bed)
+job = submitGreatJob(gr)
 ```
 
 You can get the summary of your job by directly calling `job` variable.
@@ -66,24 +67,27 @@ job
 More parameters can be set for the job:
 
 ```{r, eval = FALSE}
-job = submitGreatJob(bed, species = "mm9")
-job = submitGreatJob(bed, bg, species = "mm9")
-job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
-job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
-job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
+job = submitGreatJob(gr, species = "mm9") # of course, gr should be from mm9
+job = submitGreatJob(gr, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
+job = submitGreatJob(gr, rule = "twoClosest", adv_twoDistance = 2000)
+job = submitGreatJob(gr, rule = "oneClosest", adv_oneDistance = 2000)
 ```
 
 Also you can choose different versions of GREAT for the analysis.
 
 ```{r, eval = FALSE}
-job = submitGreatJob(bed, version = "3.0")
-job = submitGreatJob(bed, version = "2.0")
+job = submitGreatJob(gr, version = "3.0")
+job = submitGreatJob(gr, version = "2.0")
 ```
+
+<p style='color:red'>Note: from <b>rGREAT</b> 1.99.0, background by `bg`
+argument is not supported any more, because <b>GREAT</b> requires a specific format
+for <code>gr</code> and <code>bg</code> if both are set, and it uses a completely different method
+for the enrichment analysis. <a href="local-GREAT.html#Set_background_regions">You can use local <b>GREAT</b> to integrate background regions.</a></p>
 
 Available parameters are (following content is copied from **GREAT** website):
 
 - `species`:  "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
-- `bgChoise`: Background regions. `wholeGenome` and `data`. If this value is set to `data`, `bg` argument should be specified 
 - `includeCuratedRegDoms`: Whether to include curated regulatory domains.
 - `rule`: How to associate genomic regions to genes.
     * `basalPlusExt`: mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
@@ -95,6 +99,7 @@ Available parameters are (following content is copied from **GREAT** website):
     * `oneClosest`: mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
         + `adv_oneDistance`: maximum extension (unit: kb)
 
+## Get enrichment tables
 
 With `job`, we can now retrieve results from **GREAT**. The first and the primary results are
 the tables which contain enrichment statistics for the analysis. By default it will retrieve 
@@ -107,9 +112,9 @@ The returned value of `getEnrichmentTables()` is a list of data frames in which 
 to tables for single ontology. The structure of data frames are same as the tables on **GREAT** website.
 
 ```{r, message = TRUE}
-tb = getEnrichmentTables(job)
-names(tb)
-tb[[1]][1:2, ]
+tbl = getEnrichmentTables(job)
+names(tbl)
+tbl[[1]][1:2, ]
 ```
 
 Information stored in `job` will be updated after retrieving enrichment tables.
@@ -122,8 +127,8 @@ You can get results by either specifying the ontologies or by the pre-defined ca
 (categories already contains pre-defined sets of ontologies):
 
 ```{r, eval = FALSE}
-tb = getEnrichmentTables(job, ontology = c("GO Molecular Function", "BioCyc Pathway"))
-tb = getEnrichmentTables(job, category = c("GO"))
+tbl = getEnrichmentTables(job, ontology = c("GO Molecular Function", "BioCyc Pathway"))
+tbl = getEnrichmentTables(job, category = c("GO"))
 ```
 
 As you have seen in the previous messages and results, The enrichment tables contain no associated genes. 
@@ -131,9 +136,9 @@ However, you can set `download_by = 'tsv'` in `getEnrichmentTables()` to downloa
 tables, but due to [the restriction from GREAT web server](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport), only the top 500 regions can be retreived.
 
 ```{r, message = TRUE}
-tb2 = getEnrichmentTables(job, download_by = "tsv")
-nrow(tb2[["GO Molecular Function"]])
-head(tb2[["GO Molecular Function"]])
+tbl2 = getEnrichmentTables(job, download_by = "tsv")
+nrow(tbl2[["GO Molecular Function"]])
+head(tbl2[["GO Molecular Function"]])
 ```
 
 All available ontology names for given species can be get by `availableOntologies()` 
@@ -146,32 +151,50 @@ availableCategories(job)
 availableOntologies(job, category = "GO")
 ```
 
-Association between genomic regions and genes can be get by `plotRegionGeneAssociationGraphs()`.
-The function will make the three plots which are same as on **GREAT** website and returns a `GRanges` 
-object which contains the gene-region associations. 
+## Get region-gene associations
+
+Association between genomic regions and genes can be plotted by `plotRegionGeneAssociations()`.
+The function will make the three plots which are same as on **GREAT** website.
 
 ```{r, fig.width = 10, fig.height = 10/3, fig.align = 'center'}
-res = plotRegionGeneAssociationGraphs(job)
-res[1:2, ]
+plotRegionGeneAssociations(job)
 ```
 
-For those regions that are not associated with any genes under current settings, 
+`getRegionGeneAssociations()` returns a `GRanges` 
+object which contains the gene-region associations. For those regions that are not associated with any genes under current settings, 
 the corresponding `gene` and `distTSS` columns will be `NA`.
+
+
+```{r}
+getRegionGeneAssociations(job)
+```
+
+Please the two meta columns are in formats of `CharacterList`
+and `IntegerList` because a region may associate to multiple genes.
 
 You can also choose only plotting one of the three figures.
 
 ```{r, eval = FALSE}
-plotRegionGeneAssociationGraphs(job, type = 1)
+plotRegionGeneAssociations(job, which_plot = 1)
 ```
 
-By specifying ontology and term ID, you can get the association in a certain term.
+By specifying ontology and term ID, you can get the associations in a certain term.
 Here the term ID is from the first column of the data frame which is returned by 
 `getEnrichmentTables()`.
 
 ```{r, fig.width = 10, fig.height = 10/3}
-res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
-    termID = "GO:0004984")
-res[1:2, ]
+plotRegionGeneAssociations(job, ontology = "GO Molecular Function",
+    term_id = "GO:0004984")
+getRegionGeneAssociations(job, ontology = "GO Molecular Function",
+    term_id = "GO:0004984")
+```
+
+## The Shiny application
+
+`shinyReport()` creates a Shiny application to view the complete results:
+
+```{r, eval = FALSE}
+shinyReport(job)
 ```
 
 ## Session info

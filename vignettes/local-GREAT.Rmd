@@ -1,0 +1,296 @@
+---
+title: "Analyze with local GREAT"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{2. Analyze with local GREAT}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    fig.align = "center")
+```
+
+**GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a popular 
+web-based tool to associate biological functions to genomic regions, however, its nature of being
+an online tool has several limitations:
+
+1. limited number of supported organisms. Current version 4.0.4 only supports four organisms: "hg38", "hg19", "mm10" and "mm9".
+2. limited number of ontologies (or gene set collections). Current version 4.0.4 only supports seven ontologies (https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History).
+3. the update of annotation databases is only controlled by the GREAT developers.
+
+From **rGREAT** version 1.99.0, it implements the GREAT algorithms locally and it can be seamlessly integrated
+to the Bioconductor annotation ecosystem. This means, theoretically with **rGREAT**, it is possible to perform GREAT analysis
+with any organism and with any type of gene set collection / ontology.
+
+
+First let's load the **rGREAT** package:
+
+```{r, echo = 2}
+suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
+library(rGREAT)
+```
+
+
+## With defaultly supported annotation packages
+
+
+We first generate approximately 1000 random regions:
+
+```{r}
+set.seed(123)
+gr = randomRegions(nr = 1000)
+```
+
+The function `great()` performs local GREAT analysis. It has integrated many annotation databases which cover many organisms.
+Users simply specify the name of gene set collection (the second argument) and the name of the transcriptome annotation (the third argument).
+
+```{r}
+res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
+res
+```
+
+There are following supported gene set collections. The first category are GO gene sets. The gene sets data is from **GO.db** package.
+
+- `"GO:BP"`: Biological Process.
+- `"GO:CC"`: Cellular Component.
+- `"GO:MP"`: Molecular Function.
+
+The prefix `GO:` can be omitted when it is specified in `great()`.
+
+The second category of gene sets are from MSigDB with the **msigdbr** package. Note this is only for human:
+
+- `"msigdb:H"` Hallmark gene sets.
+- `"msigdb:C1"` Positional gene sets.
+- `"msigdb:C2"` Curated gene sets.
+- `"msigdb:C2:CGP"` C2 subcategory: chemical and genetic perturbations gene sets. 
+- `"msigdb:C2:CP"` C2 subcategory: canonical pathways gene sets. 
+- `"msigdb:C2:CP:BIOCARTA"` C2 subcategory: BioCarta subset of CP.
+- `"msigdb:C2:CP:KEGG"` C2 subcategory: KEGG subset of CP.
+- `"msigdb:C2:CP:PID"` C2 subcategory: PID subset of CP.
+- `"msigdb:C2:CP:REACTOME"` C2 subcategory: REACTOME subset of CP.
+- `"msigdb:C2:CP:WIKIPATHWAYS"` C2 subcategory: WIKIPATHWAYS subset of CP.
+- `"msigdb:C3"` Regulatory target gene sets.
+- `"msigdb:C3:MIR:MIRDB"` miRDB of microRNA targets gene sets.
+- `"msigdb:C3:MIR:MIR_LEGACY"` MIR_Legacy of MIRDB.
+- `"msigdb:C3:TFT:GTRD"` GTRD transcription factor targets gene sets.
+- `"msigdb:C3:TFT:TFT_LEGACY"` TFT_Legacy.
+- `"msigdb:C4"` Computational gene sets.
+- `"msigdb:C4:CGN"` C4 subcategory: cancer gene neighborhoods gene sets.
+- `"msigdb:C4:CM"` C4 subcategory: cancer modules gene sets.
+- `"msigdb:C5"` Ontology gene sets.
+- `"msigdb:C5:GO:BP"` C5 subcategory: BP subset.
+- `"msigdb:C5:GO:CC"` C5 subcategory: CC subset.
+- `"msigdb:C5:GO:MF"` C5 subcategory: MF subset.
+- `"msigdb:C5:HPO"` C5 subcategory: human phenotype ontology gene sets.
+- `"msigdb:C6"` Oncogenic signature gene sets.
+- `"msigdb:C7"` Immunologic signature gene sets.
+- `"msigdb:C7:IMMUNESIGDB"` ImmuneSigDB subset of C7.
+- `"msigdb:C7:VAX"` C7 subcategory: vaccine response gene sets.
+- `"msigdb:C8"` Cell type signature gene sets.
+
+The prefix `msigdb:` can be used as case insensitive and it can be omitted when specified in `great()`.
+
+There are also following supported transcriptome annotations for various organisms (in form of TxDb pacakges):
+
+- `"TxDb.Hsapiens.UCSC.hg18.knownGene"`
+- `"TxDb.Hsapiens.UCSC.hg19.knownGene"`
+- `"TxDb.Hsapiens.UCSC.hg38.knownGene"`
+- `"TxDb.Hsapiens.UCSC.hg38.refGene"`
+- `"TxDb.Mmusculus.UCSC.mm10.knownGene"`
+- `"TxDb.Mmusculus.UCSC.mm10.ensGene"`
+- `"TxDb.Mmusculus.UCSC.mm39.refGene"`
+- `"TxDb.Mmusculus.UCSC.mm9.knownGene"`
+- `"TxDb.Rnorvegicus.UCSC.rn4.ensGene"`
+- `"TxDb.Rnorvegicus.UCSC.rn5.refGene"`
+- `"TxDb.Rnorvegicus.UCSC.rn6.refGene"`
+- `"TxDb.Rnorvegicus.UCSC.rn7.refGene"`
+- `"TxDb.Ggallus.UCSC.galGal4.refGene"`
+- `"TxDb.Ggallus.UCSC.galGal5.refGene"`
+- `"TxDb.Ggallus.UCSC.galGal6.refGene"`
+- `"TxDb.Mmulatta.UCSC.rheMac10.refGene"`
+- `"TxDb.Mmulatta.UCSC.rheMac3.refGene"`
+- `"TxDb.Mmulatta.UCSC.rheMac8.refGene"`
+- `"TxDb.Celegans.UCSC.ce11.ensGene"`
+- `"TxDb.Celegans.UCSC.ce11.refGene"`
+- `"TxDb.Celegans.UCSC.ce6.ensGene"`
+- `"TxDb.Cfamiliaris.UCSC.canFam3.refGene"`
+- `"TxDb.Cfamiliaris.UCSC.canFam4.refGene"`
+- `"TxDb.Cfamiliaris.UCSC.canFam5.refGene"`
+- `"TxDb.Sscrofa.UCSC.susScr11.refGene"`
+- `"TxDb.Sscrofa.UCSC.susScr3.refGene"`
+- `"TxDb.Scerevisiae.UCSC.sacCer2.sgdGene"`
+- `"TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"`
+- `"TxDb.Ptroglodytes.UCSC.panTro4.refGene"`
+- `"TxDb.Ptroglodytes.UCSC.panTro5.refGene"`
+- `"TxDb.Ptroglodytes.UCSC.panTro6.refGene"`
+- `"TxDb.Dmelanogaster.UCSC.dm3.ensGene"`
+- `"TxDb.Dmelanogaster.UCSC.dm6.ensGene"`
+- `"TxDb.Drerio.UCSC.danRer10.refGene"`
+- `"TxDb.Drerio.UCSC.danRer11.refGene"`
+- `"TxDb.Btaurus.UCSC.bosTau8.refGene"`
+- `"TxDb.Btaurus.UCSC.bosTau9.refGene"`
+- `"TxDb.Athaliana.BioMart.plantsmart51"`
+- `"TxDb.Athaliana.BioMart.plantsmart22"`
+- `"TxDb.Athaliana.BioMart.plantsmart25"`
+- `"TxDb.Athaliana.BioMart.plantsmart28"`
+
+
+The TxDb can also be specified by its genome version:
+
+```{r, eval = FALSE}
+great(gr, "C2:CP:KEGG", "hg19")
+```
+
+
+## Manually set gene sets or transcriptome annotations
+
+If your organism is not defaultly supported, you can always use the `extendTSS()` to manually construct one. Note in GREAT algorithm, TSS are first
+extended by a rule (e.g. basal plus extension). `extendTSS()` accepts a `GRanges` object of gene or TSS and it returns a new `GRanges` object of extended TSS.
+
+In the following example, since I don't have data for the organism not defaultly supported by **rGREAT**. I simply use human data to demonstrate
+how to manually construct the extended TSS.
+
+
+There are two objects for `extendTSS()`: the gene (or the TSS) and the length of chromosomes. The gene object must have a meta column named "gene_id" which stores
+gene ID in a specific type (this ID type will be mapped to the genes in gene sets). The chromosome length object is a named vector and it also controls the total
+set of chromosomes to be used in the analysis.
+
+```{r}
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+gene = genes(TxDb.Hsapiens.UCSC.hg19.knownGene)
+gene = gene[seqnames(gene) %in% paste0("chr", c(1:22, "X", "Y"))]
+head(gene)
+gl = seqlengths(gene)[paste0("chr", c(1:22, "X", "Y"))]  # restrict to normal chromosomes
+head(gl)
+```
+
+Simply send `gene` and `gl` to `extendTSS()`:
+
+```{r}
+et = extendTSS(gene, gl)
+head(et)
+```
+
+We can also manually construct the gene sets object, which is a named list of vectors where each vector contains genes in a gene set.
+In the following example, I manually construct the "CP:KEGG" gene sets with the **msigdbr** package.
+
+```{r}
+library(msigdbr)
+map = msigdbr(category = "C2", subcategory = "CP:KEGG")
+gs = split(map$entrez_gene, map$gs_name)
+gs = lapply(gs, as.character)
+gs[1:2]
+```
+
+Please note again, gene IDs in `gs` should be the same as in `et`. 
+
+Now `gs` and `et` can be sent to `great()` to perform local GREAT with the annotation data you manually provided.
+
+```{r, eval = FALSE}
+great(gr, gene_sets = gs, extended_tss = et)
+```
+
+## Set background regions
+
+In the online GREAT tool, if background regions are set, [it actually uses a completely different test for the enrichment analysis](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655456/Statistics#Statistics-ExplicitBackgroundSet).
+In GREAT, when background is set, input regions should be exactly subset of background. For example, let's say a background region list contains
+five regions: `[1, 10], [15, 23], [34, 38], [40, 49], [54, 63]`, input regions can only be a subset of the five regions, which
+means they can take `[15, 23], [40, 49]`, but it cannot take `[16, 20], [39, 51]`. In this setting, regions are taken
+as single units and Fisher's exact test is applied for calculating the enrichment (by testing number of regions in the 2x2 contigency table).
+
+This might be useful for certain cases, e.g., for a specific transcriptional
+factor (TF), we take the union of ChIP-seq peaks of this TF from all tissues
+as the background set, and only take peaks from one specific tisse as input
+region set, and we want to test the enrichment of TF peaks in the tissue
+compared to the "background". However, this "background definition" might not
+be the case as many other users may think. They might take "background" as a
+set of regions where they only want to perform GREAT (the Binomial method) in.
+E.g. they may want to exclude "gap regions / unsequenced regions" from the
+analysis because the null hypothesis of Binomial test is the input regions are
+uniformly distributed in the genome. Since the unsequenced regions will never
+be measured, they should be excluded from the analysis. Other examples are
+that the background can be set as regions showing similar GC contents or CpG
+density as the input regions.
+
+`great()` supports two arguments `background` and `exclude` for setting a
+proper background. If any one of the two is set, the input regions and the
+extended TSS regions are intersected to the background, and GREAT algorithm is
+only applied to the reduced regions.
+
+When whole genome is set as background, denote $N_1$ as total number of input regions, $p_1$ as the fraction of genome
+that are overlapped to extended TSS for genes in a specific gene set and $K_1$ as the number of regions that overlap to
+the gene set associated regions, then the enrichment test is based on the random variable $K_1$ which follows Binomial distribution $K_1 \sim B(p_1, N_1)$.
+
+Similarly, when background regions are set, denote $N_2$ as total number of input regions that overlap to backgroud, $p_2$ as the fraction of background
+that are overlapped to extended TSS for genes in a specific gene set and $K_2$ as the number of regions that overlap to
+the gene set associated regions and also overlap to background, then the enrichment test is based on the random variable $K_2$ which follows Binomial distribution $K_2 \sim B(p_2, N_2)$.
+
+
+In the following example, `getGapFromUCSC()` can be used to retrieve gap regions from UCSC table browser.
+
+```{r, eval = FALSE}
+great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
+```
+
+If you want to use the Fisher's exact test-based or Hypergeometric-based method, you can use
+the GREAT website or use the Bioconductor package [**LOLA**](https://bioconductor.org/packages/LOLA/).
+
+## Get enrichment table
+
+Simply use `getEnrichmentTable()` function. 
+
+```{r}
+tb = getEnrichmentTable(res)
+head(tb)
+```
+
+## Get region-gene associations
+
+`plotRegionGeneAssociations()` generates three plots similar as those by
+online GREAT. `getRegionGeneAssociations()` returns a `GRanges` object containing
+associations between regions and genes.
+
+```{r, fig.width = 10, fig.height = 10/3, fig.align = 'center'}
+plotRegionGeneAssociations(res)
+getRegionGeneAssociations(res)
+```
+
+Please the two meta columns are in formats of `CharacterList`
+and `IntegerList` because a region may associate to multiple genes.
+
+
+Of course you can set a specific term by argument `term_id`.
+
+```{r, fig.width = 10, fig.height = 10/3, fig.align = 'center'}
+plotRegionGeneAssociations(res, term_id = "HALLMARK_APOPTOSIS")
+getRegionGeneAssociations(res, term_id = "HALLMARK_APOPTOSIS")
+```
+
+## The Shiny application
+
+`shinyReport()` creates a Shiny application to view the complete results:
+
+```{r, eval = FALSE}
+shinyReport(res)
+```
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+
+

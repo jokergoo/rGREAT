@@ -2,17 +2,17 @@
 \alias{availableCategories,GreatJob-method}
 \alias{availableCategories}
 \title{
-Available ontology categories
+Available ontology categories of the GREAT job
 }
 \description{
-Available ontology categories
+Available ontology categories of the GREAT job
 }
 \usage{
-\S4method{availableCategories}{GreatJob}(job)
+\S4method{availableCategories}{GreatJob}(object)
 }
 \arguments{
 
-  \item{job}{a \code{\link{GreatJob-class}} instance}
+  \item{object}{A \code{\link{GreatJob-class}} object returned by \code{\link{submitGreatJob}}.}
 
 }
 \details{

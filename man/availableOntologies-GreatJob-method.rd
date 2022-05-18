@@ -2,18 +2,18 @@
 \alias{availableOntologies,GreatJob-method}
 \alias{availableOntologies}
 \title{
-All available ontology names
+All available ontology names of the GREAT job
 }
 \description{
-All available ontology names
+All available ontology names of the GREAT job
 }
 \usage{
-\S4method{availableOntologies}{GreatJob}(job, category = NULL)
+\S4method{availableOntologies}{GreatJob}(object, category = NULL)
 }
 \arguments{
 
-  \item{job}{a \code{\link{GreatJob-class}} instance}
-  \item{category}{one or multiple categories. All available categories can be get by \code{\link{availableCategories}}}
+  \item{object}{A \code{\link{GreatJob-class}} object returned by \code{\link{submitGreatJob}}.}
+  \item{category}{one or multiple categories. All available categories can be got by \code{\link{availableCategories}}.}
 
 }
 \details{

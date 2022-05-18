@@ -19,14 +19,16 @@ Users don't need to construct by hand, \code{\link{submitGreatJob}} is used to g
 After submitting request to GREAT server, users can perform following steps:
 
 \itemize{
-  \item call \code{\link{getEnrichmentTables}} to get enrichment tables for selected ontologies catalogues.
-  \item call \code{\link{plotRegionGeneAssociationGraphs}} to get associations between regions and genes as well as making plots.  
+  \item \code{\link{getEnrichmentTables,GreatJob-method}} to get enrichment tables for selected ontologies catalogues.
+  \item \code{\link{plotRegionGeneAssociations,GreatJob-method}} to plot associations between regions and genes
+  \item \code{\link{getRegionGeneAssociations,GreatJob-method}} to get a \code{\link[GenomicRanges:GRanges-class]{GRanges}} object which contains associations bewteen regions and genes.
+  \item \code{\link{shinyReport,GreatJob-method}} to view the results by a shiny application.
 }}
 \author{
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-# please refer to page of `submitGreatJob`
+# There is no example
 NULL
 
 }

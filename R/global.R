@@ -21,3 +21,26 @@ SPECIES["2.0"] = SPECIES["2"] = SPECIES["2.0.2"]
 rGREAT_env = new.env()
 rGREAT_env$LAST_REQUEST_TIME = 0
 
+
+
+# == title
+# Global parameters for rGREAT
+#
+# == param
+# -... Arguments for the parameters, see "details" section
+# -RESET Reset to default values.
+# -READ.ONLY Please ignore.
+# -LOCAL Pllease ignore.
+# -ADD Please ignore.
+# 
+# == details
+# There are following parameters:
+# 
+# -``verbose`` Whether to show messages.
+#
+# == example
+# great_opt
+great_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
+great_opt = setGlobalOptions(
+	verbose = TRUE
+)

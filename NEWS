@@ -1,6 +1,15 @@
+CHANGES in VERSION 1.99.0
+
+* add `great()` and related functions to support local GREAT.
+* add `shinyReport()` to export results into a shiny application.
+
+-----------------------------------------------
+
 CHANGES in VERSION 1.21.1
 
 * parseRegionGeneAssociationFile(): parsing also considers positions with no sign.
+
+-----------------------------------------------
 
 CHANGES in VERSION 1.19.1
 

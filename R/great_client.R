@@ -16,9 +16,10 @@
 # == Workflow
 # After submitting request to GREAT server, users can perform following steps:
 #
-# - call `getEnrichmentTables` to get enrichment tables for selected ontologies catalogues.
-# - call `plotRegionGeneAssociationGraphs` to get associations between regions and genes
-#   as well as making plots.  
+# - `getEnrichmentTables,GreatJob-method` to get enrichment tables for selected ontologies catalogues.
+# - `plotRegionGeneAssociations,GreatJob-method` to plot associations between regions and genes
+# - `getRegionGeneAssociations,GreatJob-method` to get a `GenomicRanges::GRanges` object which contains associations bewteen regions and genes.
+# - `shinyReport,GreatJob-method` to view the results by a shiny application.
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
@@ -52,32 +53,32 @@ GreatJob = function(...) {
 
 
 # == title
-# Send requests to GREAT web server
+# Perform online GREAT analysis
 #
 # == param
-# -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end). Regions for test.
-# -bg A `GenomicRanges::GRanges` object or a data frame. Background regions if needed. Note ``gr`` should be exactly subset of ``bg`` for all columns in ``gr``. Check http://great.stanford.edu/help/display/GREAT/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain\%3F for more explanation.
+# -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end).
+# -bg Not supported any more. See explanations in section "When_background_regions_are_set".
 # -species Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
-# -includeCuratedRegDoms  Whether to include curated regulatory domains.
-# -rule How to associate genomic regions to genes. See 'details' section.
-# -adv_upstream Unit: kb, only used when rule is ``basalPlusExt``
-# -adv_downstream Unit: kb, only used when rule is ``basalPlusExt``
-# -adv_span Unit: kb, only used when rule is ``basalPlusExt``
-# -adv_twoDistance Unit: kb, only used when rule is ``twoClosest``
-# -adv_oneDistance Unit: kb, only used when rule is ``oneClosest``
+# -includeCuratedRegDoms  Whether to include curated regulatory domains, see https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains .
+# -rule How to associate genomic regions to genes. See 'Details' section.
+# -adv_upstream Unit: kb, only used when rule is ``basalPlusExt``.
+# -adv_downstream Unit: kb, only used when rule is ``basalPlusExt``.
+# -adv_span Unit: kb, only used when rule is ``basalPlusExt``.
+# -adv_twoDistance Unit: kb, only used when rule is ``twoClosest``.
+# -adv_oneDistance Unit: kb, only used when rule is ``oneClosest``.
 # -request_interval Time interval for two requests. Default is 300 seconds.
-# -max_tries Maximum times trying to connect to GREAT web server.
-# -version version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers
+# -max_tries Maximal times for aotumatically reconnecting GREAT web server.
+# -version Version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers
 #          can also be used, such as using "4" or "4.0" is same as "4.0.4".
-# -base_url the url of ``cgi-bin`` path, only used when explicitly specified.
+# -base_url the url of ``cgi-bin`` path, only used when it is explicitly specified.
 # -help Whether to print help messages.
 #
 # == details
-# Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History  where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
+# Note: On Aug 19 2019 GREAT released version 4(https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History ) where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
 # takes ``hg19`` as default. ``hg38`` can be specified by the ``species = "hg38"`` argument.
 # To use the older versions such as 3.0.0, specify as ``submitGreatJob(..., version = "3.0.0")``.
 #
-# Note it is not the standard GREAT API. This function directly send data to GREAT web server
+# Note it does not use the standard GREAT API. This function directly send data to GREAT web server
 # by HTTP POST.
 #
 # Following text is copied from GREAT web site ( http://great.stanford.edu/public/html/ )
@@ -98,29 +99,49 @@ GreatJob = function(...) {
 #   between the gene's TSS and the nearest gene's TSS (controlled by ``adv_oneDistance``) but no more than the maximum 
 #   extension in one direction.
 #
+# == When_background_regions_are_set
+# Note when ``bg`` argument is set to a list of background regions, GREAT uses a completely different test!
+#
+# When ``bg`` is set, ``gr`` should be exactly subset of ``bg``. For example, let's say a background region list contains
+# five regions: ``[1, 10], [15, 23], [34, 38], [40, 49], [54, 63]``, ``gr`` can only be a subset of the five regions, which
+# means ``gr`` can take ``[15, 23], [40, 49]``, but it cannot take ``[16, 20], [39, 51]``. In this setting, regions are taken
+# as single units and Fisher's exact test is applied for calculating the enrichment (by testing number of regions in the 2x2 contigency table).
+#
+# Check https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655452/File+Formats#FileFormats-Whatshouldmybackgroundregionsfilecontain? for more explanations.
+#
+# Please note from rGREAT 1.99.0, setting ``bg`` is not supported any more and this argument will be removed in the future. You can either directly use GREAT website or use other Bioconductor packages such as "LOLA" to perform
+# the Fisher's exact test-based analysis.
+#
+# If you want to restrict the input regions to background regions (by intersections) and still to apply Binomial test there, please
+# consider to use local GREAT by `great`.
+#
 # == value
-# A `GreatJob-class` class object which can be used to get results from GREAT server.
+# A `GreatJob-class` object which can be used to get results from GREAT server. The following methods can be applied on it:
+# 
+# - `getEnrichmentTables,GreatObject-method` to retreive the result tables. 
+# - `getRegionGeneAssociations,GreatObject-method` to get the associations between input regions and genes.
+# - `plotRegionGeneAssociations,GreatObject-method` to plot the associations bewteen input regions and genes.
+# - `shinyReport,GreatObject-method` to view the results by a shiny application.
 #
 # == seealso
-# `GreatJob-class`
+# `great` for the local implementation of GREAT algorithm.
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
 # set.seed(123)
-# bed = circlize::generateRandomBed(nr = 1000, nc = 0)
-# job = submitGreatJob(bed, version = "3.0.0")
+# gr = randomRegions(nr = 1000)
+# job = submitGreatJob(gr, version = "3.0.0")
 # job
 #
 # # more parameters can be set for the job
 # if(FALSE) { # suppress running it when building the package
-#     # current GREAT version is 4.0.1
-#     job = submitGreatJob(bed, species = "mm9")
-#     job = submitGreatJob(bed, bg, species = "mm9", bgChoise = "data")
-#     job = submitGreatJob(bed, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
-#     job = submitGreatJob(bed, rule = "twoClosest", adv_twoDistance = 2000)
-#     job = submitGreatJob(bed, rule = "oneClosest", adv_oneDistance = 2000)
+#     # current GREAT version is 4.0.4
+#     job = submitGreatJob(gr, species = "hg19")
+#     job = submitGreatJob(gr, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
+#     job = submitGreatJob(gr, rule = "twoClosest", adv_twoDistance = 2000)
+#     job = submitGreatJob(gr, rule = "oneClosest", adv_oneDistance = 2000)
 # }
 #
 submitGreatJob = function(gr, bg = NULL,
@@ -181,6 +202,9 @@ to turn off this message.')
     bgChoice = ifelse(is.null(bg), "wholeGenome", "file")
 
     if(!is.null(bg)) {
+
+        warning_wrap("From rGREAT 1.99.0, `bg` will not be supported any more because GREAT requires a specific format for `gr` and `bg` if both are set, and it uses a completely different method for the enrichment analysis. Please see the documentation of `submitGreatJob()` for more explanations.")
+        
         if(inherits(bg, "data.frame")) {
             bg = GRanges(seqnames = bg[[1]],
                          ranges = IRanges(start = bg[[2]],
@@ -193,22 +217,6 @@ to turn off this message.')
         }
         mcols(bg) = NULL
 
-        # # check whether all grs are subsets of bg
-        # ov = findOverlaps(gr, bg)
-        # if(length(ov) == 0) {
-        #     stop("No overlapping between `gr` and `bg`.")
-        # }
-        # mtch = as.matrix(ov)
-
-        # if(length(setdiff(gr, bg)) != 0) {
-        #     warning("For each interval in `gr`, there should be an interval in `bg` which is exactly the same.\nThe different intervals in `gr` will be removed.")
-        # }
-        
-        # # gr should be exactly subset of bg
-        # gr = sort(pintersect(gr[mtch[, 1]], bg[mtch[, 2]]))
-        # mcols(gr) = NULL
-
-        # bg = sort(c(gr, setdiff(bg, gr)))
     }
 
     # check seqnames should have 'chr' prefix
@@ -448,25 +456,26 @@ setMethod(f = "show",
     
     cat("Submit time:", 
         format(object@job_env$submit_time, "%Y-%m-%d %H:%M:%S"), "\n")
+    cat("  Note the results may only be avaiable on GREAT server for 24 hours.\n")
     cat("Version:", param(object, "version"), "\n")
     #cat("Session ID:", id(object), "\n")
     cat("Species:", param(object, "species"), "\n")
     cat("Inputs:", param(object, "n_region"), "regions\n")
-    if(param(object, "bgChoice") == "wholeGenome") {
-        cat("Background:", param(object, "bgChoice"), "\n")
-    } else {
-        cat("Background: user-defined,", param(object, "n_bg"), "regions\n")
-    }
+    # if(param(object, "bgChoice") == "wholeGenome") {
+    #     cat("Background:", param(object, "bgChoice"), "\n")
+    # } else {
+    #     cat("Background: user-defined,", param(object, "n_bg"), "regions\n")
+    # }
     if(param(object, "rule") == "basalPlusExt") {
-        cat("Model:", "Basal plus extension", "\n")
+        cat("Mode:", "Basal plus extension", "\n")
         cat("  Proximal:", param(object, "adv_upstream"), "kb upstream,", 
             param(object, "adv_downstream"), "kb downstream,\n  plus Distal: up to", 
             param(object, "adv_span"), "kb\n")
     } else if(param(object, "rule") == "twoClosest") {
-        cat("Model:", "Two nearest genes", "\n")
+        cat("Mode:", "Two nearest genes", "\n")
         cat("  within", param(object, "adv_twoDistance"), "kb\n")
     } else if(param(object, "rule") == "oneClosest") {
-        cat("Model:", "Single nearest gene", "\n")
+        cat("Mode:", "Single nearest gene", "\n")
         cat("  within", param(object, "adv_oneDistance"), "kb\n")
     }
     if(param(object, "includeCuratedRegDoms")) {
@@ -510,26 +519,18 @@ setMethod(f = "param",
 # Get enrichment tables from GREAT web server
 #
 # == param
-# -job a `GreatJob-class` instance
-# -ontology ontology names. Valid values are in `availableOntologies`. ``ontology`` is prior to 
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -ontology Ontology names. Valid values are in `availableOntologies`. ``ontology`` is prior to 
 #           ``category`` argument.
 # -category Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in 
 #            `availableCategories`
-# -request_interval time interval for two requests. Default is 300 seconds.
-# -max_tries maximum tries
+# -request_interval Time interval for two requests. Default is 300 seconds.
+# -max_tries Maximal times for automatically reconnecting GREAT web server.
 # -download_by Internally used.
-# -verbose Whether print messages.
+# -verbose Whether to print messages.
 #
-# == details  
-# The table contains statistics for the each term in each ontology catalogue.
-#    
-# Please note there is no FDR column in original tables. Users should 
-# calculate by themselves by functions such as `stats::p.adjust`
-# 
 # == value
-# The returned value is a list of data frames in which each one corresponds to 
-# result for a single ontology. The structure of the data frames are same as 
-# the tables available on GREAT website.
+# The structure of the data frames are same as the tables available on GREAT website.
 #
 # == see also
 # `availableOntologies`, `availableCategories`
@@ -540,20 +541,22 @@ setMethod(f = "param",
 # == example
 # # note the `job` was generated from GREAT 3.0.0
 # job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
-# tb = getEnrichmentTables(job)
-# names(tb)
-# head(tb[[1]])
+# tbl = getEnrichmentTables(job)
+# names(tbl)
+# head(tbl[[1]])
 # job
 #
-# tb = getEnrichmentTables(job, ontology = "GO Molecular Function")
-# tb = getEnrichmentTables(job, category = "GO")
+# tbl = getEnrichmentTables(job, ontology = "GO Molecular Function")
+# tbl = getEnrichmentTables(job, category = "GO")
 #
 setMethod(f = "getEnrichmentTables",
     signature = "GreatJob",
-    definition = function(job, ontology = NULL, category = "GO",
+    definition = function(object, ontology = NULL, category = "GO",
     request_interval = 10, max_tries = 100, download_by = c("json", "tsv"),
     verbose = TRUE) {
-    
+        
+    job = object
+
     jobid = id(job)
     species = param(job, "species")
     version = param(job, "version")
@@ -608,6 +611,34 @@ setMethod(f = "getEnrichmentTables",
     })
     names(res) = ontology
     return(res)
+})
+
+
+
+# == title
+# Get a single enrichment table from GREAT web server
+#
+# == param
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -ontology A single ontology names. Valid values are in `availableOntologies`. 
+# -... All pass to `getEnrichmentTables,GreatJob-method`.
+#
+# == value
+# A data frame of the enrichment results for a single ontology.
+# 
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# tb = getEnrichmentTable(job, ontology = "GO Molecular Function")
+# head(tb)
+setMethod(f = "getEnrichmentTable",
+    signature = "GreatJob",
+    definition = function(object, ontology, ...) {
+
+    if(length(ontology) != 1) {
+        stop_wrap("Length of `ontology` must be 1.")
+    }
+    getEnrichmentTables(object, ontology, ...)[[1]]
 })
 
 message_wrap = function (...)  {
@@ -665,11 +696,11 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
 }
 
 # == title
-# All available ontology names
+# All available ontology names of the GREAT job
 #
 # == param
-# -job a `GreatJob-class` instance
-# -category one or multiple categories. All available categories can be get by `availableCategories`
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -category one or multiple categories. All available categories can be got by `availableCategories`.
 #
 # == details
 # The values of the supported ontologies sometime change. You should run the function to get the real-time
@@ -689,8 +720,10 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
 #
 setMethod(f = "availableOntologies",
     signature = "GreatJob",
-    definition = function(job, category = NULL) {
-    
+    definition = function(object, category = NULL) {
+        
+    job = object
+
     species = param(job, "species")
     CATEGORY = job@job_env$CATEGORY
     
@@ -710,10 +743,10 @@ setMethod(f = "availableOntologies",
 
 
 # == title
-# Available ontology categories
+# Available ontology categories of the GREAT job
 #
 # == param
-# -job a `GreatJob-class` instance
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
 #
 # == details
 # The values of the supported categories sometime change. You should run the function to get the real-time
@@ -732,10 +765,10 @@ setMethod(f = "availableOntologies",
 #
 setMethod(f = "availableCategories",
     signature = "GreatJob",
-    definition = function(job) {
+    definition = function(object) {
 
-    species = param(job, "species")
-    CATEGORY = job@job_env$CATEGORY
+    species = param(object, "species")
+    CATEGORY = object@job_env$CATEGORY
     
     names(CATEGORY)
 })
@@ -879,42 +912,28 @@ parseRegionGeneAssociationFile = function(f1) {
 
 
 # == title
-# Plot region-gene association figures
+# Plot region-gene associations
 #
 # == param
-# -job a `GreatJob-class` instance
-# -type type of plots, should be in ``1, 2, 3``. See details section for explanation
-# -ontology ontology name
-# -termID term id which corresponds to the selected ontology
-# -request_interval time interval for two requests. Default is 300 seconds.
-# -max_tries maximum tries
-# -verbose whether show message
-# -plot whether make plots
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -ontology Ontology name.
+# -term_id Term id in the selected ontology
+# -which_plot Which plots to draw? The value should be in ``1, 2, 3``. See "Details" section for explanation.
+# -request_interval Time interval for two requests. Default is 300 seconds.
+# -max_tries Maximal times for automatically reconnecting GREAT web server.
+# -verbose Whether to show messages.
 #
 # == details
-# Generated figures are:  
+# There are following figures:  
 #
-# - association between regions and genes
-# - distribution of distance to TSS
-# - distribution of absolute distance to TSS
+# - Association between regions and genes (``which_plot = 1``).
+# - Distribution of distance to TSS (``which_plot = 2``).
+# - Distribution of absolute distance to TSS (``which_plot = 3``).
 #
-#     
-# If ``ontology`` and ``termID`` are set, only regions and genes corresponding to 
+# If ``ontology`` and ``term_id`` are set, only regions and genes corresponding to 
 # selected ontology term will be used. Valid value for ``ontology`` is in 
-# `availableOntologies` and valid value for ``termID`` is from 'id' column 
+# `availableOntologies` and valid value for ``term_id`` is from 'id' column 
 # in the table which is returned by `getEnrichmentTables`.  
-#
-# == value
-# a `GenomicRanges::GRanges` object. Columns in metadata are:  
-#
-# -gene genes that are associated with corresponding regions
-# -distTSS distance from the regions to TSS of the associated gene
-#
-# The returned values corresponds to whole input regions or only regions in specified ontology term, 
-# depending on user's setting. 
-#
-# If there is no gene associated with the region, corresponding ``gene`` and ``distTSS``
-# columns will be ``NA``.
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>
@@ -923,20 +942,210 @@ parseRegionGeneAssociationFile = function(f1) {
 # # note the `job` was generated from GREAT 3.0.0
 # job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
 #
-# res = plotRegionGeneAssociationGraphs(job)
-# res
+# plotRegionGeneAssociations(job)
+# plotRegionGeneAssociations(job, which_plot = 1)
+# plotRegionGeneAssociations(job, ontology = "GO Molecular Function",
+#     term_id = "GO:0004984")
 #
-# plotRegionGeneAssociationGraphs(job, type = 1)
+setMethod(f = "plotRegionGeneAssociations",
+    signature = "GreatJob",
+    definition = function(object, ontology = NULL, term_id = NULL, which_plot = 1:3, 
+    request_interval = 10, max_tries = 100, verbose = great_opt$verbose) {
+
+    job = object
+    termID = term_id
+
+    gr_all = getRegionGeneAssociations(object, request_interval = request_interval,
+        max_tries = max_tries, verbose = verbose)
+
+    if(!is.null(term_id)) {
+        gr_term = getRegionGeneAssociations(object, ontology = ontology, term_id = term_id, request_interval = request_interval,
+            max_tries = max_tries, verbose = verbose)
+    } else {
+        gr_term = NULL
+    }
+
+    plot_great(gr_all, gr_term, which_plot = which_plot, gr_full_len = nrow(object@job_env$gr), term_id = term_id)
+})
+
+
+plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, term_id = NULL) {
+
+    op = par(no.readonly = TRUE)
+    on.exit(par(op))
+    par(mfrow = c(1, length(intersect(which_plot, 1:3))), mar = c(6, 4, 4, 1))
+
+    using_term = !is.null(gr_term)
+
+    df_all = data.frame(distTSS = unlist(gr_all$dist_to_TSS))
+    if(using_term) {
+        df_term = data.frame(distTSS = unlist(gr_term$dist_to_TSS))
+    }
+   
+    # make plots
+    if(1 %in% which_plot) {
+        if(using_term) {
+            tb = table(table(unlist(gr_term$annotated_genes)))
+            vt = numeric(11)
+            vt[as.numeric(names(tb))] = tb
+            vt[is.na(vt)] = 0
+            v = c(vt[1:10], sum(vt[10:length(vt)]))
+            names(v) = c(as.character(1:10), ">10")
+            v[is.na(v)] = 0
+            p = v/sum(v)
+            pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\nTerm: @{term_id}"))
+            text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
+        } else {
+            tb = table(table(unlist(gr_all$annotated_genes)))
+            v = c(gr_full_len - length(gr_all), tb["1"], tb["2"], sum(tb[as.numeric(names(tb)) > 2]))
+            names(v) = c("0", "1", "2", "> 3")
+            v[is.na(v)] = 0
+            p = v/sum(v)
+            pos = barplot(p, col = c("red", "grey", "grey", "grey"), xlab = "Number of associated genes per region", ylab = "Genomic regions", ylim = c(0, max(p)*1.5), main = "Number of associated genes per region")
+            text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), col = c("red", "black", "black", "black"), cex = 0.8)
+            legend("topright", pch = 15, col = c("grey", "red"), legend = c("Genomic regions associated with one or more genes", "Genomic regions not associated with any genes"), cex = 0.8)
+        }
+    }
+    if(2 %in% which_plot) {
+        v = cbind(
+            c("<-500"       = sum(df_all$distTSS <= -500000),
+              "-500 to -50" = sum(df_all$distTSS > -500000 & df_all$distTSS <= -50000),
+              "-50 to -5"   = sum(df_all$distTSS > -50000  & df_all$distTSS <= -5000),
+              "-5 to 0"     = sum(df_all$distTSS > -5000   & df_all$distTSS < 0),
+              "0 to 5"      = sum(df_all$distTSS >= 0       & df_all$distTSS <= 5000),
+              "5 to 50"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
+              "50 to 500"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
+              "> 500"       = sum(df_all$distTSS > 500000)))
+        
+        if(using_term) {
+            v = cbind( 
+            c("<-500"       = sum(df_term$distTSS <= -500000),
+              "-500 to -50" = sum(df_term$distTSS > -500000 & df_term$distTSS <= -50000),
+              "-50 to -5"   = sum(df_term$distTSS > -50000  & df_term$distTSS <= -5000),
+              "-5 to 0"     = sum(df_term$distTSS > -5000   & df_term$distTSS < 0),
+              "0 to 5"      = sum(df_term$distTSS >= 0       & df_term$distTSS <= 5000),
+              "5 to 50"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
+              "50 to 500"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
+              "> 500"       = sum(df_term$distTSS > 500000)), v)
+        }
+        p = v
+        for(ic in seq_len(ncol(v))) {
+            p[, ic] = v[, ic]/sum(v[, ic])
+        }
+        p[is.na(p)] = 0
+        rownames(p) = NULL
+        if(using_term) {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "", ylab = "Region-gene associations (fraction)", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS\nTerm: @{term_id}"), axes = FALSE)
+        } else {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "", ylab = "Region-gene associations (fraction)", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS"), axes = FALSE)
+        }
+        mtext("Distance to TSS (kb)", line = 4, side = 1, cex = 0.7)
+        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
+        axis(side = 2)
+        op = par("xpd")
+        par(xpd = NA)
+        text(colMeans(pos), -0.02,rownames(v), srt = 45, adj = c(1, 0.5))
+        par(xpd = op)
+        x1 = (mean(pos[, 4]) + mean(pos[, 5]))/2
+        x2 = (mean(pos[, 5]) + mean(pos[, 6]))/2
+        y = max(p)*1.2
+        lines( c(x1, x1), c(0, y))
+        arrows(x1, y, x2, y, angle = 15, length = 0.1, code = 2)
+        text(mean(pos[, 5]), y+0.01, "TSS", adj = c(0.5, 0), cex = 0.8)
+        if(using_term) {
+            legend("topright", pch = 15, col = c("green", "blue"), legend = c("This term's region-gene associations", "Set-wide region-gene associations"), cex = 0.8)
+        }
+    }
+    if(3 %in% which_plot) {
+        v = cbind(
+            c("0 to 5"      = sum(abs(df_all$distTSS) >= 0       & abs(df_all$distTSS) <= 5000),
+              "5 to 50"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
+              "50 to 500"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
+              "> 500"       = sum(abs(df_all$distTSS) > 500000)))
+        if(using_term) {
+            v = cbind( 
+            c("0 to 5"      = sum(abs(df_term$distTSS) >= 0       & abs(df_term$distTSS) <= 5000),
+              "5 to 50"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
+              "50 to 500"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
+              "> 500"       = sum(abs(df_term$distTSS) > 500000)), v)
+        }
+        p = v
+        for(ic in seq_len(ncol(v))) {
+            p[, ic] = v[, ic]/sum(v[, ic])
+        }
+        p[is.na(p)] = 0
+        rownames(p) = NULL
+        if(using_term) {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "", ylab = "Region-gene associations (fraction)", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS\nTerm: @{term_id}"), axes = FALSE)
+        } else {
+            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "", ylab = "Region-gene associations (fraction)", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS"), axes = FALSE)
+        }
+        mtext("Absolute distance to TSS (kb)", line = 4, side = 1, cex = 0.7)
+        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
+        axis(side = 2)
+        op = par("xpd")
+        par(xpd = NA)
+        text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
+        par(xpd = op)
+        x1 = 0.9
+        y = max(p)*1.2
+        arrows(x1, 0, x1, y, angle = 15, length = 0.1, code = 2)
+        text(x1, y+0.01, "TSS", adj = c(0, 0), cex = 0.8)
+        
+        if(using_term) {
+            legend("topright", pch = 15, col = c("green", "blue"), legend = c("This term's region-gene associations", "Set-wide region-gene associations"), cex = 0.8)
+        }
+    }
+}
+
+# == title
+# Plot region-gene associations
 #
-# res = plotRegionGeneAssociationGraphs(job, ontology = "GO Molecular Function",
-#     termID = "GO:0004984")
-# res
+# == param
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -... All passed to `plotRegionGeneAssociations,GreatJob-method`.
+#
+# == details
+# This function will be removed in the future, please use `plotRegionGeneAssociations,GreatJob-method` instead.
 #
 setMethod(f = "plotRegionGeneAssociationGraphs",
     signature = "GreatJob",
-    definition = function(job, type = 1:3, ontology = NULL, 
-    termID = NULL, request_interval = 10, max_tries = 100, verbose = TRUE,
-    plot = TRUE) {
+    definition = function(object, ...) {
+
+    plotRegionGeneAssociations(object, ...)
+})
+
+# == title
+# Get region-gene associations
+#
+# == param
+# -object A `GreatJob-class` object returned by `submitGreatJob`.
+# -ontology ontology name
+# -term_id Term id in the selected ontology.
+# -request_interval Time interval for two requests. Default is 300 seconds.
+# -max_tries Maximal times for automatically reconnecting GREAT web server.
+# -verbose Whether to show messages.
+#
+# == value
+# A `GenomicRanges::GRanges` object. Please the two meta columns are in formats of ``CharacterList``
+# and ``IntegerList`` because a region may associate to multiple genes.
+#
+# == author
+# Zuguang gu <z.gu@dkfz.de>
+#
+# == example
+# # note the `job` was generated from GREAT 3.0.0
+# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+#
+# gr = getRegionGeneAssociations(job)
+# gr
+setMethod(f = "getRegionGeneAssociations",
+    signature = "GreatJob",
+    definition = function(object, ontology = NULL, term_id = NULL, 
+    request_interval = 10, max_tries = 100, verbose = great_opt$verbose) {
+
+    job = object
+    termID = term_id
 
     if(!file.exists(job@job_env$tempdir)) {
         td = tempdir()
@@ -969,7 +1178,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     }
 
     if(sum(c(is.null(ontology), is.null(termID))) == 1) {
-        stop("You should set both of `ontology` and `termID` or neither of them.\n")
+        stop("You should set both of `ontology` and `term_id` or neither of them.\n")
     }
     
     if(using_term) {
@@ -993,7 +1202,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
-            if(verbose) qqcat("The webpage for '@{ONTOLOGY_KEYS[ontology]}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
+            if(verbose) qqcat("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
 
             if (param(job, "bgChoice") != "data") {
               url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
@@ -1032,139 +1241,31 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
     df_all_NA = df_all[is.na(df_all$gene), , drop = FALSE]
     df_all = df_all[!is.na(df_all$gene), , drop = FALSE]
 
-    if(plot) {
-        op_mfrow = par("mfrow")
-        on.exit(par(mfrow = op_mfrow))
-        par(mfrow = c(1, length(intersect(type, 1:3))))
-    } else {
-        type = 0
-    }
-
-    # make plots
-    if(1 %in% type) {
-        if(using_term) {
-            tb = table(table(df_term$gene))
-            vt = numeric(11)
-            vt[as.numeric(names(tb))] = tb
-            vt[is.na(vt)] = 0
-            v = c(vt[1:10], sum(vt[10:length(vt)]))
-            names(v) = c(as.character(1:10), ">10")
-            v[is.na(v)] = 0
-            p = v/sum(v)
-            pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\n@{ontology}\n@{termID}"))
-            text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
-        } else {
-            tb = table(table(paste(df_all$chr, df_all$start, df_all$end, sep = ",")))
-            v = c(nrow(df_all_NA), tb["1"], tb["2"], sum(tb[as.numeric(names(tb)) > 2]))
-            names(v) = c("0", "1", "2", "> 3")
-            v[is.na(v)] = 0
-            p = v/sum(v)
-            pos = barplot(p, col = c("red", "grey", "grey", "grey"), xlab = "Number of associated genes per region", ylab = "Genomic regions", ylim = c(0, max(p)*1.5), main = "Number of associated genes per region")
-            text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), col = c("red", "black", "black", "black"), cex = 0.8)
-            legend("topright", pch = 15, col = c("grey", "red"), legend = c("Genomic regions associated with one or more genes", "Genomic regions not associated with any genes"), cex = 0.8)
-        }
-    }
-    if(2 %in% type) {
-        v = cbind(
-            c("<-500"       = sum(df_all$distTSS <= -500000),
-              "-500 to -50" = sum(df_all$distTSS > -500000 & df_all$distTSS <= -50000),
-              "-50 to -5"   = sum(df_all$distTSS > -50000  & df_all$distTSS <= -5000),
-              "-5 to 0"     = sum(df_all$distTSS > -5000   & df_all$distTSS < 0),
-              "0 to 5"      = sum(df_all$distTSS >= 0       & df_all$distTSS <= 5000),
-              "5 to 50"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
-              "50 to 500"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
-              "> 500"       = sum(df_all$distTSS > 500000)))
-        p = v/sum(v)
-        if(using_term) {
-            v = cbind( 
-            c("<-500"       = sum(df_term$distTSS <= -500000),
-              "-500 to -50" = sum(df_term$distTSS > -500000 & df_term$distTSS <= -50000),
-              "-50 to -5"   = sum(df_term$distTSS > -50000  & df_term$distTSS <= -5000),
-              "-5 to 0"     = sum(df_term$distTSS > -5000   & df_term$distTSS < 0),
-              "0 to 5"      = sum(df_term$distTSS >= 0       & df_term$distTSS <= 5000),
-              "5 to 50"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
-              "50 to 500"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
-              "> 500"       = sum(df_term$distTSS > 500000)), v)
-            p = v/sum(v)
-        }
-        
-        p[is.na(p)] = 0
-        rownames(p) = NULL
-        if(using_term) {
-            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
-        } else {
-            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by orientation and distance to TSS"), axes = FALSE)
-        }
-        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
-        axis(side = 2)
-        op = par("xpd")
-        par(xpd = NA)
-        text(colMeans(pos), -0.02,rownames(v), srt = 45, adj = c(1, 0.5))
-        par(xpd = op)
-        x1 = (mean(pos[, 4]) + mean(pos[, 5]))/2
-        x2 = (mean(pos[, 5]) + mean(pos[, 6]))/2
-        y = max(p)*1.2
-        lines( c(x1, x1), c(0, y))
-        arrows(x1, y, x2, y, angle = 15, length = 0.1, code = 2)
-        text(mean(pos[, 5]), y+0.01, "TSS", adj = c(0.5, 0), cex = 0.8)
-        if(using_term) {
-            legend("topright", pch = 15, col = c("green", "blue"), legend = c("This term's region-gene associations", "Set-wide region-gene associations"), cex = 0.8)
-        }
-    }
-    if(3 %in% type) {
-        v = cbind(
-            c("0 to 5"      = sum(abs(df_all$distTSS) >= 0       & abs(df_all$distTSS) <= 5000),
-              "5 to 50"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
-              "50 to 500"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
-              "> 500"       = sum(abs(df_all$distTSS) > 500000)))
-        p = v/sum(v)
-        if(using_term) {
-            v = cbind( 
-            c("0 to 5"      = sum(abs(df_term$distTSS) >= 0       & abs(df_term$distTSS) <= 5000),
-              "5 to 50"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
-              "50 to 500"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
-              "> 500"       = sum(abs(df_term$distTSS) > 500000)), v)
-            p = v/sum(v)
-        }
-        p[is.na(p)] = 0
-        rownames(p) = NULL
-        if(using_term) {
-            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS\n@{ontology}\n@{termID}"), axes = FALSE)
-        } else {
-            pos = barplot(t(p), beside = TRUE, col = {if(using_term) c("green", "blue") else "blue"}, xlab = "Absolute distance to TSS (kb)", ylab = "Region-gene associations", ylim = c(0, max(p)*1.5), main = qq("Binned by absolute distance to TSS"), axes = FALSE)
-        }
-        text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
-        axis(side = 2)
-        op = par("xpd")
-        par(xpd = NA)
-        text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
-        par(xpd = op)
-        x1 = 0.9
-        y = max(p)*1.2
-        arrows(x1, 0, x1, y, angle = 15, length = 0.1, code = 2)
-        text(x1, y+0.01, "TSS", adj = c(0, 0), cex = 0.8)
-        
-        if(using_term) {
-            legend("topright", pch = 15, col = c("green", "blue"), legend = c("This term's region-gene associations", "Set-wide region-gene associations"))
-        }
-    }
     
     if(using_term) {
-        df = rbind(df_term, df_term_NA)
+        df = df_term
     } else {
-        df = rbind(df_all, df_all_NA)
+        df = df_all
     }
 
-    gr = GRanges(seqnames = factor(df[[1]], levels = sort_chr(unique(df[[1]]))),
-                 ranges = IRanges(start = df[[2]],
-                                   end = df[[3]]),
-                 gene = df[[4]],
-                 distTSS = df[[5]])
+    fa = paste0(df[, 1], df[, 2], df[, 3], sep = "-")
+    gr = GRanges(seqnames = tapply(df[, 1], fa, function(x) x[1]),
+                ranges = IRanges(tapply(df[, 2], fa, function(x) x[1]), tapply(df[, 3], fa, function(x) x[1])))
+    gr$annotated_genes = vector("list", length(gr))
+    gr$annotated_genes = split(df[, 4], fa)
+    gr$dist_to_TSS = vector("list", length(gr))
+    gr$dist_to_TSS = split(df[, 5], fa)
+
+    gr$annotated_genes = CharacterList(gr$annotated_genes)
+    gr$dist_to_TSS = IntegerList(gr$dist_to_TSS)
+
+    seqlevels(gr) = sort_chr(unique(df[[1]]))
     gr = sort(gr)
-    return(invisible(gr))
+
+    return(gr)
 })
 
-# just want to print something while waiting
+
 sleep = function(time) {
     pb = txtProgressBar(style = 3)
     for(i in seq_len(time)/time) {Sys.sleep(1); setTxtProgressBar(pb, i)}
