@@ -330,6 +330,19 @@ In `getEnrichmentTable()`, you can set argument `min_region_hits` to set
 the minimal number of input regions that hit a geneset-associated regions.
 Note the adjusted p-values will be recalculated in the table.
 
+## Make volcano plot
+
+In differential gene expression analysis, volcano plot is used to visualize relations between log2 fold change and (adjusted) p-values.
+Similarly, we can also use volcano plot to visualize relations between fold enrichment and (adjusted) p-values for the enrichment analysis. 
+The plot is made by the function `plotVolcano()`:
+
+```{r}
+plotVolcano(res)
+```
+
+As the enrichment analysis basically only looks for over-representations, it is actually half volcano.
+
+
 ## Get region-gene associations
 
 `plotRegionGeneAssociations()` generates three plots similar as those by

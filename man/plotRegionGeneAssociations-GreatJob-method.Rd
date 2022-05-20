@@ -13,7 +13,7 @@ Plot region-gene associations
 \arguments{
 
   \item{object}{A \code{\link{GreatJob-class}} object returned by \code{\link{submitGreatJob}}.}
-  \item{ontology}{Ontology name.}
+  \item{ontology}{A single ontology names. Valid values are in \code{\link{availableOntologies}}. }
   \item{term_id}{Term id in the selected ontology}
   \item{which_plot}{Which plots to draw? The value should be in \code{1, 2, 3}. See "Details" section for explanation.}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}

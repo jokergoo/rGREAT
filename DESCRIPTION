@@ -10,7 +10,7 @@ Depends: R (>= 3.6.0), GenomicRanges, IRanges, methods, S4Vectors, GenomeInfoDb
 Imports: graphics, rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats, GlobalOptions,
     shiny, DT, GenomicFeatures, digest, GO.db, progress, circlize, msigdbr,
     AnnotationDbi, TxDb.Hsapiens.UCSC.hg19.knownGene, TxDb.Hsapiens.UCSC.hg38.knownGene,
-    org.Hs.eg.db
+    org.Hs.eg.db, RColorBrewer
 Suggests: testthat (>= 0.3), knitr, rmarkdown, BiocManager
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,

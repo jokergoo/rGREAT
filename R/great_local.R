@@ -771,10 +771,10 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 
 		if(is.null(gene_id_type)) {
 			return(gene_sets)
-		} else if(gene_id_type == "ENTREZ") {
+		} else if(gene_id_type == "ENTREZ" || gene_id_type == "Entrez Gene ID" || gene_id_type == "SGD Gene ID" || gene_id_type == "TAIR ID") {
 			return(gene_sets)
 		} else {
-			if(gene_id_type == "ENSEMBL") {
+			if(gene_id_type == "ENSEMBL" || gene_id_type == "Ensembl gene ID") {
 				map = get_table_from_org_db("ENSEMBL$", orgdb)
 			} else if(gene_id_type == "SYMBOL") {
 				map = get_table_from_org_db("SYMBOL$", orgdb)

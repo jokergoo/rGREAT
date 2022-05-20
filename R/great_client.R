@@ -916,7 +916,7 @@ parseRegionGeneAssociationFile = function(f1) {
 #
 # == param
 # -object A `GreatJob-class` object returned by `submitGreatJob`.
-# -ontology Ontology name.
+# -ontology A single ontology names. Valid values are in `availableOntologies`. 
 # -term_id Term id in the selected ontology
 # -which_plot Which plots to draw? The value should be in ``1, 2, 3``. See "Details" section for explanation.
 # -request_interval Time interval for two requests. Default is 300 seconds.

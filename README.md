@@ -3,7 +3,6 @@
 [![R-CMD-check](https://github.com/jokergoo/rGREAT/workflows/R-CMD-check/badge.svg)](https://github.com/jokergoo/rGREAT/actions)
 [![codecov](https://img.shields.io/codecov/c/github/jokergoo/rGREAT.svg)](https://codecov.io/github/jokergoo/rGREAT)
 [![bioc](https://bioconductor.org/shields/downloads/devel/rGREAT.svg)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
-[![bioc](http://mcube.nju.edu.cn/cgi-bin/zuguanggu/bioc_download.pl?package=rGREAT)](https://bioconductor.org/packages/stats/bioc/rGREAT/) 
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)](http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
 
@@ -26,7 +25,7 @@ BiocManager::install("rGREAT")
 
 If you want the latest version, install it directly from GitHub:
 
-```{r}
+```r
 library(devtools)
 install_github("jokergoo/rGREAT")
 ```

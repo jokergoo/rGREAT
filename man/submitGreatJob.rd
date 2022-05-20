@@ -93,7 +93,7 @@ Zuguang gu <z.gu@dkfz.de>
 \examples{
 set.seed(123)
 gr = randomRegions(nr = 1000)
-job = submitGreatJob(gr, version = "3.0.0")
+job = submitGreatJob(gr)
 job
 
 # more parameters can be set for the job

@@ -165,11 +165,17 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, version <span class="op">=</span> <span class="st">"3.0.0"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Note: On Aug 19 2019 GREAT released version 4 which supports hg38</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> genome and removes some ontologies such pathways. submitGreatJob()</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> still takes hg19 as default. hg38 can be specified by argument `species</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> = "hg38"`. To use the older versions such as 3.0.0, specify as</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> submitGreatJob(..., version = "3"). Set argument `help` to `FALSE` to</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> turn off this message.</span>
 <span class="r-in"><span class="va">job</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-05-20 12:18:34 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-05-20 23:28:23 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Note the results may only be avaiable on GREAT server for 24 hours.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Version: 3.0.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Version: 4.0.4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Species: hg19 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Inputs: 1000 regions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: Basal plus extension </span>

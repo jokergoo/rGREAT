@@ -152,6 +152,18 @@ availableCategories(job)
 availableOntologies(job, category = "GO")
 ```
 
+## Make volcano plot
+
+In differential gene expression analysis, volcano plot is used to visualize relations between log2 fold change and (adjusted) p-values.
+Similarly, we can also use volcano plot to visualize relations between fold enrichment and (adjusted) p-values for the enrichment analysis. 
+The plot is made by the function `plotVolcano()`:
+
+```{r}
+plotVolcano(job, ontology = "GO Biological Process")
+```
+
+As the enrichment analysis basically only looks for over-representations, it is actually half volcano.
+
 ## Get region-gene associations
 
 Association between genomic regions and genes can be plotted by `plotRegionGeneAssociations()`.

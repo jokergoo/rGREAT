@@ -37,7 +37,7 @@ setMethod(f = "shinyReport",
 		div(id = "global_control",
 			tags$table(tags$tr(
 				tags$td(textInput("padj_cutoff", label = "Cutoff for adjusted p-values (from Binomial test)", value = "0.05", width = 380)),
-				tags$td(textInput("observed_hits_cutoff", label = "Cutoff for observed region hits", value = "0", width=400))
+				tags$td(textInput("observed_hits_cutoff", label = "Cutoff for observed region hits", value = "5", width=400))
 			))
 		),
 		hr(),
@@ -71,7 +71,7 @@ setMethod(f = "shinyReport",
 	margin-left:20px;
 	margin-right:20px
 }
-#error {
+.error {
 	color:red;
 }
 "
@@ -119,7 +119,7 @@ setMethod(f = "shinyReport",
 
 			if(is.na(padj_cutoff) || is.na(observed_hits_cutoff)) {
 				output[["error"]] = renderUI({
-					HTML("<p class='error'>Wrong format for cutoffs.</p>")
+					HTML("<p class='error message'>Wrong format for cutoffs.</p>")
 				})
 
 				output[["enrichment_table"]] = renderUI({
@@ -129,6 +129,17 @@ setMethod(f = "shinyReport",
 			}
 
 			all_ontologies = availableOntologies(job)
+
+			for(nm in all_ontologies) {
+				nm2 = gsub(" ", "_", nm)
+				code = qq("
+				output[['volcano_plot_@{nm2}']] = renderPlot({
+					plotVolcano(job, ontology = '@{nm}', min_region_hits = observed_hits_cutoff, x_values = input[['volcano_x_values_@{nm2}']], y_values = input[['volcano_y_values_@{nm2}']], main='Volcano plot for @{nm}')
+				})
+				")
+				eval(parse(text = code))
+			}
+
 			tbl = getEnrichmentTables(job, ontology = all_ontologies, verbose = FALSE)
 			tbl = lapply(tbl, function(tb) {
 				tb[tb[, "Binom_Adjp_BH"] <= padj_cutoff & tb[, "Binom_Observed_Region_Hits"] >= observed_hits_cutoff, , drop = FALSE]
@@ -142,16 +153,40 @@ setMethod(f = "shinyReport",
 				})
 
 				output[["enrichment_table"]] = renderUI({
-					HTML("<p>No significant term under current cutoffs.</p>")
+					HTML("<p class='message'>No significant term under current cutoffs.</p>")
 				})
 			} else {
 				ui_list = list()
 				for(i in seq_along(tbl)) {
-					ui_list[[2*i-1]] = HTML(qq("<h3>@{names(tbl)[i]} (@{nrow(tbl[[i]])} significant terms) <a class='fake_link' data-toggle='tooltip' data-html='true' title='The complete table can be obtained by <br><code>getEnrichmentTables(job, ontology = \"@{names(tbl)[i]}\")[[1]]</code>.' onclick='false'>?</a></h3>"))
-
-					ui_list[[2*i]] = format_table(tbl[[i]], names(tbl)[i])
+					onto_name = names(tbl)[i]
+					onto_name2 = gsub(" ", "_", onto_name)
+					ui_list[[i]] = div(
+						tabsetPanel(type = "tabs",
+							tabPanel("Enrichment table",
+								HTML(qq("<h3>@{onto_name} (@{nrow(tbl[[i]])} significant terms) <a class='fake_link' data-toggle='tooltip' data-html='true' title='The complete table can be obtained by <br><code>getEnrichmentTables(job, ontology = \"@{names(tbl)[i]}\")[[1]]</code>.' onclick='false'>?</a></h3>")),
+								format_table(tbl[[i]], names(tbl)[i])
+							),
+							tabPanel("Volcano plot",
+								tags$br(),
+								radioButtons(qq("volcano_x_values_@{onto_name2}"), "Values on x-axis",
+									c("Fold enrichment: log2(obs/exp)" = "fold_enrichment",
+									  "z-score: (obs-exp)/sd" = "z-score"),
+									selected = "fold_enrichment",
+									inline = TRUE
+								),
+								radioButtons(qq("volcano_y_values_@{onto_name2}"), "Values on y-axis",
+									c("Raw p-values" = "p_value",
+									  "Adjusted p-values" = "p_adjust"),
+									selected = "p_value",
+									inline = TRUE
+								),
+								plotOutput(outputId = qq("volcano_plot_@{onto_name2}"), width="600px", height = "600px")
+							)
+						),
+						if(i < length(tbl)) hr() else NULL
+					)
 				}
-				ui_list[[2*i + 1]] = HTML("<script>$('#enrichment_table h3 a').tooltip();</script>")
+				ui_list[[i + 1]] = HTML("<script>$('#enrichment_table h3 a').tooltip();</script>")
 
 				ui_list$class = "ind_table"
 
@@ -167,7 +202,6 @@ setMethod(f = "shinyReport",
 		output$global_plot = renderPlot({
 			plotRegionGeneAssociations(job)
 		}, res = 100)
-
 	}
 
 	shinyApp(ui, server)
@@ -207,12 +241,32 @@ setMethod(f = "shinyReport",
 		div(id = "global_control",
 			tags$table(tags$tr(
 				tags$td(textInput("padj_cutoff", label = "Cutoff for adjusted p-values (from Binomial test)", value = "0.05", width = 380)),
-				tags$td(textInput("observed_hits_cutoff", label = "Cutoff for observed region hits", value = "0", width=400))
+				tags$td(textInput("observed_hits_cutoff", label = "Cutoff for observed region hits", value = "5", width=400))
 			))
 		),
 		hr(),
-		htmlOutput(outputId = "error"),
-		htmlOutput(outputId = "enrichment_table"),
+		tabsetPanel(type = "tabs",
+			tabPanel("Enrichment table",
+				htmlOutput(outputId = "error"),
+				htmlOutput(outputId = "enrichment_table")
+			),
+			tabPanel("Volcano plot",
+				tags$br(),
+				radioButtons("volcano_x_values", "Values on x-axis",
+					c("Fold enrichment: log2(obs/exp)" = "fold_enrichment",
+					  "z-score: (obs-exp)/sd" = "z-score"),
+					selected = "fold_enrichment",
+					inline = TRUE
+				),
+				radioButtons("volcano_y_values", "Values on y-axis",
+					c("Raw p-values" = "p_value",
+					  "Adjusted p-values" = "p_adjust"),
+					selected = "p_value",
+					inline = TRUE
+				),
+				plotOutput(outputId = "volcano_plot", width="600px", height = "600px")
+			)
+		),
 		tags$style(
 "pre {
 	width:800px;
@@ -241,8 +295,11 @@ setMethod(f = "shinyReport",
 	margin-left:20px;
 	margin-right:20px
 }
-#error {
+.error {
 	color:red;
+}
+.message{
+	padding: 20px 20px;
 }
 .modal-lg {
 	width:1100px;
@@ -293,9 +350,13 @@ setMethod(f = "shinyReport",
 			suppressWarnings(padj_cutoff <- as.numeric(input$padj_cutoff))
 			suppressWarnings(observed_hits_cutoff <- as.numeric(input$observed_hits_cutoff))
 
+			output$volcano_plot = renderPlot({
+				plotVolcano(object, min_region_hits = observed_hits_cutoff, x_values = input$volcano_x_values, y_values = input$volcano_y_values)
+			})
+
 			if(is.na(padj_cutoff) || is.na(observed_hits_cutoff)) {
 				output[["error"]] = renderUI({
-					HTML("<p class='error'>Wrong format for cutoffs.</p>")
+					HTML("<p class='error message'>Wrong format for cutoffs.</p>")
 				})
 
 				output[["enrichment_table"]] = renderUI({
@@ -312,8 +373,9 @@ setMethod(f = "shinyReport",
 					HTML("");
 				})
 				output[["enrichment_table"]] = renderUI({
-					HTML("<p>No significant term under current cutoffs.</p>")
+					HTML("<p class='message'>No significant term under current cutoffs.</p>")
 				})
+
 			} else {
 				output[["error"]] = renderUI({
 					HTML("");
@@ -355,6 +417,7 @@ setMethod(f = "shinyReport",
 		output$global_plot = renderPlot({
 			plotRegionGeneAssociations(object)
 		}, res = 100)
+
 	}
 
 	shinyApp(ui, server)
