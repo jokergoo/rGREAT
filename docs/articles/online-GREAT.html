@@ -121,7 +121,7 @@
 <p>You can get the summary of your job by directly printing <code>job</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-05-20 23:29:22 </span>
+<pre><code><span class="co">## Submit time: 2022-05-20 23:39:12 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -224,7 +224,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <p>Information stored in <code>job</code> will be updated after retrieving enrichment tables.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-05-20 23:29:22 </span>
+<pre><code><span class="co">## Submit time: 2022-05-20 23:39:12 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -318,7 +318,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <p>In differential gene expression analysis, volcano plot is used to visualize relations between log2 fold change and (adjusted) p-values. Similarly, we can also use volcano plot to visualize relations between fold enrichment and (adjusted) p-values for the enrichment analysis. The plot is made by the function <code><a href="../reference/plotVolcano-dispatch.html">plotVolcano()</a></code>:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotVolcano-dispatch.html">plotVolcano</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Biological Process"</span><span class="op">)</span></code></pre></div>
-<p><img src="online-GREAT_files/figure-html/unnamed-chunk-13-1.png" width="700" style="display: block; margin: auto;"></p>
+<p><img src="online-GREAT_files/figure-html/unnamed-chunk-13-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>As the enrichment analysis basically only looks for over-representations, it is actually half volcano.</p>
 </div>
 <div class="section level2">
@@ -356,7 +356,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,
     term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## The webpage for 'GO Molecular Function:GO:0004984' is available at:</span>
-<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220520-public-4.0.4-JE3dU7&amp;species=hg19&amp;foreName=file4855223641a3.gz&amp;backName=&amp;table=region</span></code></pre>
+<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220520-public-4.0.4-hhpueK&amp;species=hg19&amp;foreName=file49ee76b1f542.gz&amp;backName=&amp;table=region</span></code></pre>
 <p><img src="online-GREAT_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,

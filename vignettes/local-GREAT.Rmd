@@ -336,7 +336,7 @@ In differential gene expression analysis, volcano plot is used to visualize rela
 Similarly, we can also use volcano plot to visualize relations between fold enrichment and (adjusted) p-values for the enrichment analysis. 
 The plot is made by the function `plotVolcano()`:
 
-```{r}
+```{r, fig.width = 6, fig.height = 6}
 plotVolcano(res)
 ```
 
