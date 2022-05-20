@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     toc_depth: 3
+    toc_collapsed: false
     toc_float: true
 vignette: >
   %\VignetteIndexEntry{2. Analyze with local GREAT}
@@ -32,29 +33,29 @@ an online tool has several limitations:
 
 From **rGREAT** version 1.99.0, it implements the GREAT algorithms locally and it can be seamlessly integrated
 to the Bioconductor annotation ecosystem. This means, theoretically with **rGREAT**, it is possible to perform GREAT analysis
-with any organism and with any type of gene set collection / ontology.
+with any organism and with any type of gene set collection / ontology. Another advantage is, Bioconductor annotation packages
+are always very well maintained and updated, which means the data source of your analysis can be ensured to be most up-to-date.
 
-
-First let's load the **rGREAT** package:
+First let's load the **rGREAT** package and generate a random set of regions:
 
 ```{r, echo = 2}
 suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
 library(rGREAT)
-```
 
-
-## With defaultly supported annotation packages
-
-
-We first generate approximately 1000 random regions:
-
-```{r}
 set.seed(123)
 gr = randomRegions(nr = 1000)
 ```
 
-The function `great()` performs local GREAT analysis. It has integrated many annotation databases which cover many organisms.
-Users simply specify the name of gene set collection (the second argument) and the name of the transcriptome annotation (the third argument).
+
+## Perform local GREAT with `great()`
+
+The function `great()` is the core function to perform local GREAT analysis. You can either use built-in annotations or use self-provided annotations.
+
+### With defaultly supported annotation packages
+
+
+`great()` has integrated many annotation databases which cover many organisms.
+Users simply specify the name of gene set collection (via the second argument) and the name of the transcriptome annotation (via the third argument).
 
 ```{r}
 res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
@@ -154,7 +155,70 @@ great(gr, "C2:CP:KEGG", "hg19")
 ```
 
 
-## Manually set gene sets or transcriptome annotations
+### Manually set gene sets
+
+If users have their own gene sets, the gene sets can be set as a named list of vectors where each vector corresponds to one gene set.
+Please note the genes in the gene sets must be in Entrez ID type. In the following example, we assume `gs` is a self-defined
+gene sets collection.
+
+```{r}
+library(msigdbr)
+map = msigdbr(category = "H")
+gs = split(map$entrez_gene, map$gs_name)
+great(gr, gs, "hg19")
+```
+
+### Manually set TSS
+
+Users might want to use the built-in gene sets, but want to try a different definition of TSS. Take human genome hg19 for example, 
+by default `great()` used the TSS from `TxDb.Hsapiens.UCSC.hg19.knownGene`. However, TSS from other resources might be slightly different. 
+
+There are three functions in **rGREAT** that retrieve genes/TSS from other resources:
+
+- `getGREATDefaultTSS()`: **GREAT** provides their own sets of TSS. The data is downloaded from https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes.
+- `getRefSeqGenesFromUCSC()`: RefSeq genes. You can use the full set of RefSeq genes or the subset of "RefSeqCurated" or "RefSeqSelect". See https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=refSeqComposite.
+- `getGencodeGenes()`: Gencode genes. Note it only includes protein-coding genes.
+
+After obtaining the genes/TSS, they should be sent to `extendTSS()` to extend TSS based on a certain GREAT rule (e.g. basal plus extension), and finally sent to `great()`.
+
+```{r, eval = FALSE}
+tss = getGREATDefaultTSS("hg19")
+et = extendTSS(tss)
+great(gr, "msigdb:h", extended_tss = et)
+
+gene = getRefSeqGenesFromUCSC("hg19")
+et = extendTSS(gene)
+great(gr, "msigdb:h", extended_tss = et)
+
+gene = getGencodeGenes("v19")
+et = extendTSS(gene)
+great(gr, "msigdb:h", extended_tss = et)
+```
+
+Users may have their own set of genes/TSS while not from the three functions
+mentioned above. In this case, they should explicitly specify the gene ID type
+in `extendTSS()` so that `great()` can correctly map to the genes in gene
+sets.
+
+```{r}
+df = read.table(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT"))
+tss = GRanges(seqnames = df[, 2], ranges = IRanges(df[, 3], df[, 3]), 
+    strand = df[, 4], gene_id = df[, 5])
+head(tss)
+```
+
+IDs for genes in `tss` are symbols, thus, `gene_id_type` must be set to `"SYMBOL"` so that the correct gene ID type
+will be selected for internally gene sets.
+
+```{r}
+et = extendTSS(tss, genome = "hg19", gene_id_type = "SYMBOL")
+great(gr, "msigdb:h", extended_tss = et)
+```
+
+If gene ID type in `tss` is one of Ensembl/RefSeq/Entrez ID, `gene_id_type` argument can be omitted because the ID type can be automatically
+inferred from the format of the gene IDs, but it is always a good idea to explicitly specify it if the data is self-provided.
+
+### Manually set gene sets and transcriptome annotations
 
 If your organism is not defaultly supported, you can always use the `extendTSS()` to manually construct one. Note in GREAT algorithm, TSS are first
 extended by a rule (e.g. basal plus extension). `extendTSS()` accepts a `GRanges` object of gene or TSS and it returns a new `GRanges` object of extended TSS.
@@ -198,14 +262,14 @@ Please note again, gene IDs in `gs` should be the same as in `et`.
 
 Now `gs` and `et` can be sent to `great()` to perform local GREAT with the annotation data you manually provided.
 
-```{r, eval = FALSE}
+```{r}
 great(gr, gene_sets = gs, extended_tss = et)
 ```
 
 ## Set background regions
 
 In the online GREAT tool, if background regions are set, [it actually uses a completely different test for the enrichment analysis](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655456/Statistics#Statistics-ExplicitBackgroundSet).
-In GREAT, when background is set, input regions should be exactly subset of background. For example, let's say a background region list contains
+In GREAT, when background is set, input regions should be **exactly subset of background**. For example, let's say a background region list contains
 five regions: `[1, 10], [15, 23], [34, 38], [40, 49], [54, 63]`, input regions can only be a subset of the five regions, which
 means they can take `[15, 23], [40, 49]`, but it cannot take `[16, 20], [39, 51]`. In this setting, regions are taken
 as single units and Fisher's exact test is applied for calculating the enrichment (by testing number of regions in the 2x2 contigency table).
@@ -229,13 +293,18 @@ proper background. If any one of the two is set, the input regions and the
 extended TSS regions are intersected to the background, and GREAT algorithm is
 only applied to the reduced regions.
 
-When whole genome is set as background, denote $N_1$ as total number of input regions, $p_1$ as the fraction of genome
-that are overlapped to extended TSS for genes in a specific gene set and $K_1$ as the number of regions that overlap to
-the gene set associated regions, then the enrichment test is based on the random variable $K_1$ which follows Binomial distribution $K_1 \sim B(p_1, N_1)$.
+When whole genome is set as background, denote $N_1$ as the total number of
+input regions, $p_1$ as the fraction of genome that are overlapped to extended
+TSS of genes in a certain gene set, and $K_1$ as the number of regions that
+overlap to the gene set associated regions, then the enrichment test is based
+on the random variable $K_1$ which follows Binomial distribution $K_1 \sim B(p_1, N_1)$.
 
-Similarly, when background regions are set, denote $N_2$ as total number of input regions that overlap to backgroud, $p_2$ as the fraction of background
-that are overlapped to extended TSS for genes in a specific gene set and $K_2$ as the number of regions that overlap to
-the gene set associated regions and also overlap to background, then the enrichment test is based on the random variable $K_2$ which follows Binomial distribution $K_2 \sim B(p_2, N_2)$.
+Similarly, when background regions are set, denote $N_2$ as the total number
+of input regions that <u>overlap to backgroud</u>, $p_2$ as <u>the fraction of
+background</u> that are overlapped to extended TSS of genes in a certain gene
+set, and $K_2$ as the number of regions that overlap to the gene set associated
+regions <u>and also overlap to background</u>, then the enrichment test is based on
+the random variable $K_2$ which follows Binomial distribution $K_2 \sim B(p_2, N_2)$.
 
 
 In the following example, `getGapFromUCSC()` can be used to retrieve gap regions from UCSC table browser.
@@ -244,8 +313,9 @@ In the following example, `getGapFromUCSC()` can be used to retrieve gap regions
 great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
 ```
 
-If you want to use the Fisher's exact test-based or Hypergeometric-based method, you can use
-the GREAT website or use the Bioconductor package [**LOLA**](https://bioconductor.org/packages/LOLA/).
+If you want to use the Fisher's exact test-based or Hypergeometric-based method, you can directly use
+the GREAT website (currently you can still use **rGREAT** to set `bg`, but you will see a warning 
+message) or use the Bioconductor package [**LOLA**](https://bioconductor.org/packages/LOLA/).
 
 ## Get enrichment table
 
@@ -255,6 +325,10 @@ Simply use `getEnrichmentTable()` function.
 tb = getEnrichmentTable(res)
 head(tb)
 ```
+
+In `getEnrichmentTable()`, you can set argument `min_region_hits` to set
+the minimal number of input regions that hit a geneset-associated regions.
+Note the adjusted p-values will be recalculated in the table.
 
 ## Get region-gene associations
 
@@ -267,11 +341,15 @@ plotRegionGeneAssociations(res)
 getRegionGeneAssociations(res)
 ```
 
-Please the two meta columns are in formats of `CharacterList`
+Being different from the online GREAT, `getRegionGeneAssociations()` on the local GREAT object calculates
+the distance to TSS based on the borders of the input regions. The argument `by_middle_points` can 
+be set to `TRUE` to let the distance be based on the middle points of input regions.
+
+Please note the two meta columns are in formats of `CharacterList`
 and `IntegerList` because a region may associate to multiple genes.
 
 
-Of course you can set a specific term by argument `term_id`.
+Of course you can set a specific geneset term by argument `term_id`.
 
 ```{r, fig.width = 10, fig.height = 10/3, fig.align = 'center'}
 plotRegionGeneAssociations(res, term_id = "HALLMARK_APOPTOSIS")

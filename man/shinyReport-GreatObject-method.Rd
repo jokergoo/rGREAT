@@ -14,6 +14,9 @@ Shiny app on the GreatObject object
   \item{object}{The \code{GreatObject} object returned by \code{\link{great}}.}
 
 }
+\value{
+A shiny app object.
+}
 \examples{
 if(FALSE) {
 # pseudo code

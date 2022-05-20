@@ -23,6 +23,8 @@ Get region-gene associations
 \value{
 A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object. Please the two meta columns are in formats of \code{CharacterList}
 and \code{IntegerList} because a region may associate to multiple genes.
+
+Please note, the distance is from the middle points of input regions to TSS.
 }
 \author{
 Zuguang gu <z.gu@dkfz.de>

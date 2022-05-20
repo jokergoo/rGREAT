@@ -85,14 +85,15 @@
 <div class="page-header"><h1 id="great-analysis---functional-enrichment-on-genomic-regions">GREAT Analysis - Functional Enrichment on Genomic Regions<a class="anchor" aria-label="anchor" href="#great-analysis---functional-enrichment-on-genomic-regions"></a>
 </h1></div>
 
-<p>GREAT (Genomic Regions Enrichment of Annotations Tool) is a type of functional enrichment analysis directly performed on genomic regions. This package implements the GREAT algorithm (the local GREAT analysis), also it supports directly interacting with the GREAT web service (the online GREAT analysis). Both analysis can be viewed by a Shiny application.</p>
+<p><strong>GREAT</strong> (<a href="http://great.stanford.edu" class="external-link">Genomic Regions Enrichment of Annotations Tool</a>) is a type of functional enrichment analysis directly performed on genomic regions. This package implements the GREAT algorithm (the local GREAT analysis), also it supports directly interacting with the GREAT web service (the online GREAT analysis). Both analysis can be viewed by a Shiny application.</p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
 <p><strong>rGREAT</strong> is available on Bioconductor (<a href="http://bioconductor.org/packages/devel/bioc/html/rGREAT.html" class="external-link uri">http://bioconductor.org/packages/devel/bioc/html/rGREAT.html</a>)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+<span class="op">}</span>
 <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"rGREAT"</span><span class="op">)</span></code></pre></div>
 <p>If you want the latest version, install it directly from GitHub:</p>
 <pre class="{r}"><code><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
@@ -116,7 +117,7 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span>
 <span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<p>For more details, please go to the package vignettes.</p>
+<p>For more details, please go to <a href="https://jokergoo.github.io/rGREAT/" class="external-link">the package vignettes</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>

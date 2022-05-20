@@ -7,19 +7,22 @@ Extend TSS
 Extend TSS
 }
 \usage{
-extendTSS(gene, seqlengths, mode = "basalPlusExt",
-    basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
-    verbose = great_opt$verbose)
+extendTSS(gene, seqlengths, genome = NULL, gene_id_type = NULL,
+    mode = "basalPlusExt", basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
+    verbose = great_opt$verbose, .attr = list())
 }
 \arguments{
 
   \item{gene}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object of gene (or TSS) coordinates.}
   \item{seqlengths}{A named vector of chromosome lengths. If it is not provided, it is taken by \code{seqlengths(gene)}.}
+  \item{genome}{UCSC genome can be set here, then \code{seqlengths} will be automatically retrieved from UCSC server.}
+  \item{gene_id_type}{Gene ID types in \code{gene}. You need to set this argument if you use built-in gene sets in \code{\link{great}} so that genes can be correctly mapped. The value can only be one of "SYMBOL", "ENTREZ", "ENSEMBL" and "REFSEQ".}
   \item{mode}{The mode to extend TSS. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See "Details" section.}
   \item{basal_upstream}{In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.}
   \item{basal_downstream}{In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.}
   \item{extension}{Extensions from the basal domains.}
   \item{verbose}{Whether to print messages.}
+  \item{.attr}{Only used internally.}
 
 }
 \details{

@@ -7,7 +7,7 @@
 [![bioc](http://www.bioconductor.org/shields/years-in-bioc/rGREAT.svg)](http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
 
-GREAT (Genomic Regions Enrichment of Annotations Tool) is a type of
+**GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a type of
 functional enrichment analysis directly performed on genomic regions. This package 
 implements the GREAT algorithm (the local GREAT analysis), also it supports directly 
 interacting with the GREAT web service (the online GREAT analysis). Both analysis 
@@ -18,8 +18,9 @@ can be viewed by a Shiny application.
 **rGREAT** is available on Bioconductor (http://bioconductor.org/packages/devel/bioc/html/rGREAT.html)
 
 ```r
-if (!requireNamespace("BiocManager", quietly=TRUE))
+if(!requireNamespace("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
+}
 BiocManager::install("rGREAT")
 ```
 
@@ -54,7 +55,7 @@ res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
 tb = getEnrichmentTable(res)
 ```
 
-For more details, please go to the package vignettes.
+For more details, please go to [the package vignettes](https://jokergoo.github.io/rGREAT/).
 
 ## License
 

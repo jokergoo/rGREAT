@@ -70,7 +70,16 @@
     <loc>/reference/getEnrichmentTables-dispatch.html</loc>
   </url>
   <url>
+    <loc>/reference/getGREATDefaultTSS.html</loc>
+  </url>
+  <url>
     <loc>/reference/getGapFromUCSC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getGencodeGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getRefSeqGenesFromUCSC.html</loc>
   </url>
   <url>
     <loc>/reference/getRegionGeneAssociations-GreatJob-method.html</loc>

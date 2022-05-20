@@ -7,12 +7,14 @@ Get region-gene associations
 Get region-gene associations
 }
 \usage{
-\S4method{getRegionGeneAssociations}{GreatObject}(object, term_id = NULL, use_symbols = TRUE)
+\S4method{getRegionGeneAssociations}{GreatObject}(object, term_id = NULL, by_middle_points = FALSE,
+    use_symbols = TRUE)
 }
 \arguments{
 
   \item{object}{A \code{\link{GreatObject-class}} object returned by \code{\link{great}}.}
   \item{term_id}{Term ID.}
+  \item{by_middle_points}{Whether the distances are calculated from the middle points of input regions?}
   \item{use_symbols}{Whether to use gene symbols}
 
 }

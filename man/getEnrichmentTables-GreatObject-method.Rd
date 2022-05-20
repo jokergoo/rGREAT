@@ -18,6 +18,9 @@ Get enrichment table
 \details{
 Please use \code{\link{getEnrichmentTable,GreatObject-method}} directly.
 }
+\value{
+A data frame of enrichment results
+}
 \examples{
 # There is no example
 NULL

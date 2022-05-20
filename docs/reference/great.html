@@ -63,7 +63,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="va">gene_sets</span>, <span class="va">txdb</span>, chromosomes <span class="op">=</span> <span class="cn">NULL</span>,
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="va">gene_sets</span>, <span class="va">txdb</span>,
     mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>,
     basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,
     extended_tss <span class="op">=</span> <span class="cn">NULL</span>, background <span class="op">=</span> <span class="cn">NULL</span>, exclude <span class="op">=</span> <span class="cn">NULL</span>,
@@ -75,11 +75,9 @@
     <dl><dt>gr</dt>
 <dd><p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object. This is the input regions.</p></dd>
 <dt>gene_sets</dt>
-<dd><p>A single string of defautly supported gene sets collections (see the full list in "Details" section), or a named list of vectors where each vector correspond to a gene set.</p></dd>
+<dd><p>A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.</p></dd>
 <dt>txdb</dt>
 <dd><p>Name of "TxDb.*" packages from Bioconductor. All supported TxDb packages are in <code>rGREAT:::BIOC_ANNO_PKGS$txdb</code>. Note short genome version can also be used here such as "hg19" or "hg19.knownGene".</p></dd>
-<dt>chromosomes</dt>
-<dd><p>The original TxDb data contains not only the "normal chromosomes" but also a lot of small contigs. This function can automatically identify those "normal chromosomes" (not guaranteed), but users can always control which chromosomes to use by specify a vector of chromosome names to this argument.</p></dd>
 <dt>mode</dt>
 <dd><p>The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See <code><a href="extendTSS.html">extendTSS</a></code> for details.</p></dd>
 <dt>basal_upstream</dt>
@@ -89,7 +87,7 @@
 <dt>extension</dt>
 <dd><p>Extensions from the basal domains.</p></dd>
 <dt>extended_tss</dt>
-<dd><p>If your organism is not defaultly supported, you can first prepare one by <code><a href="extendTSSFromDataFrame.html">extendTSSFromDataFrame</a></code> or <code><a href="extendTSS.html">extendTSS</a></code>, and set the object to this argument.</p></dd>
+<dd><p>If your organism is not defaultly supported, you can first prepare one by <code><a href="extendTSSFromDataFrame.html">extendTSSFromDataFrame</a></code> or <code><a href="extendTSS.html">extendTSS</a></code>, and set the object to this argument. Please see more examples in the vignette.</p></dd>
 <dt>background</dt>
 <dd><p>Background regions.</p></dd>
 <dt>exclude</dt>
@@ -101,7 +99,10 @@
     <h2>Details</h2>
     <p>When <code>background</code> or <code>exclude</code> is set, the analysis is restricted in the background regions, still by using Binomial method. Note
 this is different from the original GREAT method which uses Fisher's exact test if background regions is set. See <code><a href="submitGreatJob.html">submitGreatJob</a></code> for explanations.</p>
-<p>rGREAT supports the following GO gene sets for all organisms (note "GO:" can be omitted):</p>
+    </div>
+    <div id="genesets">
+    <h2>Genesets</h2>
+    <p>rGREAT supports the following built-in GO gene sets for all organisms (note "GO:" can be omitted):</p>
 <dl><dt>"GO:BP":</dt>
 <dd><p>Biological Process, from GO.db package.</p></dd>
 
@@ -112,7 +113,7 @@ this is different from the original GREAT method which uses Fisher's exact test 
 <dd><p>Molecular Function, from GO.db pacakge.</p></dd>
 
 
-</dl><p>rGREAT also supports gene sets collections from MSigDB (with the msigdbr package, note this is only for human, "msigdb:" can be omitted):</p>
+</dl><p>rGREAT also supports built-in gene sets collections from MSigDB (with the msigdbr package, note this is only for human, "msigdb:" can be omitted):</p>
 <dl><dt>"msigdb:H"</dt>
 <dd><p>Hallmark gene sets.</p></dd>
 
@@ -198,7 +199,7 @@ this is different from the original GREAT method which uses Fisher's exact test 
 <dd><p>Cell type signature gene sets.</p></dd>
 
 
-</dl><p>If the defaultly supported gene sets and TxDb are used, Entrez gene ID is always used as the main gene ID. If you provide a self-defined
+</dl><p>If the defaultly supported TxDb is used, Entrez gene ID is always used as the main gene ID. If you provide a self-defined
 <code>gene_sets</code> or <code>extended_tss</code>, you need to make sure they two have the same gene ID types.</p>
     </div>
     <div id="value">

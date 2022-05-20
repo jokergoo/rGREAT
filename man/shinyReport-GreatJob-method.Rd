@@ -14,6 +14,9 @@ Shiny app on the GreatJob object
   \item{object}{The \code{GreatJob} object returned by \code{\link{submitGreatJob}}.}
 
 }
+\value{
+A shiny app object.
+}
 \examples{
 if(FALSE) {
 # pseudo code

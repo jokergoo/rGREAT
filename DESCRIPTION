@@ -7,7 +7,7 @@ Author: Zuguang Gu
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.6.0), GenomicRanges, IRanges, methods, S4Vectors, GenomeInfoDb
-Imports: rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats, GlobalOptions,
+Imports: graphics, rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats, GlobalOptions,
     shiny, DT, GenomicFeatures, digest, GO.db, progress, circlize, msigdbr,
     AnnotationDbi, TxDb.Hsapiens.UCSC.hg19.knownGene, TxDb.Hsapiens.UCSC.hg38.knownGene,
     org.Hs.eg.db

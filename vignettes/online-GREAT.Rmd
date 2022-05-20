@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     toc_depth: 3
+    toc_collapsed: false
     toc_float: true
 vignette: >
   %\VignetteIndexEntry{1. Analyze with online GREAT}
@@ -52,13 +53,13 @@ head(gr)
 Submit genomic regions by `submitGreatJob()`.
 
 The returned variable `job` is a `GreatJob` class instance which can be used to retrieve results from
-**GREAT** server and stored results which are already downloaded.
+**GREAT** server and store results which are already downloaded.
 
 ```{r}
 job = submitGreatJob(gr)
 ```
 
-You can get the summary of your job by directly calling `job` variable.
+You can get the summary of your job by directly printing `job`.
 
 ```{r}
 job
@@ -80,10 +81,10 @@ job = submitGreatJob(gr, version = "3.0")
 job = submitGreatJob(gr, version = "2.0")
 ```
 
-<p style='color:red'>Note: from <b>rGREAT</b> 1.99.0, background by `bg`
-argument is not supported any more, because <b>GREAT</b> requires a specific format
+<p style='color:red'>Note: from <b>rGREAT package</b> 1.99.0, background by `bg`
+argument is not supported any more (currently you can still use it, but you will see a warning message), because <b>GREAT</b> requires a special format
 for <code>gr</code> and <code>bg</code> if both are set, and it uses a completely different method
-for the enrichment analysis. <a href="local-GREAT.html#Set_background_regions">You can use local <b>GREAT</b> to integrate background regions.</a></p>
+for the enrichment analysis. <a href="local-GREAT.html#Set_background_regions">But still, you can use local <b>GREAT</b> to integrate background regions.</a></p>
 
 Available parameters are (following content is copied from **GREAT** website):
 
@@ -103,13 +104,13 @@ Available parameters are (following content is copied from **GREAT** website):
 
 With `job`, we can now retrieve results from **GREAT**. The first and the primary results are
 the tables which contain enrichment statistics for the analysis. By default it will retrieve 
-results from three GO Ontologies and all pathway ontologies. All tables contains statistics 
-for all terms no matter they are significant or not. Users can then make filtering yb self-defined cutoff.
+results from three GO Ontologies. All tables contains statistics 
+for all terms no matter they are significant or not. Users can then make filtering with self-defined cutoff.
 
 There is a column for adjusted p-values by "BH" method. Other p-value adjustment methods can be applied by `p.adjust()`.
 
 The returned value of `getEnrichmentTables()` is a list of data frames in which each one corresponds
-to tables for single ontology. The structure of data frames are same as the tables on **GREAT** website.
+to the table for a single ontology. The structure of data frames are same as the tables on **GREAT** website.
 
 ```{r, message = TRUE}
 tbl = getEnrichmentTables(job)
@@ -127,13 +128,13 @@ You can get results by either specifying the ontologies or by the pre-defined ca
 (categories already contains pre-defined sets of ontologies):
 
 ```{r, eval = FALSE}
-tbl = getEnrichmentTables(job, ontology = c("GO Molecular Function", "BioCyc Pathway"))
+tbl = getEnrichmentTables(job, ontology = c("GO Molecular Function", "Human Phenotype"))
 tbl = getEnrichmentTables(job, category = c("GO"))
 ```
 
 As you have seen in the previous messages and results, The enrichment tables contain no associated genes. 
 However, you can set `download_by = 'tsv'` in `getEnrichmentTables()` to download the complete
-tables, but due to [the restriction from GREAT web server](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport), only the top 500 regions can be retreived.
+tables, but due to [the restriction from GREAT web server](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport), only the top 500 regions can be retreived (check the last two columns of `tbl2[["GO Molecular Function"]]` in the following example).
 
 ```{r, message = TRUE}
 tbl2 = getEnrichmentTables(job, download_by = "tsv")
@@ -141,7 +142,7 @@ nrow(tbl2[["GO Molecular Function"]])
 head(tbl2[["GO Molecular Function"]])
 ```
 
-All available ontology names for given species can be get by `availableOntologies()` 
+All available ontology names for a given species can be get by `availableOntologies()` 
 and all available ontology categories can be get by `availableCategories()`. Here you do not
 need to provide species information because `job` already contains it.
 
@@ -161,15 +162,15 @@ plotRegionGeneAssociations(job)
 ```
 
 `getRegionGeneAssociations()` returns a `GRanges` 
-object which contains the gene-region associations. For those regions that are not associated with any genes under current settings, 
-the corresponding `gene` and `distTSS` columns will be `NA`.
+object which contains the gene-region associations. <span style="color:red;">Note the column `dist_to_TSS`
+is based on the middle points of the input regions to TSS.</span>
 
 
 ```{r}
 getRegionGeneAssociations(job)
 ```
 
-Please the two meta columns are in formats of `CharacterList`
+Please note the two meta columns are in formats of `CharacterList`
 and `IntegerList` because a region may associate to multiple genes.
 
 You can also choose only plotting one of the three figures.
@@ -179,7 +180,7 @@ plotRegionGeneAssociations(job, which_plot = 1)
 ```
 
 By specifying ontology and term ID, you can get the associations in a certain term.
-Here the term ID is from the first column of the data frame which is returned by 
+Here the term ID is from the first column of the data frame from 
 `getEnrichmentTables()`.
 
 ```{r, fig.width = 10, fig.height = 10/3}

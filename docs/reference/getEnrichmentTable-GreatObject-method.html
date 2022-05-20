@@ -64,19 +64,19 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for GreatObject</span>
-<span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">object</span>, min_hits <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">object</span>, min_region_hits <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A <code><a href="GreatObject-class.html">GreatObject-class</a></code> object returned by <code><a href="great.html">great</a></code>.</p></dd>
-<dt>min_hits</dt>
+<dt>min_region_hits</dt>
 <dd><p>Minimal number of input regions overlapping to the geneset associated regions.</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Note: adjusted p-values are re-calculated based on <code>min_hits</code>.</p>
+    <p>Note: adjusted p-values are re-calculated based on <code>min_region_hits</code>.</p>
     </div>
     <div id="value">
     <h2>Value</h2>

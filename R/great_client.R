@@ -132,7 +132,7 @@ GreatJob = function(...) {
 # == example
 # set.seed(123)
 # gr = randomRegions(nr = 1000)
-# job = submitGreatJob(gr, version = "3.0.0")
+# job = submitGreatJob(gr)
 # job
 #
 # # more parameters can be set for the job
@@ -203,7 +203,7 @@ to turn off this message.')
 
     if(!is.null(bg)) {
 
-        warning_wrap("From rGREAT 1.99.0, `bg` will not be supported any more because GREAT requires a specific format for `gr` and `bg` if both are set, and it uses a completely different method for the enrichment analysis. Please see the documentation of `submitGreatJob()` for more explanations.")
+        warning_wrap("From rGREAT 1.99.0, `bg` will not be supported any more because GREAT requires a special format for `gr` and `bg` if both are set, and it uses a completely different method for the enrichment analysis. Please see the documentation of `submitGreatJob()` for more explanations.")
         
         if(inherits(bg, "data.frame")) {
             bg = GRanges(seqnames = bg[[1]],
@@ -311,7 +311,7 @@ to turn off this message.')
         
         i_try = i_try + 1
         
-        if(class(error) != "try-error") {
+        if(!inherits(error, "try-error")) {
             break
         } else {
             message(error, appendLF = FALSE)
@@ -669,7 +669,7 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
             
         i_try = i_try + 1
             
-        if(class(error) != "try-error") {
+        if(!inherits(error, "try-error")) {
             break
         } else {
                 
@@ -788,7 +788,7 @@ download = function(url, file, request_interval = 10, max_tries = 100) {
             
         i_try = i_try + 1
             
-        if(class(error) != "try-error") {
+        if(!inherits(error, "try-error")) {
             break
         } else {
             if(file.exists(file)) file.remove(file)
@@ -831,7 +831,7 @@ GREAT.read.json = function(job, url, onto, request_interval = 10, max_tries = 10
     
     # just in case downloading json file is interrupted
     error = try(json <- fromJSON(file = f1))
-    if(class(error) == "try-error") {
+    if(inherits(error, "try-error")) {
         stop("Downloading seems interrupted. Please re-run your command.\n")
     }
     
@@ -873,7 +873,7 @@ GREAT.read.json = function(job, url, onto, request_interval = 10, max_tries = 10
 parseRegionGeneAssociationFile = function(f1) {
 
     error = try(data <- read.table(f1, sep = "\t", stringsAsFactors = FALSE))
-    if(class(error) == "try-error") {
+    if(inherits(error, "try-error")) {
         stop("Downloading seems interrupted. Please re-run your command.\n")
     }
     
@@ -986,11 +986,11 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
     if(1 %in% which_plot) {
         if(using_term) {
             tb = table(table(unlist(gr_term$annotated_genes)))
-            vt = numeric(11)
+            vt = numeric(10)
             vt[as.numeric(names(tb))] = tb
             vt[is.na(vt)] = 0
-            v = c(vt[1:10], sum(vt[10:length(vt)]))
-            names(v) = c(as.character(1:10), ">10")
+            v = c(vt[1:9], sum(vt[10:length(vt)]))
+            names(v) = c(as.character(1:9), ">= 10")
             v[is.na(v)] = 0
             p = v/sum(v)
             pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\nTerm: @{term_id}"))
@@ -1129,6 +1129,8 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
 # == value
 # A `GenomicRanges::GRanges` object. Please the two meta columns are in formats of ``CharacterList``
 # and ``IntegerList`` because a region may associate to multiple genes.
+#
+# Please note, the distance is from the middle points of input regions to TSS.
 #
 # == author
 # Zuguang gu <z.gu@dkfz.de>

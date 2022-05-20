@@ -64,7 +64,8 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for GreatObject</span>
-<span class="fu"><a href="getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">object</span>, term_id <span class="op">=</span> <span class="cn">NULL</span>, use_symbols <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">object</span>, term_id <span class="op">=</span> <span class="cn">NULL</span>, by_middle_points <span class="op">=</span> <span class="cn">FALSE</span>,
+    use_symbols <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -73,6 +74,8 @@
 <dd><p>A <code><a href="GreatObject-class.html">GreatObject-class</a></code> object returned by <code><a href="great.html">great</a></code>.</p></dd>
 <dt>term_id</dt>
 <dd><p>Term ID.</p></dd>
+<dt>by_middle_points</dt>
+<dd><p>Whether the distances are calculated from the middle points of input regions?</p></dd>
 <dt>use_symbols</dt>
 <dd><p>Whether to use gene symbols</p></dd>
 </dl></div>
