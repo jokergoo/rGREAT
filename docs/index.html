@@ -106,7 +106,7 @@
 <p>With online GREAT analysis, the input regions will be directly submitted to GREAT server, and the results are automatically retrieved from GREAT server.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+<span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span>
 
 <span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="reference/submitGreatJob.html">submitGreatJob</a></span><span class="op">(</span><span class="va">gr</span><span class="op">)</span>
 <span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></code></pre></div>
@@ -118,6 +118,10 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span>
 <span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
+<p>To apply <code><a href="reference/great.html">great()</a></code> on other organisms, set the <code>biomart_dataset</code> argument:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># giant panda</span>
+<span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></code></pre></div>
 <p>For more details, please go to <a href="https://jokergoo.github.io/rGREAT/" class="external-link">the package vignettes</a>.</p>
 </div>
 <div class="section level2">

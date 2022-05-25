@@ -49,6 +49,9 @@
     <loc>/reference/extendTSSFromDataFrame.html</loc>
   </url>
   <url>
+    <loc>/reference/extendTSSFromOrgDb.html</loc>
+  </url>
+  <url>
     <loc>/reference/extendTSSFromTxDb.html</loc>
   </url>
   <url>
@@ -79,6 +82,9 @@
     <loc>/reference/getGencodeGenes.html</loc>
   </url>
   <url>
+    <loc>/reference/getGenesFromGencode.html</loc>
+  </url>
+  <url>
     <loc>/reference/getRefSeqGenesFromUCSC.html</loc>
   </url>
   <url>
@@ -89,6 +95,9 @@
   </url>
   <url>
     <loc>/reference/getRegionGeneAssociations-dispatch.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getTSS.html</loc>
   </url>
   <url>
     <loc>/reference/great.html</loc>

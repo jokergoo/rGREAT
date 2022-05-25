@@ -81,7 +81,7 @@
       <h1 data-toc-skip>Analyze with online GREAT</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2022-05-20</h4>
+            <h4 data-toc-skip class="date">2022-05-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/online-GREAT.Rmd" class="external-link"><code>vignettes/online-GREAT.Rmd</code></a></small>
       <div class="hidden name"><code>online-GREAT.Rmd</code></div>
@@ -101,8 +101,8 @@
 <p>The input data is either a <code>GRanges</code> object or a <em>BED</em>-format data frame, no matter it is sorted or not. In following example, we use a <code>GRanges</code> object which is randomly generated.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="../reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></code></pre></div>
+<span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="../reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 6 ranges and 0 metadata columns:</span>
 <span class="co">##       seqnames            ranges strand</span>
 <span class="co">##          &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt;</span>
@@ -113,7 +113,7 @@
 <span class="co">##   [5]     chr1 13814692-13823250      *</span>
 <span class="co">##   [6]     chr1 19243285-19247097      *</span>
 <span class="co">##   -------</span>
-<span class="co">##   seqinfo: 24 sequences from an unspecified genome; no seqlengths</span></code></pre>
+<span class="co">##   seqinfo: 26 sequences from an unspecified genome; no seqlengths</span></code></pre>
 <p>Submit genomic regions by <code><a href="../reference/submitGreatJob.html">submitGreatJob()</a></code>.</p>
 <p>The returned variable <code>job</code> is a <code>GreatJob</code> class instance which can be used to retrieve results from <strong>GREAT</strong> server and store results which are already downloaded.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -121,7 +121,7 @@
 <p>You can get the summary of your job by directly printing <code>job</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-05-20 23:39:12 </span>
+<pre><code><span class="co">## Submit time: 2022-05-25 13:36:00 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -224,7 +224,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <p>Information stored in <code>job</code> will be updated after retrieving enrichment tables.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-05-20 23:39:12 </span>
+<pre><code><span class="co">## Submit time: 2022-05-25 13:36:00 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -240,15 +240,15 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <span class="co">##   GO Molecular Function</span></code></pre>
 <p>You can get results by either specifying the ontologies or by the pre-defined categories (categories already contains pre-defined sets of ontologies):</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GO Molecular Function"</span>, <span class="st">"Human Phenotype"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GO"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GO Molecular Function"</span>, <span class="st">"Human Phenotype"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span>, category <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GO"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>As you have seen in the previous messages and results, The enrichment tables contain no associated genes. However, you can set <code>download_by = 'tsv'</code> in <code><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables()</a></code> to download the complete tables, but due to <a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport" class="external-link">the restriction from GREAT web server</a>, only the top 500 regions can be retreived (check the last two columns of <code>tbl2[["GO Molecular Function"]]</code> in the following example).</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tbl2</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span>, download_by <span class="op">=</span> <span class="st">"tsv"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">tbl2</span><span class="op">[[</span><span class="st">"GO Molecular Function"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## [1] 500</span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tbl2</span><span class="op">[[</span><span class="st">"GO Molecular Function"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tbl2</span><span class="op">[[</span><span class="st">"GO Molecular Function"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##                Ontology         ID</span>
 <span class="co">## 1 GO Molecular Function GO:0070696</span>
 <span class="co">## 2 GO Molecular Function GO:0033612</span>
@@ -356,7 +356,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,
     term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## The webpage for 'GO Molecular Function:GO:0004984' is available at:</span>
-<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220520-public-4.0.4-hhpueK&amp;species=hg19&amp;foreName=file49ee76b1f542.gz&amp;backName=&amp;table=region</span></code></pre>
+<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220525-public-4.0.4-QKkwB1&amp;species=hg19&amp;foreName=filef4b13e2afadf.gz&amp;backName=&amp;table=region</span></code></pre>
 <p><img src="online-GREAT_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,

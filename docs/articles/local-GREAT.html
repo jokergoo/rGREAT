@@ -81,7 +81,7 @@
       <h1 data-toc-skip>Analyze with local GREAT</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2022-05-20</h4>
+            <h4 data-toc-skip class="date">2022-05-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/local-GREAT.Rmd" class="external-link"><code>vignettes/local-GREAT.Rmd</code></a></small>
       <div class="hidden name"><code>local-GREAT.Rmd</code></div>
@@ -94,6 +94,7 @@
 <ol style="list-style-type: decimal">
 <li>limited number of supported organisms. Current version 4.0.4 only supports four organisms: “hg38”, “hg19”, “mm10” and “mm9”.</li>
 <li>limited number of ontologies (or gene set collections). Current version 4.0.4 only supports seven ontologies (<a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History" class="external-link uri">https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History</a>).</li>
+<li>maximal 500,000 test regions (<a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655402/File+Size" class="external-link uri">https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655402/File+Size</a>).</li>
 <li>the update of annotation databases is only controlled by the GREAT developers.</li>
 </ol>
 <p>From <strong>rGREAT</strong> version 1.99.0, it implements the GREAT algorithms locally and it can be seamlessly integrated to the Bioconductor annotation ecosystem. This means, theoretically with <strong>rGREAT</strong>, it is possible to perform GREAT analysis with any organism and with any type of gene set collection / ontology. Another advantage is, Bioconductor annotation packages are always very well maintained and updated, which means the data source of your analysis can be ensured to be most up-to-date.</p>
@@ -107,13 +108,14 @@
 <div class="section level3">
 <h3 id="with-defaultly-supported-annotation-packages">With defaultly supported annotation packages<a class="anchor" aria-label="anchor" href="#with-defaultly-supported-annotation-packages"></a>
 </h3>
-<p><code><a href="../reference/great.html">great()</a></code> has integrated many annotation databases which cover many organisms. Users simply specify the name of gene set collection (via the second argument) and the name of the transcriptome annotation (via the third argument).</p>
+<p><code><a href="../reference/great.html">great()</a></code> has integrated many annotation databases which cover many organisms. Users simply specify the name of gene set collection (via the second argument) and the source of TSS (via the third argument).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"txdb:hg19"</span><span class="op">)</span>
 <span class="va">res</span></code></pre></div>
 <pre><code><span class="co">## Associate 1000 regions to 50 gene sets.</span>
-<span class="co">##   TxDb: TxDb.Hsapiens.UCSC.hg19.knownGene</span>
-<span class="co">##   orgDb: org.Hs.eg.db</span>
+<span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span>
+<span class="co">##   Genome: hg19</span>
+<span class="co">##   OrgDb: org.Hs.eg.db</span>
 <span class="co">##   Gene sets: MSigDB:H</span>
 <span class="co">## Mode: Basal plus extension</span>
 <span class="co">##   Proximal: 5000 bp upstream, 1000 bp downstream,</span>
@@ -188,53 +190,26 @@
 <code>"msigdb:C8"</code> Cell type signature gene sets.</li>
 </ul>
 <p>The prefix <code>msigdb:</code> can be used as case insensitive and it can be omitted when specified in <code><a href="../reference/great.html">great()</a></code>.</p>
-<p>There are also following supported transcriptome annotations for various organisms (in form of TxDb pacakges):</p>
+<p>rGREAT supports TSS from several sources. The value of argument <code>tss_source</code> should be encoded in a special format:</p>
 <ul>
-<li><code>"TxDb.Hsapiens.UCSC.hg18.knownGene"</code></li>
-<li><code>"TxDb.Hsapiens.UCSC.hg19.knownGene"</code></li>
-<li><code>"TxDb.Hsapiens.UCSC.hg38.knownGene"</code></li>
-<li><code>"TxDb.Hsapiens.UCSC.hg38.refGene"</code></li>
-<li><code>"TxDb.Mmusculus.UCSC.mm10.knownGene"</code></li>
-<li><code>"TxDb.Mmusculus.UCSC.mm10.ensGene"</code></li>
-<li><code>"TxDb.Mmusculus.UCSC.mm39.refGene"</code></li>
-<li><code>"TxDb.Mmusculus.UCSC.mm9.knownGene"</code></li>
-<li><code>"TxDb.Rnorvegicus.UCSC.rn4.ensGene"</code></li>
-<li><code>"TxDb.Rnorvegicus.UCSC.rn5.refGene"</code></li>
-<li><code>"TxDb.Rnorvegicus.UCSC.rn6.refGene"</code></li>
-<li><code>"TxDb.Rnorvegicus.UCSC.rn7.refGene"</code></li>
-<li><code>"TxDb.Ggallus.UCSC.galGal4.refGene"</code></li>
-<li><code>"TxDb.Ggallus.UCSC.galGal5.refGene"</code></li>
-<li><code>"TxDb.Ggallus.UCSC.galGal6.refGene"</code></li>
-<li><code>"TxDb.Mmulatta.UCSC.rheMac10.refGene"</code></li>
-<li><code>"TxDb.Mmulatta.UCSC.rheMac3.refGene"</code></li>
-<li><code>"TxDb.Mmulatta.UCSC.rheMac8.refGene"</code></li>
-<li><code>"TxDb.Celegans.UCSC.ce11.ensGene"</code></li>
-<li><code>"TxDb.Celegans.UCSC.ce11.refGene"</code></li>
-<li><code>"TxDb.Celegans.UCSC.ce6.ensGene"</code></li>
-<li><code>"TxDb.Cfamiliaris.UCSC.canFam3.refGene"</code></li>
-<li><code>"TxDb.Cfamiliaris.UCSC.canFam4.refGene"</code></li>
-<li><code>"TxDb.Cfamiliaris.UCSC.canFam5.refGene"</code></li>
-<li><code>"TxDb.Sscrofa.UCSC.susScr11.refGene"</code></li>
-<li><code>"TxDb.Sscrofa.UCSC.susScr3.refGene"</code></li>
-<li><code>"TxDb.Scerevisiae.UCSC.sacCer2.sgdGene"</code></li>
-<li><code>"TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"</code></li>
-<li><code>"TxDb.Ptroglodytes.UCSC.panTro4.refGene"</code></li>
-<li><code>"TxDb.Ptroglodytes.UCSC.panTro5.refGene"</code></li>
-<li><code>"TxDb.Ptroglodytes.UCSC.panTro6.refGene"</code></li>
-<li><code>"TxDb.Dmelanogaster.UCSC.dm3.ensGene"</code></li>
-<li><code>"TxDb.Dmelanogaster.UCSC.dm6.ensGene"</code></li>
-<li><code>"TxDb.Drerio.UCSC.danRer10.refGene"</code></li>
-<li><code>"TxDb.Drerio.UCSC.danRer11.refGene"</code></li>
-<li><code>"TxDb.Btaurus.UCSC.bosTau8.refGene"</code></li>
-<li><code>"TxDb.Btaurus.UCSC.bosTau9.refGene"</code></li>
-<li><code>"TxDb.Athaliana.BioMart.plantsmart51"</code></li>
-<li><code>"TxDb.Athaliana.BioMart.plantsmart22"</code></li>
-<li><code>"TxDb.Athaliana.BioMart.plantsmart25"</code></li>
-<li><code>"TxDb.Athaliana.BioMart.plantsmart28"</code></li>
+<li>Name of a <code>TxDb.*</code> package, e.g. <code>TxDb.Hsapiens.UCSC.hg19.knownGene</code>. Supported packages are in <code>rGREAT:::BIOC_ANNO_PKGS$txdb</code>.</li>
+<li>Genome version of the organism, e.g. “hg19”. Then the corresponding TxDb package will be used.</li>
+<li>Name of an <code>org.*</code> package, e.g. <code>org.Hs.eg.db</code>. Supported packages are in <code>rGREAT:::BIOC_ANNO_PKGS$orgdb</code>.</li>
+<li>In a format of <code>RefSeq:$genome</code> where <code>$genome</code> is the genome version of an organism. RefSeqCurated genes will be used.</li>
+<li>In a format of <code>RefSeqCurated:$genome</code> where <code>$genome</code> is the genome version of an organism. RefSeqCurated subset will be used.</li>
+<li>In a format of <code>RefSeqSelect:$genome</code> where <code>$genome</code> is the genome version of an organism. RefSeqSelect subset will be used.</li>
+<li>In a format of <code>Gencode_v$version</code> where <code>$version</code> is Gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.</li>
+<li>In a format of <code>GREAT:$genome</code>, where <code>$genome</code> can only be “mm9”, “mm10”, “hg19”, “hg38”. TSS from GREAT will be used. The data is downloaded from <a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes" class="external-link uri">https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes</a>.</li>
 </ul>
-<p>The TxDb can also be specified by its genome version:</p>
+<p>The difference of <code>RefSeqCurated</code> and <code>RefSeqSelect</code> is explained in <a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&amp;g=refSeqComposite" class="external-link uri">https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&amp;g=refSeqComposite</a>.</p>
+<p>Some examples are:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"C2:CP:KEGG"</span>, <span class="st">"hg19"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"hg19"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"org.Hs.eg.db"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"RefSeq:hg19"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"GREAT:hg19"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"Gencode_v19"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="manually-set-gene-sets">Manually set gene sets<a class="anchor" aria-label="anchor" href="#manually-set-gene-sets"></a>
@@ -243,11 +218,12 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igordot.github.io/msigdbr/" class="external-link">msigdbr</a></span><span class="op">)</span>
 <span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html" class="external-link">msigdbr</a></span><span class="op">(</span>category <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span>
-<span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="va">map</span><span class="op">$</span><span class="va">entrez_gene</span>, <span class="va">map</span><span class="op">$</span><span class="va">gs_name</span><span class="op">)</span>
+<span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">map</span><span class="op">$</span><span class="va">entrez_gene</span>, <span class="va">map</span><span class="op">$</span><span class="va">gs_name</span><span class="op">)</span>
 <span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">gs</span>, <span class="st">"hg19"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Associate 1000 regions to 50 gene sets.</span>
-<span class="co">##   TxDb: TxDb.Hsapiens.UCSC.hg19.knownGene</span>
-<span class="co">##   orgDb: org.Hs.eg.db</span>
+<span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span>
+<span class="co">##   Genome: hg19</span>
+<span class="co">##   OrgDb: org.Hs.eg.db</span>
 <span class="co">##   Gene sets: self-provided</span>
 <span class="co">## Mode: Basal plus extension</span>
 <span class="co">##   Proximal: 5000 bp upstream, 1000 bp downstream,</span>
@@ -256,35 +232,13 @@
 <div class="section level3">
 <h3 id="manually-set-tss">Manually set TSS<a class="anchor" aria-label="anchor" href="#manually-set-tss"></a>
 </h3>
-<p>Users might want to use the built-in gene sets, but want to try a different definition of TSS. Take human genome hg19 for example, by default <code><a href="../reference/great.html">great()</a></code> used the TSS from <code>TxDb.Hsapiens.UCSC.hg19.knownGene</code>. However, TSS from other resources might be slightly different.</p>
-<p>There are three functions in <strong>rGREAT</strong> that retrieve genes/TSS from other resources:</p>
-<ul>
-<li>
-<code><a href="../reference/getGREATDefaultTSS.html">getGREATDefaultTSS()</a></code>: <strong>GREAT</strong> provides their own sets of TSS. The data is downloaded from <a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes" class="external-link uri">https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes</a>.</li>
-<li>
-<code><a href="../reference/getRefSeqGenesFromUCSC.html">getRefSeqGenesFromUCSC()</a></code>: RefSeq genes. You can use the full set of RefSeq genes or the subset of “RefSeqCurated” or “RefSeqSelect”. See <a href="https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&amp;g=refSeqComposite" class="external-link uri">https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&amp;g=refSeqComposite</a>.</li>
-<li>
-<code><a href="../reference/getGencodeGenes.html">getGencodeGenes()</a></code>: Gencode genes. Note it only includes protein-coding genes.</li>
-</ul>
-<p>After obtaining the genes/TSS, they should be sent to <code><a href="../reference/extendTSS.html">extendTSS()</a></code> to extend TSS based on a certain GREAT rule (e.g. basal plus extension), and finally sent to <code><a href="../reference/great.html">great()</a></code>.</p>
+<p>Users may have their own set of genes/TSS, as in the following example:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tss</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGREATDefaultTSS.html">getGREATDefaultTSS</a></span><span class="op">(</span><span class="st">"hg19"</span><span class="op">)</span>
-<span class="va">et</span> <span class="op">=</span> <span class="fu"><a href="../reference/extendTSS.html">extendTSS</a></span><span class="op">(</span><span class="va">tss</span><span class="op">)</span>
-<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"msigdb:h"</span>, extended_tss <span class="op">=</span> <span class="va">et</span><span class="op">)</span>
-
-<span class="va">gene</span> <span class="op">=</span> <span class="fu"><a href="../reference/getRefSeqGenesFromUCSC.html">getRefSeqGenesFromUCSC</a></span><span class="op">(</span><span class="st">"hg19"</span><span class="op">)</span>
-<span class="va">et</span> <span class="op">=</span> <span class="fu"><a href="../reference/extendTSS.html">extendTSS</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>
-<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"msigdb:h"</span>, extended_tss <span class="op">=</span> <span class="va">et</span><span class="op">)</span>
-
-<span class="va">gene</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGencodeGenes.html">getGencodeGenes</a></span><span class="op">(</span><span class="st">"v19"</span><span class="op">)</span>
-<span class="va">et</span> <span class="op">=</span> <span class="fu"><a href="../reference/extendTSS.html">extendTSS</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span>
-<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"msigdb:h"</span>, extended_tss <span class="op">=</span> <span class="va">et</span><span class="op">)</span></code></pre></div>
-<p>Users may have their own set of genes/TSS while not from the three functions mentioned above. In this case, they should explicitly specify the gene ID type in <code><a href="../reference/extendTSS.html">extendTSS()</a></code> so that <code><a href="../reference/great.html">great()</a></code> can correctly map to the genes in gene sets.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GREATv4.genes.hg19.tsv.gz"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">gzfile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GREATv4.genes.hg19.tsv.gz"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="co"># note there must be a 'gene_id' column</span>
 <span class="va">tss</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span>seqnames <span class="op">=</span> <span class="va">df</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, ranges <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html" class="external-link">IRanges</a></span><span class="op">(</span><span class="va">df</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span>, <span class="va">df</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">)</span>, 
     strand <span class="op">=</span> <span class="va">df</span><span class="op">[</span>, <span class="fl">4</span><span class="op">]</span>, gene_id <span class="op">=</span> <span class="va">df</span><span class="op">[</span>, <span class="fl">5</span><span class="op">]</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tss</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tss</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 6 ranges and 1 metadata column:</span>
 <span class="co">##       seqnames    ranges strand |     gene_id</span>
 <span class="co">##          &lt;Rle&gt; &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span>
@@ -296,13 +250,15 @@
 <span class="co">##   [6]     chr1    895966      + |      KLHL17</span>
 <span class="co">##   -------</span>
 <span class="co">##   seqinfo: 25 sequences from an unspecified genome; no seqlengths</span></code></pre>
-<p>IDs for genes in <code>tss</code> are symbols, thus, <code>gene_id_type</code> must be set to <code>"SYMBOL"</code> so that the correct gene ID type will be selected for internally gene sets.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>In this case, users must manually generate an “extended TSS” by <code><a href="../reference/extendTSS.html">extendTSS()</a></code> function. They should also explicitly specify the gene ID type in <code><a href="../reference/extendTSS.html">extendTSS()</a></code> so that <code><a href="../reference/great.html">great()</a></code> can correctly map to the genes in gene sets.</p>
+<p>In the example, IDs for genes in <code>tss</code> are symbols, thus, <code>gene_id_type</code> must be set to <code>"SYMBOL"</code> so that the correct gene ID type will be selected for internal gene sets.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">et</span> <span class="op">=</span> <span class="fu"><a href="../reference/extendTSS.html">extendTSS</a></span><span class="op">(</span><span class="va">tss</span>, genome <span class="op">=</span> <span class="st">"hg19"</span>, gene_id_type <span class="op">=</span> <span class="st">"SYMBOL"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"msigdb:h"</span>, extended_tss <span class="op">=</span> <span class="va">et</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Associate 1000 regions to 50 gene sets.</span>
-<span class="co">##   TxDb: unknown</span>
-<span class="co">##   orgDb: unknown</span>
+<span class="co">##   TSS source: self-provided</span>
+<span class="co">##   Genome: hg19</span>
+<span class="co">##   OrgDb: org.Hs.eg.db</span>
 <span class="co">##   Gene sets: msigdb:h</span>
 <span class="co">## Mode: Basal plus extension</span>
 <span class="co">##   Proximal: 5000 bp upstream, 1000 bp downstream,</span>
@@ -315,11 +271,11 @@
 <p>If your organism is not defaultly supported, you can always use the <code><a href="../reference/extendTSS.html">extendTSS()</a></code> to manually construct one. Note in GREAT algorithm, TSS are first extended by a rule (e.g. basal plus extension). <code><a href="../reference/extendTSS.html">extendTSS()</a></code> accepts a <code>GRanges</code> object of gene or TSS and it returns a new <code>GRanges</code> object of extended TSS.</p>
 <p>In the following example, since I don’t have data for the organism not defaultly supported by <strong>rGREAT</strong>. I simply use human data to demonstrate how to manually construct the extended TSS.</p>
 <p>There are two objects for <code><a href="../reference/extendTSS.html">extendTSS()</a></code>: the gene (or the TSS) and the length of chromosomes. The gene object must have a meta column named “gene_id” which stores gene ID in a specific type (this ID type will be mapped to the genes in gene sets). The chromosome length object is a named vector and it also controls the total set of chromosomes to be used in the analysis.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span>
 <span class="va">gene</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicFeatures/man/transcripts.html" class="external-link">genes</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span>
-<span class="va">gene</span> <span class="op">=</span> <span class="va">gene</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqnames</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span></code></pre></div>
+<span class="va">gene</span> <span class="op">=</span> <span class="va">gene</span><span class="op">[</span><span class="fu">seqnames</span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 6 ranges and 1 metadata column:</span>
 <span class="co">##             seqnames              ranges strand |     gene_id</span>
 <span class="co">##                &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span>
@@ -331,15 +287,15 @@
 <span class="co">##   100008586     chrX   49217763-49233491      + |   100008586</span>
 <span class="co">##   -------</span>
 <span class="co">##   seqinfo: 93 sequences (1 circular) from hg19 genome</span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">gl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">seqlengths</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>  <span class="co"># restrict to normal chromosomes</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gl</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gl</span> <span class="op">=</span> <span class="fu">seqlengths</span><span class="op">(</span><span class="va">gene</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>  <span class="co"># restrict to normal chromosomes</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">gl</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##      chr1      chr2      chr3      chr4      chr5      chr6 </span>
 <span class="co">## 249250621 243199373 198022430 191154276 180915260 171115067</span></code></pre>
 <p>Simply send <code>gene</code> and <code>gl</code> to <code><a href="../reference/extendTSS.html">extendTSS()</a></code>:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">et</span> <span class="op">=</span> <span class="fu"><a href="../reference/extendTSS.html">extendTSS</a></span><span class="op">(</span><span class="va">gene</span>, <span class="va">gl</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">et</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">et</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 6 ranges and 3 metadata columns:</span>
 <span class="co">##             seqnames        ranges strand |     gene_id tss_position</span>
 <span class="co">##                &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;    &lt;integer&gt;</span>
@@ -358,12 +314,12 @@
 <span class="co">##   100288069           -</span>
 <span class="co">##      643837           +</span>
 <span class="co">##   -------</span>
-<span class="co">##   seqinfo: 24 sequences from hg19 genome</span></code></pre>
+<span class="co">##   seqinfo: 24 sequences from an unspecified genome</span></code></pre>
 <p>We can also manually construct the gene sets object, which is a named list of vectors where each vector contains genes in a gene set. In the following example, I manually construct the “CP:KEGG” gene sets with the <strong>msigdbr</strong> package.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://igordot.github.io/msigdbr/" class="external-link">msigdbr</a></span><span class="op">)</span>
 <span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html" class="external-link">msigdbr</a></span><span class="op">(</span>category <span class="op">=</span> <span class="st">"C2"</span>, subcategory <span class="op">=</span> <span class="st">"CP:KEGG"</span><span class="op">)</span>
-<span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/splitAsList.html" class="external-link">split</a></span><span class="op">(</span><span class="va">map</span><span class="op">$</span><span class="va">entrez_gene</span>, <span class="va">map</span><span class="op">$</span><span class="va">gs_name</span><span class="op">)</span>
+<span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">map</span><span class="op">$</span><span class="va">entrez_gene</span>, <span class="va">map</span><span class="op">$</span><span class="va">gs_name</span><span class="op">)</span>
 <span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">gs</span>, <span class="va">as.character</span><span class="op">)</span>
 <span class="va">gs</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></code></pre></div>
 <pre><code><span class="co">## $KEGG_ABC_TRANSPORTERS</span>
@@ -386,16 +342,26 @@
 <span class="co">## [55] "6777"  "6932"  "83439" "6934"  "7704"</span></code></pre>
 <p>Please note again, gene IDs in <code>gs</code> should be the same as in <code>et</code>.</p>
 <p>Now <code>gs</code> and <code>et</code> can be sent to <code><a href="../reference/great.html">great()</a></code> to perform local GREAT with the annotation data you manually provided.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, gene_sets <span class="op">=</span> <span class="va">gs</span>, extended_tss <span class="op">=</span> <span class="va">et</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## Associate 1000 regions to 186 gene sets.</span>
-<span class="co">##   TxDb: unknown</span>
-<span class="co">##   orgDb: unknown</span>
+<span class="co">##   TSS source: self-provided</span>
+<span class="co">##   Genome: unknown</span>
 <span class="co">##   Gene sets: self-provided</span>
 <span class="co">## Mode: Basal plus extension</span>
 <span class="co">##   Proximal: 5000 bp upstream, 1000 bp downstream,</span>
 <span class="co">##   plus Distal: up to 1000000 bp</span></code></pre>
 </div>
+</div>
+<div class="section level2">
+<h2 id="use-biomart-genes-and-genesets">Use BioMart genes and genesets<a class="anchor" aria-label="anchor" href="#use-biomart-genes-and-genesets"></a>
+</h2>
+<p><strong>rGREAT</strong> also supports GO gene sets for a huge number of organisms retrieved from <a href="https://www.ensembl.org/info/data/biomart/index.html" class="external-link">Ensembl BioMart</a>. A specific organism can be set with the <code>biomart_dataset</code> argument:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># giant panda</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></code></pre></div>
+<p>Note both TSS and gene sets are from BioMart. The value for gene sets (the second argument) can only be one of <code>"GO:BP"</code>, <code>"GO:CC"</code> and <code>"GO:MF"</code>.</p>
+<p><strong>rGREAT</strong> now supports 562 organisms. The complete list can be found at <a href="https://jokergoo.github.io/rGREAT_genesets/" class="external-link uri">https://jokergoo.github.io/rGREAT_genesets/</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="set-background-regions">Set background regions<a class="anchor" aria-label="anchor" href="#set-background-regions"></a>
@@ -407,16 +373,21 @@
 <p>Similarly, when background regions are set, denote <span class="math inline">\(N_2\)</span> as the total number of input regions that <u>overlap to backgroud</u>, <span class="math inline">\(p_2\)</span> as <u>the fraction of background</u> that are overlapped to extended TSS of genes in a certain gene set, and <span class="math inline">\(K_2\)</span> as the number of regions that overlap to the gene set associated regions <u>and also overlap to background</u>, then the enrichment test is based on the random variable <span class="math inline">\(K_2\)</span> which follows Binomial distribution <span class="math inline">\(K_2 \sim B(p_2, N_2)\)</span>.</p>
 <p>In the following example, <code><a href="../reference/getGapFromUCSC.html">getGapFromUCSC()</a></code> can be used to retrieve gap regions from UCSC table browser.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"hg19"</span>, exclude <span class="op">=</span> <span class="fu"><a href="../reference/getGapFromUCSC.html">getGapFromUCSC</a></span><span class="op">(</span><span class="st">"hg19"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">gap</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGapFromUCSC.html">getGapFromUCSC</a></span><span class="op">(</span><span class="st">"hg19"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="st">"X"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"hg19"</span>, exclude <span class="op">=</span> <span class="va">gap</span><span class="op">)</span></code></pre></div>
 <p>If you want to use the Fisher’s exact test-based or Hypergeometric-based method, you can directly use the GREAT website (currently you can still use <strong>rGREAT</strong> to set <code>bg</code>, but you will see a warning message) or use the Bioconductor package <a href="https://bioconductor.org/packages/LOLA/" class="external-link"><strong>LOLA</strong></a>.</p>
+<p>Alternatively, <code>background</code> and <code>exclude</code> can also be set to a vector of chromosome names, then the whole selected chromosomes will be included/excluded from the analysis.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, background <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">22</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, exclude <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chrX"</span>, <span class="st">"chrY"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="get-enrichment-table">Get enrichment table<a class="anchor" aria-label="anchor" href="#get-enrichment-table"></a>
 </h2>
 <p>Simply use <code><a href="../reference/getEnrichmentTable-dispatch.html">getEnrichmentTable()</a></code> function.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="../reference/getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##                                   id genome_fraction observed_region_hits</span>
 <span class="co">## 1           HALLMARK_SPERMATOGENESIS     0.013006115                   21</span>
 <span class="co">## 2                 HALLMARK_APOPTOSIS     0.014674361                   23</span>
@@ -437,19 +408,19 @@
 <h2 id="make-volcano-plot">Make volcano plot<a class="anchor" aria-label="anchor" href="#make-volcano-plot"></a>
 </h2>
 <p>In differential gene expression analysis, volcano plot is used to visualize relations between log2 fold change and (adjusted) p-values. Similarly, we can also use volcano plot to visualize relations between fold enrichment and (adjusted) p-values for the enrichment analysis. The plot is made by the function <code><a href="../reference/plotVolcano-dispatch.html">plotVolcano()</a></code>:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotVolcano-dispatch.html">plotVolcano</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<p><img src="local-GREAT_files/figure-html/unnamed-chunk-15-1.png" width="576" style="display: block; margin: auto;"></p>
+<p><img src="local-GREAT_files/figure-html/unnamed-chunk-16-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>As the enrichment analysis basically only looks for over-representations, it is actually half volcano.</p>
 </div>
 <div class="section level2">
 <h2 id="get-region-gene-associations">Get region-gene associations<a class="anchor" aria-label="anchor" href="#get-region-gene-associations"></a>
 </h2>
 <p><code><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations()</a></code> generates three plots similar as those by online GREAT. <code><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations()</a></code> returns a <code>GRanges</code> object containing associations between regions and genes.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
-<p><img src="local-GREAT_files/figure-html/unnamed-chunk-16-1.png" width="960" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
+<p><img src="local-GREAT_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 884 ranges and 2 metadata columns:</span>
 <span class="co">##         seqnames            ranges strand | annotated_genes    dist_to_TSS</span>
@@ -466,14 +437,14 @@
 <span class="co">##   [883]     chrY 24401612-24406252      * |   RBMY1E,RBMY1F  -72523,-48754</span>
 <span class="co">##   [884]     chrY 26206997-26215445      * |            DAZ2         841416</span>
 <span class="co">##   -------</span>
-<span class="co">##   seqinfo: 24 sequences from an unspecified genome; no seqlengths</span></code></pre>
+<span class="co">##   seqinfo: 26 sequences from an unspecified genome; no seqlengths</span></code></pre>
 <p>Being different from the online GREAT, <code><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations()</a></code> on the local GREAT object calculates the distance to TSS based on the borders of the input regions. The argument <code>by_middle_points</code> can be set to <code>TRUE</code> to let the distance be based on the middle points of input regions.</p>
 <p>Please note the two meta columns are in formats of <code>CharacterList</code> and <code>IntegerList</code> because a region may associate to multiple genes.</p>
 <p>Of course you can set a specific geneset term by argument <code>term_id</code>.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span>, term_id <span class="op">=</span> <span class="st">"HALLMARK_APOPTOSIS"</span><span class="op">)</span></code></pre></div>
-<p><img src="local-GREAT_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span>, term_id <span class="op">=</span> <span class="st">"HALLMARK_APOPTOSIS"</span><span class="op">)</span></code></pre></div>
+<p><img src="local-GREAT_files/figure-html/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">res</span>, term_id <span class="op">=</span> <span class="st">"HALLMARK_APOPTOSIS"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## GRanges object with 23 ranges and 2 metadata columns:</span>
 <span class="co">##        seqnames            ranges strand | annotated_genes   dist_to_TSS</span>
@@ -490,19 +461,19 @@
 <span class="co">##   [22]    chr21 27698626-27707770      * |             APP       -155180</span>
 <span class="co">##   [23]    chr22 21271471-21278063      * |           AIFM3        -41355</span>
 <span class="co">##   -------</span>
-<span class="co">##   seqinfo: 24 sequences from an unspecified genome; no seqlengths</span></code></pre>
+<span class="co">##   seqinfo: 26 sequences from an unspecified genome; no seqlengths</span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="the-shiny-application">The Shiny application<a class="anchor" aria-label="anchor" href="#the-shiny-application"></a>
 </h2>
 <p><code><a href="../reference/shinyReport-dispatch.html">shinyReport()</a></code> creates a Shiny application to view the complete results:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/shinyReport-dispatch.html">shinyReport</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## R version 4.1.2 (2021-11-01)</span>
 <span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span>

@@ -88,22 +88,22 @@
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">obj</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatObject.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 884 ranges and 2 metadata columns:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         seqnames            ranges strand | annotated_genes    dist_to_TSS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;CharacterList&gt;  &lt;IntegerList&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     [1]     chr1   9204434-9208784      * |     GPR157,H6PD  -15205,-86079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     [2]     chr1   9853594-9859363      * |   PIK3CD,CLSTN1   141804,25187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     [3]     chr1 10862809-10871681      * |  CASZ1,C1orf127   -6076,170413</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     [4]     chr1 12716970-12723206      * | AADACL4,AADACL3   12404,-52912</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     [5]     chr1 13814692-13823250      * | PRAMEF17,LRRC38    98604,16992</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ...      ...               ...    ... .             ...            ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [880]     chrY 16384799-16389852      * |   TMSB4Y,NLGN4Y 569352,-244636</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [881]     chrY 16842593-16846893      * |          NLGN4Y         208105</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [882]     chrY 16998750-17003225      * |          NLGN4Y         364262</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [883]     chrY 24401612-24406252      * |   RBMY1E,RBMY1F  -72523,-48754</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [884]     chrY 26206997-26215445      * |            DAZ2         841416</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 894 ranges and 2 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         seqnames            ranges strand | annotated_genes     dist_to_TSS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;CharacterList&gt;   &lt;IntegerList&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [1]     chr1   2189111-2193793      * |        SKI,RER1   28977,-129421</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [2]     chr1   8187022-8196765      * |  ERRFI1,SLC45A1 -100629,-187625</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [3]     chr1   9744586-9748800      * |   PIK3CD,CLSTN1    32796,135750</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [4]     chr1 15205043-15211755      * |     KAZN,TMEM51  279830,-267273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [5]     chr1 15260116-15266399      * |     KAZN,TMEM51  334903,-212629</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ...      ...               ...    ... .             ...             ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [890]     chrY   6335214-6338363      * |     TSPY2,AMELY   220950,403705</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [891]     chrY   9443746-9448174      * |           TSPY1          139182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [892]     chrY   9507060-9514918      * |           TSPY1          202496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [893]     chrY 15618151-15622904      * |      UTY,TMSB4Y  -25601,-192543</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [894]     chrY 21698843-21703729      * |      CD24,KDM5D  -544138,203096</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 24 sequences from an unspecified genome; no seqlengths</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 26 sequences from an unspecified genome; no seqlengths</span>
 </code></pre></div>
     </div>
   </div>

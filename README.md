@@ -37,7 +37,7 @@ are automatically retrieved from GREAT server.
 
 ```r
 set.seed(123)
-gr = randomRegions(nr = 1000)
+gr = randomRegions(nr = 1000, genome = "hg19")
 
 job = submitGreatJob(gr)
 tbl = getEnrichmentTables(job)
@@ -52,6 +52,13 @@ with any organism and with any type of gene set collection / ontology
 ```r
 res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
 tb = getEnrichmentTable(res)
+```
+
+To apply `great()` on other organisms, set the `biomart_dataset` argument:
+
+```r
+# giant panda
+great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 ```
 
 For more details, please go to [the package vignettes](https://jokergoo.github.io/rGREAT/).
