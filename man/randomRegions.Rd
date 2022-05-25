@@ -7,13 +7,14 @@ Generate random regions
 Generate random regions
 }
 \usage{
-randomRegions(nr = 1000, genome = NULL,
+randomRegions(nr = 1000, genome = NULL, seqlengths = NULL,
     width_fun = function(n) runif(n, min = 1000, max = 10000))
 }
 \arguments{
 
   \item{nr}{Number of regions.}
   \item{genome}{UCSC genome version, e.g. "hg19".}
+  \item{seqlengths}{Alternatively, you can also specify a named vector of seqlengths (chromosome lengths).}
   \item{width_fun}{A function which defines the distribution of region widths.}
 
 }
@@ -21,6 +22,6 @@ randomRegions(nr = 1000, genome = NULL,
 The number of regions per chromosome is proportional to the chromsome length.
 }
 \examples{
-gr = randomRegions(1000)
+gr = randomRegions(1000, genome = "hg19")
 quantile(width(gr))
 }

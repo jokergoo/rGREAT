@@ -7,7 +7,7 @@ Get RefSeq genes from UCSC
 Get RefSeq genes from UCSC
 }
 \usage{
-getRefSeqGenesFromUCSC(genome, subset = c("RefSeqSelect", "RefSeqCurated", "RefSeq"))
+getRefSeqGenesFromUCSC(genome, subset = c("RefSeqSelect", "RefSeqCurated"))
 }
 \arguments{
 

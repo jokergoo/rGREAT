@@ -42,5 +42,9 @@ rGREAT_env$LAST_REQUEST_TIME = 0
 # great_opt
 great_opt = function(..., RESET = FALSE, READ.ONLY = NULL, LOCAL = FALSE, ADD = FALSE) {}
 great_opt = setGlobalOptions(
-	verbose = TRUE
+	verbose = TRUE,
+	test = list(
+		.value = FALSE,
+		.visible = FALSE
+	)
 )

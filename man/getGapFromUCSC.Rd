@@ -7,11 +7,12 @@ Get gap regions from UCSC
 Get gap regions from UCSC
 }
 \usage{
-getGapFromUCSC(genome)
+getGapFromUCSC(genome, seqnames = NULL)
 }
 \arguments{
 
   \item{genome}{UCSC genome, such as "hg19".}
+  \item{seqnames}{A vector of chromosome names.}
 
 }
 \value{

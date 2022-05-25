@@ -7,7 +7,7 @@ Extend TSS
 Extend TSS
 }
 \usage{
-extendTSS(gene, seqlengths, genome = NULL, gene_id_type = NULL,
+extendTSS(gene, seqlengths = NULL, genome = NULL, gene_id_type = NULL,
     mode = "basalPlusExt", basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
     verbose = great_opt$verbose, .attr = list())
 }

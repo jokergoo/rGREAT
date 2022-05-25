@@ -131,7 +131,7 @@ GreatJob = function(...) {
 #
 # == example
 # set.seed(123)
-# gr = randomRegions(nr = 1000)
+# gr = randomRegions(nr = 1000, genome = "hg19")
 # job = submitGreatJob(gr)
 # job
 #
@@ -1044,7 +1044,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
         axis(side = 2)
         op = par("xpd")
         par(xpd = NA)
-        text(colMeans(pos), -0.02,rownames(v), srt = 45, adj = c(1, 0.5))
+        text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
         par(xpd = op)
         x1 = (mean(pos[, 4]) + mean(pos[, 5]))/2
         x2 = (mean(pos[, 5]) + mean(pos[, 6]))/2

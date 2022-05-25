@@ -92,7 +92,7 @@ Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
 set.seed(123)
-gr = randomRegions(nr = 1000)
+gr = randomRegions(nr = 1000, genome = "hg19")
 job = submitGreatJob(gr)
 job
 

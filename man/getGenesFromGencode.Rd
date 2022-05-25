@@ -1,5 +1,5 @@
-\name{getGencodeGenes}
-\alias{getGencodeGenes}
+\name{getGenesFromGencode}
+\alias{getGenesFromGencode}
 \title{
 Get Gencode genes
 }
@@ -7,7 +7,7 @@ Get Gencode genes
 Get Gencode genes
 }
 \usage{
-getGencodeGenes(version)
+getGenesFromGencode(version)
 }
 \arguments{
 

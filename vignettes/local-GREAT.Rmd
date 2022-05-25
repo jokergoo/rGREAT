@@ -29,7 +29,8 @@ an online tool has several limitations:
 
 1. limited number of supported organisms. Current version 4.0.4 only supports four organisms: "hg38", "hg19", "mm10" and "mm9".
 2. limited number of ontologies (or gene set collections). Current version 4.0.4 only supports seven ontologies (https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History).
-3. the update of annotation databases is only controlled by the GREAT developers.
+3. maximal 500,000 test regions (https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655402/File+Size).
+4. the update of annotation databases is only controlled by the GREAT developers.
 
 From **rGREAT** version 1.99.0, it implements the GREAT algorithms locally and it can be seamlessly integrated
 to the Bioconductor annotation ecosystem. This means, theoretically with **rGREAT**, it is possible to perform GREAT analysis
@@ -43,7 +44,7 @@ suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
 library(rGREAT)
 
 set.seed(123)
-gr = randomRegions(nr = 1000)
+gr = randomRegions(nr = 1000, genome = "hg19")
 ```
 
 
@@ -53,12 +54,11 @@ The function `great()` is the core function to perform local GREAT analysis. You
 
 ### With defaultly supported annotation packages
 
-
 `great()` has integrated many annotation databases which cover many organisms.
-Users simply specify the name of gene set collection (via the second argument) and the name of the transcriptome annotation (via the third argument).
+Users simply specify the name of gene set collection (via the second argument) and the source of TSS (via the third argument).
 
 ```{r}
-res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
+res = great(gr, "MSigDB:H", "txdb:hg19")
 res
 ```
 
@@ -103,55 +103,28 @@ The second category of gene sets are from MSigDB with the **msigdbr** package. N
 
 The prefix `msigdb:` can be used as case insensitive and it can be omitted when specified in `great()`.
 
-There are also following supported transcriptome annotations for various organisms (in form of TxDb pacakges):
+rGREAT supports TSS from several sources. The value of argument `tss_source` should be encoded in a special format:
 
-- `"TxDb.Hsapiens.UCSC.hg18.knownGene"`
-- `"TxDb.Hsapiens.UCSC.hg19.knownGene"`
-- `"TxDb.Hsapiens.UCSC.hg38.knownGene"`
-- `"TxDb.Hsapiens.UCSC.hg38.refGene"`
-- `"TxDb.Mmusculus.UCSC.mm10.knownGene"`
-- `"TxDb.Mmusculus.UCSC.mm10.ensGene"`
-- `"TxDb.Mmusculus.UCSC.mm39.refGene"`
-- `"TxDb.Mmusculus.UCSC.mm9.knownGene"`
-- `"TxDb.Rnorvegicus.UCSC.rn4.ensGene"`
-- `"TxDb.Rnorvegicus.UCSC.rn5.refGene"`
-- `"TxDb.Rnorvegicus.UCSC.rn6.refGene"`
-- `"TxDb.Rnorvegicus.UCSC.rn7.refGene"`
-- `"TxDb.Ggallus.UCSC.galGal4.refGene"`
-- `"TxDb.Ggallus.UCSC.galGal5.refGene"`
-- `"TxDb.Ggallus.UCSC.galGal6.refGene"`
-- `"TxDb.Mmulatta.UCSC.rheMac10.refGene"`
-- `"TxDb.Mmulatta.UCSC.rheMac3.refGene"`
-- `"TxDb.Mmulatta.UCSC.rheMac8.refGene"`
-- `"TxDb.Celegans.UCSC.ce11.ensGene"`
-- `"TxDb.Celegans.UCSC.ce11.refGene"`
-- `"TxDb.Celegans.UCSC.ce6.ensGene"`
-- `"TxDb.Cfamiliaris.UCSC.canFam3.refGene"`
-- `"TxDb.Cfamiliaris.UCSC.canFam4.refGene"`
-- `"TxDb.Cfamiliaris.UCSC.canFam5.refGene"`
-- `"TxDb.Sscrofa.UCSC.susScr11.refGene"`
-- `"TxDb.Sscrofa.UCSC.susScr3.refGene"`
-- `"TxDb.Scerevisiae.UCSC.sacCer2.sgdGene"`
-- `"TxDb.Scerevisiae.UCSC.sacCer3.sgdGene"`
-- `"TxDb.Ptroglodytes.UCSC.panTro4.refGene"`
-- `"TxDb.Ptroglodytes.UCSC.panTro5.refGene"`
-- `"TxDb.Ptroglodytes.UCSC.panTro6.refGene"`
-- `"TxDb.Dmelanogaster.UCSC.dm3.ensGene"`
-- `"TxDb.Dmelanogaster.UCSC.dm6.ensGene"`
-- `"TxDb.Drerio.UCSC.danRer10.refGene"`
-- `"TxDb.Drerio.UCSC.danRer11.refGene"`
-- `"TxDb.Btaurus.UCSC.bosTau8.refGene"`
-- `"TxDb.Btaurus.UCSC.bosTau9.refGene"`
-- `"TxDb.Athaliana.BioMart.plantsmart51"`
-- `"TxDb.Athaliana.BioMart.plantsmart22"`
-- `"TxDb.Athaliana.BioMart.plantsmart25"`
-- `"TxDb.Athaliana.BioMart.plantsmart28"`
+- Name of a `TxDb.*` package, e.g. `TxDb.Hsapiens.UCSC.hg19.knownGene`. Supported packages are in `rGREAT:::BIOC_ANNO_PKGS$txdb`.
+- Genome version of the organism, e.g. "hg19". Then the corresponding TxDb package will be used.
+- Name of an `org.*` package, e.g. `org.Hs.eg.db`. Supported packages are in `rGREAT:::BIOC_ANNO_PKGS$orgdb`.
+- In a format of `RefSeq:$genome` where `$genome` is the genome version of an organism. RefSeqCurated genes will be used.
+- In a format of `RefSeqCurated:$genome` where `$genome` is the genome version of an organism. RefSeqCurated subset will be used.
+- In a format of `RefSeqSelect:$genome` where `$genome` is the genome version of an organism. RefSeqSelect subset will be used.
+- In a format of `Gencode_v$version` where `$version` is Gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
+- In a format of `GREAT:$genome`, where `$genome` can only be "mm9", "mm10", "hg19", "hg38". TSS from GREAT will be used. The data is downloaded from https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes.
 
+The difference of `RefSeqCurated` and `RefSeqSelect` is explained in https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=refSeqComposite.
 
-The TxDb can also be specified by its genome version:
+Some examples are:
 
 ```{r, eval = FALSE}
-great(gr, "C2:CP:KEGG", "hg19")
+great(gr, "GO:BP", "hg19")
+great(gr, "GO:BP", "TxDb.Hsapiens.UCSC.hg19.knownGene")
+great(gr, "GO:BP", "org.Hs.eg.db")
+great(gr, "GO:BP", "RefSeq:hg19")
+great(gr, "GO:BP", "GREAT:hg19")
+great(gr, "GO:BP", "Gencode_v19")
 ```
 
 
@@ -170,45 +143,21 @@ great(gr, gs, "hg19")
 
 ### Manually set TSS
 
-Users might want to use the built-in gene sets, but want to try a different definition of TSS. Take human genome hg19 for example, 
-by default `great()` used the TSS from `TxDb.Hsapiens.UCSC.hg19.knownGene`. However, TSS from other resources might be slightly different. 
-
-There are three functions in **rGREAT** that retrieve genes/TSS from other resources:
-
-- `getGREATDefaultTSS()`: **GREAT** provides their own sets of TSS. The data is downloaded from https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655445/Genes.
-- `getRefSeqGenesFromUCSC()`: RefSeq genes. You can use the full set of RefSeq genes or the subset of "RefSeqCurated" or "RefSeqSelect". See https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=refSeqComposite.
-- `getGencodeGenes()`: Gencode genes. Note it only includes protein-coding genes.
-
-After obtaining the genes/TSS, they should be sent to `extendTSS()` to extend TSS based on a certain GREAT rule (e.g. basal plus extension), and finally sent to `great()`.
-
-```{r, eval = FALSE}
-tss = getGREATDefaultTSS("hg19")
-et = extendTSS(tss)
-great(gr, "msigdb:h", extended_tss = et)
-
-gene = getRefSeqGenesFromUCSC("hg19")
-et = extendTSS(gene)
-great(gr, "msigdb:h", extended_tss = et)
-
-gene = getGencodeGenes("v19")
-et = extendTSS(gene)
-great(gr, "msigdb:h", extended_tss = et)
-```
-
-Users may have their own set of genes/TSS while not from the three functions
-mentioned above. In this case, they should explicitly specify the gene ID type
-in `extendTSS()` so that `great()` can correctly map to the genes in gene
-sets.
+Users may have their own set of genes/TSS, as in the following example:
 
 ```{r}
-df = read.table(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT"))
+df = read.table(gzfile(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT")))
+# note there must be a 'gene_id' column
 tss = GRanges(seqnames = df[, 2], ranges = IRanges(df[, 3], df[, 3]), 
     strand = df[, 4], gene_id = df[, 5])
 head(tss)
 ```
 
-IDs for genes in `tss` are symbols, thus, `gene_id_type` must be set to `"SYMBOL"` so that the correct gene ID type
-will be selected for internally gene sets.
+In this case, users must manually generate an "extended TSS" by `extendTSS()` function. They should also explicitly specify the gene ID type
+in `extendTSS()` so that `great()` can correctly map to the genes in gene sets.
+
+In the example, IDs for genes in `tss` are symbols, thus, `gene_id_type` must be set to `"SYMBOL"` so that the correct gene ID type
+will be selected for internal gene sets.
 
 ```{r}
 et = extendTSS(tss, genome = "hg19", gene_id_type = "SYMBOL")
@@ -266,6 +215,20 @@ Now `gs` and `et` can be sent to `great()` to perform local GREAT with the annot
 great(gr, gene_sets = gs, extended_tss = et)
 ```
 
+## Use BioMart genes and genesets
+
+**rGREAT** also supports GO gene sets for a huge number of organisms retrieved from [Ensembl BioMart](https://www.ensembl.org/info/data/biomart/index.html).
+A specific organism can be set with the `biomart_dataset` argument:
+
+```{r, eval = FALSE}
+# giant panda
+great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
+```
+
+Note both TSS and gene sets are from BioMart. The value for gene sets (the second argument) can only be one of `"GO:BP"`, `"GO:CC"` and `"GO:MF"`.
+
+**rGREAT** now supports 562 organisms. The complete list can be found at https://jokergoo.github.io/rGREAT_genesets/.
+
 ## Set background regions
 
 In the online GREAT tool, if background regions are set, [it actually uses a completely different test for the enrichment analysis](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655456/Statistics#Statistics-ExplicitBackgroundSet).
@@ -310,12 +273,21 @@ the random variable $K_2$ which follows Binomial distribution $K_2 \sim B(p_2, N
 In the following example, `getGapFromUCSC()` can be used to retrieve gap regions from UCSC table browser.
 
 ```{r, eval = FALSE}
-great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
+gap = getGapFromUCSC("hg19", paste0("chr", c(1:22, "X", "Y")))
+great(gr, "MSigDB:H", "hg19", exclude = gap)
 ```
 
 If you want to use the Fisher's exact test-based or Hypergeometric-based method, you can directly use
 the GREAT website (currently you can still use **rGREAT** to set `bg`, but you will see a warning 
 message) or use the Bioconductor package [**LOLA**](https://bioconductor.org/packages/LOLA/).
+
+Alternatively, `background` and `exclude` can also be set to a vector of chromosome names, then
+the whole selected chromosomes will be included/excluded from the analysis.
+
+```{r, eval = FALSE}
+great(gr, "GO:BP", background = paste0("chr", 1:22))
+great(gr, "GO:BP", exclude = c("chrX", "chrY"))
+```
 
 ## Get enrichment table
 

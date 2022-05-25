@@ -142,7 +142,11 @@ setMethod(f = "shinyReport",
 
 			tbl = getEnrichmentTables(job, ontology = all_ontologies, verbose = FALSE)
 			tbl = lapply(tbl, function(tb) {
-				tb[tb[, "Binom_Adjp_BH"] <= padj_cutoff & tb[, "Binom_Observed_Region_Hits"] >= observed_hits_cutoff, , drop = FALSE]
+				tb = tb[tb[, "Binom_Observed_Region_Hits"] >= observed_hits_cutoff, , drop = FALSE]
+				tb$Binom_Adjp_BH = p.adjust(tb$Binom_Raw_PValue, "BH")
+				tb$Hyper_Adjp_BH = p.adjust(tb$Hyper_Raw_PValue, "BH")
+				tb = tb[tb[, "Binom_Adjp_BH"] <= padj_cutoff, , drop = FALSE]
+				tb
 			})
 
 			tbl = tbl[sapply(tbl, nrow) > 0]

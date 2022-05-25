@@ -10,3 +10,4 @@ check.bat
 ^pkgdown$
 build_pkg_site.R
 ^\.github$
+tests/test-no-run.R

@@ -1,426 +1,44 @@
 
 
-if(identical(topenv(), .GlobalEnv)) {
-	BIOC_ANNO_PKGS = read.table("~/project/development/rGREAT/inst/extdata/bioc_anno_pkgs.csv", header = TRUE, sep = "\t")
-	CHR_LEN_DB = readRDS("~/project/development/rGREAT/inst/extdata/CHR_LEN_DB.rds")
-} else {
-	BIOC_ANNO_PKGS = read.table(system.file("extdata", "bioc_anno_pkgs.csv", package = "rGREAT"), header = TRUE, sep = "\t")
-	CHR_LEN_DB = readRDS(system.file("extdata", "CHR_LEN_DB.rds", package = "rGREAT"))
-}
-
-rGREAT_env$extended_tss = list()
-
-detect_txdb = function(x) {
-	i = which(BIOC_ANNO_PKGS$txdb %in% x)
-	if(length(i)) {
-		return(i)
-	}
-
-	i = which(BIOC_ANNO_PKGS$genome_version_in_txdb %in% x)
-	if(length(i)) {
-		return(i[1])
-	}
-
-	i = which(grepl(x, BIOC_ANNO_PKGS$txdb))
-	if(length(i)) {
-		return(i[1])
-	}
-
-	return(i)
-}
-
 # == title
-# Extend TSS
-#
-# == param
-# -txdb Name of "TxDb.*" packages from Bioconductor. All supported TxDb packages are in ``rGREAT:::BIOC_ANNO_PKGS$txdb``. Note short genome version can also be used
-#     here such as "hg19" or "hg19.knownGene".
-# -verbose Whether to print messages.
-# -... All pass to `extendTSS`.
-#
-# == value
-# A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
-#
-# == example
-# if(FALSE) {
-# extendTSSFromTxDb("TxDb.Hsapiens.UCSC.hg19.knownGene")
-# extendTSSFromTxDb("hg19")
-# }
-extendTSSFromTxDb = function(txdb, verbose = great_opt$verbose, ...) {
-
-	txdb_pkg = txdb
-	if(!inherits(txdb_pkg, "character")) {
-		txdb_pkg = txdb_pkg$packageName
-	}
-
-	i = detect_txdb(txdb_pkg)
-	if(length(i) == 0) {
-		stop_wrap(qq("TxDb package '@{txdb_pkg}' is not supported."))
-	}
-
-	txdb_pkg = BIOC_ANNO_PKGS$txdb[i]
-
-	hash = digest::digest(list(txdb_pkg, ...))
-
-	if(!is.null(rGREAT_env$extended_tss[[hash]])) {
-		if(verbose) {
-			message("* extended_tss is already cached, directly use it.")
-		}
-		return(rGREAT_env$extended_tss[[hash]])
-	}
-	
-	if(verbose) {
-		message(qq("* check whether TxDb package '@{txdb_pkg}' is installed."))
-	}
-
-	check_pkg(txdb_pkg, bioc = TRUE)
-
-	if(verbose) {
-		message(qq("* gene ID type in the extended TSS is '@{BIOC_ANNO_PKGS$gene_id_in_txdb[i]}'."))
-	}
-
-	suppressMessages(gene <- genes( getFromNamespace(txdb_pkg, txdb_pkg) ))
-
-	genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i]
-	cl = CHR_LEN_DB[[genome]]
-	chromosomes = names(cl)
-
-	if(verbose) {
-		message_str = qq("* restrict chromosomes to '@{paste(chromosomes, collapse=', ')}'.")
-		message_str = strwrap(message_str)
-		if(length(message_str) > 1) {
-			message_str[2:length(message_str)]= paste0("    ", message_str[2:length(message_str)])
-		}
-		message(paste(message_str, collapse = "\n"))
-	}
-
-	gene = gene[seqnames(gene) %in% chromosomes]
-
-	org_db = BIOC_ANNO_PKGS$orgdb[i]
-
-	check_pkg(org_db, bioc = TRUE)
-
-	if(BIOC_ANNO_PKGS$gene_id_in_txdb[i] == "Ensembl gene ID") {
-		if(verbose) {
-			message("* convert gene ID from 'Ensembl gene ID' to 'Entrez gene ID'.")
-		}
-		map = get_table_from_org_db("ENSEMBL2EG", org_db)
-		map = sapply(map, function(x) x[1])
-
-		gene_id = names(gene)
-		new_gene_id = map[gene_id]
-
-		l = !is.na(new_gene_id)
-
-		gene = gene[l, ]
-		gene$gene_id = new_gene_id[l]
-		names(gene) = new_gene_id[l]
-	}
-
-	if(verbose) {
-		message(qq("* check whether '*GENETYPE' table is available in '@{org_db}'."))
-	}
-	all_tb = ls(envir = getNamespace(org_db))
-	i_tb = which(grepl("GENETYPE", all_tb))
-	if(length(i_tb)) {
-		gene_type_tb = getFromNamespace(all_tb[i_tb], org_db)
-		gene_type = unlist(as.list(gene_type_tb))
-		ind = gene_type[names(gene)] == "protein-coding"
-		ind[is.na(ind)] = FALSE
-		gene = gene[ind]
-
-		if(verbose) {
-			message(qq("* @{length(gene)} protein-coding genes left."))
-		}
-	} else {
-		if(verbose) {
-			message(qq("* @{length(gene)} genes left."))
-		}
-	}
-
-	if(verbose) {
-		message(qq("* update seqinfo to the selected chromosomes."))
-	}
-	seqlevels(gene) = chromosomes
-	info = seqinfo(gene)
-	info = info[chromosomes, ]
-	seqinfo(gene) = info
-
-	extended_tss = extendTSS(gene, seqlengths(gene), verbose = verbose, 
-		.attr = list(genome = genome, gene_id_type = BIOC_ANNO_PKGS$gene_id_in_txdb[i], txdb = txdb_pkg, orgdb = org_db), ...)
-
-	rGREAT_env$extended_tss[[hash]] = extended_tss
-
-	return(extended_tss)
-}
-
-# == title
-# Extend TSS
-#
-# == param
-# -df A bed-like data frame where the first three columns should be chromosomes, start positions, end positions.
-#    It does not matter whether regions correspond to genes or TSS. 
-# -seqlengths A named vector of chromosome lengths.
-# -genome UCSC genome can be set here, then ``seqlengths`` will be automatically retrieved from UCSC server.
-# -strand The strand information can be provided in ``df`` as a column named "strand" or as a column with "+"/"-"/"*", or the strand
-#      information can be provided as a vector and be assigined to this argument.
-# -gene_id The gene ID information can be provided in ``df`` as a column named "gene_id", or it can be provided as a vector and be assigned to this argument.
-# -gene_id_type Gene ID types in ``df``. You need to set this argument if you use built-in gene sets in `great` so that genes can be correctly mapped.
-#      The value can only be one of "SYMBOL", "ENTREZ", "ENSEMBL" and "REFSEQ".
-# -verbose Whether to print messages.
-# -... All pass to `extendTSS`.
-#
-# == value
-# A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
-#
-extendTSSFromDataFrame = function(df, seqlengths, genome = NULL, strand = NULL, gene_id = NULL, 
-	gene_id_type = NULL, verbose = great_opt$verbose, ...) {
-
-	colnames(df) = tolower(colnames(df))
-	
-	df[, 1] = as.vector(df[, 1])
-	if(!is.null(strand)) {
-		df$strand = strand
-	}
-	if(!is.null(gene_id)) {
-		df$gene_id = gene_id
-	}
-
-	if(missing(seqlengths)) {
-		seqlengths = read.chromInfo(species = genome)$chr.len
-		seqlengths = seqlengths[nchar(seqlengths) < 10]
-	}
-
-	df = df[ df[, 1] %in% names(seqlengths), , drop = FALSE]
-
-	gene = GRanges(seqnames = df[, 1], ranges = IRanges(df[, 2], df[, 3]))
-
-	if(verbose) {
-		message("* check strand column in df.")
-	}
-	if(!is.null(strand)) {
-		strand(gene) = strand
-	} else {
-		if("strand" %in% colnames(df)) {
-			strand(gene) = df[, "strand"]
-		} else {
-			l = !sapply(df, is.numeric)
-			l[1] = FALSE
-			flag = FALSE
-			for(i in which(l)) {
-				if(all(df[, i] %in% c("+", "-", "*"))) {
-					flag = TRUE
-					break
-				}
-			}
-			if(flag) {
-				strand(gene) = df[, i]
-			} else {
-				stop_wrap("Cannot find strand column in `df`.")
-			}
-		}
-	}
-
-	if(verbose) {
-		message("* check gene_id column in df.")
-	}
-	
-	if("gene_id" %in% colnames(df)) {
-		gene$gene_id = df[, "gene_id"]
-	} else {
-		stop_wrap("Cannot find gene_id column in `df`")
-	}
-	
-	gene$gene_id = as.character(gene$gene_id)
-	names(gene) = gene$gene_id
-
-	gene = gene[!is.na(names(gene))]
-
-	if(verbose) {
-		message("* add seqlengths information to the GRanges object.")
-	}
-	seqlevels(gene) = names(seqlengths)
-	seqlengths(gene) = seqlengths
-
-	if(!is.null(gene_id_type)) {
-		if(!gene_id_type %in% c("SYMBOL", "ENTREZ", "ENSEMBL", "REFSEQ")) {
-			stop_wrap("`gene_id_type` can only be set as 'SYMBOL/ENTREZ/ENSEMBL/REFSEQ'")
-		}
-	}
-
-	extendTSS(gene, seqlengths, verbose = verbose, .attr = list(genome = genome, gene_id_type = gene_id_type), ...)
-}
-
-
-# == title
-# Extend TSS
-#
-# == param
-# -gene A `GenomicRanges::GRanges` object of gene (or TSS) coordinates.
-# -seqlengths A named vector of chromosome lengths. If it is not provided, it is taken by ``seqlengths(gene)``.
-# -genome UCSC genome can be set here, then ``seqlengths`` will be automatically retrieved from UCSC server.
-# -gene_id_type Gene ID types in ``gene``. You need to set this argument if you use built-in gene sets in `great` so that genes can be correctly mapped.
-#      The value can only be one of "SYMBOL", "ENTREZ", "ENSEMBL" and "REFSEQ".
-# -mode The mode to extend TSS. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See "Details" section.
-# -basal_upstream In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.
-# -basal_downstream In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.
-# -extension Extensions from the basal domains.
-# -verbose Whether to print messages.
-# -.attr Only used internally.
+# Class for local GREAT analysis
 #
 # == details
-# Following are general explanations of the three modes for extending TSS:
+# `great` returns A `GreatObject-class` object.
 #
-# -``basalPlusExt`` 1. TSS are extended into basal domains (e.g. by upstream 5kb, downstream 1kb); 2. basal domains are sorted by their genomic
-#      coordinates; 3. each basal domain is extended to its both sides until it reaches the next TSS's basal domain or it reaches the maximal extension (e.g. 1000kb).
-# -``twoClosest`` 1. TSS are sorted by their genomic coordinates; 2. each TSS is extended to its both sides until it reaches the next TSS or it reaches the maximal extension (e.g. 1000kb).
-# -``oneClosest`` 1. TSS are sorted by their genomic coordinates; 2. each TSS is extended to its both sides until it reaches the middle point of itself and the next TSS or it reaches the maximal extension (e.g. 1000kb).
+GreatObject = setClass("GreatObject",
+    slots = list(table = "data.frame",
+    	         gr = "GRanges",
+    	         gene_sets = "list",
+    	         extended_tss = "GRanges",
+    	         gene_sets_name = "character",
+    	         background = "GRanges",
+    	         param = "list")
+)
+
+
+# == title
+# Constructor method for GreatObject class
 #
-# The official explanation is at https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules .
+# == param
+# -... arguments.
+#
+# == details
+# There are following methods that can be applied on `GreatObject-class` object:
+#
+# - `getEnrichmentTable,GreatObject-method` to retrieve the result table. 
+# - `getRegionGeneAssociations,GreatObject-method` to get the associations between input regions and genes.
+# - `plotRegionGeneAssociations,GreatObject-method` to plot the associations bewteen input regions and genes.
+# - `shinyReport,GreatObject-method` to view the results by a shiny application.
 #
 # == value
-# A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
+# No value is returned.
 #
-extendTSS = function(gene, seqlengths, genome = NULL, gene_id_type = NULL,
-	mode = "basalPlusExt", basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
-	verbose = great_opt$verbose, .attr = list()) {
-
-	if(missing(seqlengths)) {
-		if(is.null(genome)) {
-			mt = attributes(metadata(gene))
-			if(!is.null(mt$genome)) {
-				genome = mt$genome
-			}
-		}
-
-		if(is.null(genome)) {
-			seqlengths = seqlengths(gene)
-		} else {
-			if(verbose) {
-				message(qq("* use genome '@{genome}'."))
-			}
-			seqlengths = read.chromInfo(species = genome)$chr.len
-			seqlengths = seqlengths[nchar(seqlengths) < 10]
-		}
-	}
-	sl = seqlengths
-
-	if(is.null(gene_id_type)) {
-		mt = attributes(metadata(gene))
-		if(!is.null(mt$gene_id_type)) {
-			gene_id_type = mt$gene_id_type
-		}
-	}
-
-	if(!"gene_id" %in% colnames(mcols(gene))) {
-		stop_wrap("`gene` must have a meta column `gene_id`")
-	}
-	names(gene) = gene$gene_id
-
-	gene = gene[seqnames(gene) %in% names(sl)]
-
-	tss = promoters(gene, upstream = 0, downstream = 1)
-
-	if(verbose) {
-		message(qq("* TSS extension mode is '@{mode}'."))
-	}
-
-	if(mode == "basalPlusExt") {
-		if(verbose) {
-			message(qq("* construct the basal domains by extending @{basal_upstream}bp to upstream and @{basal_downstream}bp to downsteram of TSS."))
-		}
-		basal_tss = promoters(tss, upstream = basal_upstream, downstream = basal_downstream)
-	} else if(mode == "twoClosest") {
-		basal_tss = tss
-	} else if(mode == "oneClosest") {
-		basal_tss = tss
-	} else {
-		stop_wrap("`mode` should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'.")
-	}
-
-	strand(basal_tss) = "*"
-
-	od = order(basal_tss)
-	basal_tss = basal_tss[od]
-	tss = tss[od]
-	n = length(basal_tss)
-
-	# distance to neighbours
-	grl = split(basal_tss, seqnames(basal_tss))
-	grl = grl[sapply(grl, length) > 0]
-
-	if(verbose) {
-		message("* calculate distances to neighbour regions.")
-	}
-	for(nm in names(grl)) {
-		gr = grl[[nm]]
-		n = length(gr)
-		s = start(gr)
-		e = end(gr)
-
-		gr$dist_to_left = 0
-		gr$dist_to_right = 0
-
-		gr$dist_to_left[1] = s[1]
-		gr$dist_to_right[n] = sl[nm] - e[n]
-		if(n > 1) {
-			if(mode == "oneClosest") {
-				gr$dist_to_left[2:n] = floor((s[2:n] - e[1:(n-1)])/2)
-				gr$dist_to_right[1:(n-1)] = floor((s[2:n] - e[1:(n-1)])/2)
-			} else {
-				gr$dist_to_left[2:n] = s[2:n] - e[1:(n-1)]
-				gr$dist_to_right[1:(n-1)] = s[2:n] - e[1:(n-1)]
-			}
-		}
-
-		gr$dist_to_left = ifelse(gr$dist_to_left > 0, gr$dist_to_left, 0)
-		gr$dist_to_right = ifelse(gr$dist_to_right > 0, gr$dist_to_right, 0)
-		grl[[nm]] = gr
-	}
-
-	basal_tss = unname(unlist(grl))
-
-	if(verbose) {
-		message(qq("* extend to both sides until reaching the neighbour genes or to the maximal extension (@{as.integer(extension)}bp)."))
-	}
-	extended_tss = basal_tss[, "gene_id"]
-
-	extend_to_left = pmin(basal_tss$dist_to_left, extension)
-	start(extended_tss) = start(basal_tss) - extend_to_left + 1
-
-	extend_to_right = pmin(basal_tss$dist_to_right, extension)
-	end(extended_tss) = end(basal_tss) + extend_to_right - 1
-
-	names(extended_tss) = extended_tss$gene_id
-
-	extended_tss$tss_position = start(tss)
-	extended_tss$tss_strand = as.vector(strand(tss))
-
-	seqlevels(extended_tss) = names(sl)
-	seqlengths(extended_tss) = sl
-
-	if(!is.null(gene_id_type)) {
-		if(!gene_id_type %in% c("SYMBOL", "ENTREZ", "ENSEMBL", "REFSEQ")) {
-			stop_wrap("`gene_id_type` can only be set as 'SYMBOL/ENTREZ/ENSEMBL/REFSEQ'")
-		}
-	}
-
-	if(!is.null(gene_id_type)) {
-		.attr$gene_id_type = gene_id_type
-	}
-	if(!is.null(genome)) {
-		.attr$genome = genome
-	}
-	attributes(metadata(extended_tss)) = .attr
-
-	attr(extended_tss, "mode") = list(
-		"mode" = mode, 
-		basal_upstream = as.integer(basal_upstream), 
-		basal_downstream = as.integer(basal_downstream), 
-		extension = as.integer(extension)
-	)
-
-	return(extended_tss)
+# == author
+# Zuguang Gu <z.gu@dkfz.de>
+#
+GreatObject = function(...) {
+    new("GreatObject", ...)
 }
 
 
@@ -428,23 +46,36 @@ extendTSS = function(gene, seqlengths, genome = NULL, gene_id_type = NULL,
 # Perform GREAT analysis
 #
 # == param
-# -gr A `GenomicRanges::GRanges` object. This is the input regions.
+# -gr A `GenomicRanges::GRanges` object. This is the input regions. It is important to keep consistent for the chromosome names
+#     of the input regions and the internal TSS regions. Use `getTSS` to see the format of internal TSS regions.
 # -gene_sets A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.
-# -txdb Name of "TxDb.*" packages from Bioconductor. All supported TxDb packages are in ``rGREAT:::BIOC_ANNO_PKGS$txdb``. Note short genome version can also be used
-#     here such as "hg19" or "hg19.knownGene".
+# -tss_source Source of TSS. See "TSS" section.
+# -biomart_dataset The value should be in ``rGREAT:::BIOMART[, 1]``. Or you can find it on https://jokergoo.github.io/rGREAT_genesets/. 
+# -min_gene_set_size Minimal size of gene sets.
 # -mode The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See `extendTSS` for details.
 # -basal_upstream In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.
 # -basal_downstream In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.
 # -extension Extensions from the basal domains.
 # -extended_tss If your organism is not defaultly supported, you can first prepare one by `extendTSSFromDataFrame` or `extendTSS`,
 #      and set the object to this argument. Please see more examples in the vignette.
-# -background Background regions.
-# -exclude Regions that are excluded from analysis such as gap regions (which can be get by `getGapFromUCSC`).
+# -background Background regions. The value can also be a vector of chromosome names.
+# -exclude Regions that are excluded from analysis such as gap regions (which can be get by `getGapFromUCSC`). The value can also be a vector of chromosome names.
 # -verbose Whether to print messages.
 #
 # == details
 # When ``background`` or ``exclude`` is set, the analysis is restricted in the background regions, still by using Binomial method. Note
 # this is different from the original GREAT method which uses Fisher's exact test if background regions is set. See `submitGreatJob` for explanations.
+#
+# == TSS
+# rGREAT supports TSS from many organisms. The value of ``tss_source`` should be encoded in a special format:
+#
+# - Name of ``TxDb.*`` packages. Supported packages are in ``rGREAT:::BIOC_ANNO_PKGS$txdb``.
+# - Genome version of the organism, e.g. "hg19". Then the corresponding TxDb will be used.
+# - In a format of ``OrgDb:$genome`` where ``$genome`` is the name of an organism, such as hg19 or human. Gene information in org.xx.eg.db will be used.
+# - In a format of ``RefSeqCurated:$genome`` where ``$genome`` is the genome version of an organism, such as hg19. RefSeqCurated subset will be used.
+# - In a format of ``RefSeqSelect:$genome`` where ``$genome`` is the genome version of an organism, such as hg19. RefSeqSelect subset will be used.
+# - In a format of ``Gencode_v$version`` where ``$version`` is gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
+# - In a format of ``GREAT:$genome``, where ``$genome`` can only be mm9, mm10, hg19, hg38. The TSS from GREAT will be used.
 #
 # == Genesets
 #
@@ -488,6 +119,11 @@ extendTSS = function(gene, seqlengths, genome = NULL, gene_id_type = NULL,
 # If the defaultly supported TxDb is used, Entrez gene ID is always used as the main gene ID. If you provide a self-defined
 # ``gene_sets`` or ``extended_tss``, you need to make sure they two have the same gene ID types.
 #
+# == BioMart
+#
+# rGREAT supports a large number of organisms of which the information is retrieved from Ensembl BioMart. The name of a BioMart dataset
+# can be assigned to argument ``biomart_dataset``. All supported organisms can be found from https://jokergoo.github.io/rGREAT_genesets .
+#
 # == value
 # A `GreatObject-class` object. The following methods can be applied on it:
 # 
@@ -498,20 +134,131 @@ extendTSS = function(gene, seqlengths, genome = NULL, gene_id_type = NULL,
 #
 # == example
 # if(FALSE) {
-# gr = randomRegions()
-# res = great(gr, "MSigDB:H", "hg19")
+# gr = randomRegions(genome = "hg19")
+# res = great(gr, "MSigDB:H", "txdb:hg19")
+# res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
+# res = great(gr, "MSigDB:H", "RefSeq:hg19")
+# res = great(gr, "MSigDB:H", "GREAT:hg19")
+# res = great(gr, "MSigDB:H", "Gencode_v19")
 # }
-great = function(gr, gene_sets, txdb,
-	mode = "basalPlusExt", basal_upstream = 5000, 
+great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
+	min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000, 
 	basal_downstream = 1000, extension = 1000000,
 	extended_tss = NULL, background = NULL, exclude = NULL,
 	verbose = great_opt$verbose) {
 
+	param = list()
 	if(is.null(extended_tss)) {
-		extended_tss = extendTSSFromTxDb(txdb, mode = mode, basal_upstream = basal_upstream,
-			basal_downstream = basal_downstream, extension = extension)
+		if(!is.null(biomart_dataset)) {
+			if(verbose) {
+				message(qq("* get gene and GO genesets from biomart (dataset: @{dataset})."))
+			}
+			biomart_dataset = tolower(biomart_dataset)
+			if(!biomart_dataset %in% BIOMART[, 1]) {
+				stop_wrap(qq("Cannot find biomart dataset: @{biomart_dataset}."))
+			}
+
+			genes = getGenesFromBioMart(biomart_dataset)
+			sl = tapply(end(genes), seqnames(genes), max)
+			sl = structure(as.vector(sl), names = names(sl))
+			extended_tss = extendTSS(genes, seqlengths = sl, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+
+			gene_sets = tolower(gene_sets)
+			if(gene_sets %in% c("bp", "go:bp")) {
+				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
+			} else if(gene_sets %in% c("cc", "go:cc")) {
+				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
+			} else if(gene_sets %in% c("mf", "go:mf")) {
+				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
+			} else {
+				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
+			}
+
+			param$genome = gsub("_eg_gene", "", biomart_dataset)
+			param$tss_source = biomart_dataset
+		} else {
+
+			tss_source = parse_tss_source(tss_source)
+
+			if(tss_source$category == "TxDb") {
+				if(verbose) {
+					message("* TSS source: TxDb.")
+				}
+				extended_tss = extendTSSFromTxDb(tss_source$source, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = tss_source$source 
+			} else if(tss_source$category == "OrgDb") {
+				if(verbose) {
+					message("* TSS source: OrgDb")
+				}
+				extended_tss = extendTSSFromOrgDb(tss_source$source, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = tss_source$source 
+			} else if(tss_source$category == "Gencode") {
+				if(verbose) {
+					message("* TSS source: Gencode.")
+				}
+				tss = getGenesFromGencode(tss_source$source)
+				extended_tss = extendTSS(tss, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = paste0("Gencode_", tss_source$source)
+			} else if(tss_source$category == "RefSeq") {
+				if(verbose) {
+					message("* TSS source: RefSeqSelect.")
+				}
+				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqSelect")
+				extended_tss = extendTSS(tss, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = "RefSeq"
+			} else if(tss_source$category == "RefSeqCurated") {
+				if(verbose) {
+					message("* TSS source: RefSeqCurated.")
+				}
+				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqCurated")
+				extended_tss = extendTSS(tss, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = "RefSeqCurated"
+			} else if(tss_source$category == "RefSeqSelect") {
+				if(verbose) {
+					message("* TSS source: RefSeqSelect.")
+				}
+				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqSelect")
+				extended_tss = extendTSS(tss, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = "RefSeqSelect"
+			} else if(tss_source$category == "GREAT") {
+				if(verbose) {
+					message("* TSS source: GREAT.")
+				}
+				tss = getGREATDefaultTSS(tss_source$genome)
+				extended_tss = extendTSS(tss, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+				param$tss_source = "GREAT"
+			} else {
+				stop_wrap("Wrong `tss_source`.")
+			}
+
+			param$genome = tss_source$genome
+		}
+		
+	} else {
+		mt = attributes(metadata(extended_tss))
+		
+		if(is.null(mt$genome)) {
+			param$genome = "unknown"
+		} else {
+			param$genome = mt$genome
+		}
+		param$tss_source = "self-provided"
 	}
 
+	param$orgdb = get_orgdb_from_genome_version(param$genome)
+
+	mode_param = attr(extended_tss, "mode")
+	param = c(param, mode_param)
+
+	mt = attributes(metadata(extended_tss))
 	if(is.character(gene_sets) && is.atomic(gene_sets)) {
 
 		gene_sets_name = gene_sets
@@ -538,12 +285,10 @@ great = function(gr, gene_sets, txdb,
 	}
 
 	v1 = unique(unlist(gene_sets[seq_len(min(10, length(gene_sets)))]))
-	if(length(intersect(v1, extended_tss$gene_id))/length(v1) < 0.2) {
+	if(length(intersect(v1, extended_tss$gene_id))/length(v1) < 0.05) {
 		stop_wrap(qq("It seems the gene ID type in `gene_sets` (e.g. '@{gene_sets[[1]][1]}') is different from in `extended_tss` (e.g. '@{names(extended_tss)[1]}')."))
 	}
-
-	mode_param = attr(extended_tss, "mode")
-
+	
 	sl = seqlengths(extended_tss)
 	if(any(is.na(sl))) {
 		stop_wrap("`extended_tss` must have `seqlengths` been set.")
@@ -560,12 +305,20 @@ great = function(gr, gene_sets, txdb,
 		if(verbose) {
 			message("* use self-defined background regions.")
 		}
+		if(inherits(background, "character")) {
+			background_chr = background
+			background = gr_genome[seqnames(gr_genome) %in% background_chr]
+		}
 	}
 	strand(background) = "*"
-	if(!is.null(exclude)) {
-		strand(exclude) = "*"
-		background = setdiff(background, exclude)
 
+	if(!is.null(exclude)) {
+		if(inherits(exclude, "character")) {
+			background = background[!seqnames(background) %in% exclude]
+		} else {
+			strand(exclude) = "*"
+			background = setdiff(background, exclude)
+		}
 		if(verbose){
 			message("* remove excluded regions from background.")
 		}
@@ -584,34 +337,10 @@ great = function(gr, gene_sets, txdb,
 	if(verbose) {
 		message("* overlap `gr` to background regions.")
 	}
-	gr = intersect(gr, background)
+
+	gr <- intersect(gr, background)  # possible seqlevels are different due to different versions of organisms
 
 	n_total = length(gr)
-	
-	if(verbose) {
-		message("* check which genes are in the gene sets.")
-	}
-	gene_sets = lapply(gene_sets, function(x) unique(as.character(x)))
-	gene_sets_ind = lapply(gene_sets, function(x) which(names(extended_tss) %in% x))
-
-	l = sapply(gene_sets_ind, function(x) length(x) > 0)
-	gene_sets_ind = gene_sets_ind[l]
-	gene_sets = lapply(gene_sets_ind, function(x) names(extended_tss)[x])
-
-	n_set = length(gene_sets)
-	
-	if(verbose) {
-		message(qq("* in total @{n_set} gene sets."))
-	}
-
-	p = numeric(n_set)
-	n_obs = numeric(n_set)
-	n_exp = numeric(n_set)
-	fold = numeric(n_set)
-	prop = numeric(n_set)
-
-	gene_hits = numeric(n_set)
-
 
 	if(verbose) {
 		message("* overlap extended TSS to background regions.")
@@ -625,6 +354,37 @@ great = function(gr, gene_sets, txdb,
 	names(extended_tss2) = r1$gene_id
 	extended_tss = extended_tss2
 	extended_tss$hit = NULL
+
+
+	# note, after overlap to background, an extended TSS may be split into several regions
+	if(verbose) {
+		message("* check which genes are in the gene sets.")
+	}
+	gene_sets = lapply(gene_sets, function(x) unique(as.character(x)))
+	gene_sets_ind = lapply(gene_sets, function(x) which(names(extended_tss) %in% x))
+
+	l = sapply(gene_sets, function(x) length(x) >= min_gene_set_size)
+	gene_sets_ind = gene_sets_ind[l]
+	gene_sets = lapply(gene_sets_ind, function(x) unique(names(extended_tss)[x]))
+
+	n_set = length(gene_sets)
+
+	if(n_set == 0) {
+		stop_wrap("No gene set left.")
+	}
+	
+	if(verbose) {
+		message(qq("* in total @{n_set} gene sets."))
+	}
+
+	p = numeric(n_set)
+	n_obs = numeric(n_set)
+	n_exp = numeric(n_set)
+	fold = numeric(n_set)
+	prop = numeric(n_set)
+
+	gene_hits = numeric(n_set)
+
 
 	if(verbose) {
 		message(qq("* overlap `gr` to every extended TSS."))
@@ -674,22 +434,12 @@ great = function(gr, gene_sets, txdb,
 		check_pkg("GO.db", bioc = TRUE)
 		terms = Term(GO.db::GOTERM)
 
-		df = cbind(data.frame(id = df$id, description = terms[df$id]),
+		desc = unname(terms[df$id])
+		desc[is.na(desc)] = ""
+		df = cbind(data.frame(id = df$id, description = desc),
 			       df[, -1])
 	}
 	rownames(df) = NULL
-
-	mt = attributes(metadata(extended_tss))
-	
-	txdb = mt$txdb
-	orgdb = mt$orgdb
-	
-	if(is.null(txdb)) {
-		txdb = "unknown"
-	}
-	if(is.null(orgdb)) {
-		orgdb = "unknown"
-	}
 
 	obj = GreatObject(
 		table = df,
@@ -698,12 +448,94 @@ great = function(gr, gene_sets, txdb,
 		gene_sets_name = gene_sets_name,
 		extended_tss = extended_tss,  # has been intersected with background
 		background = background,
-		txdb = txdb,
-		orgdb = orgdb,
-		param = mode_param
+		param = param
 	)
 
 	return(obj)
+}
+
+
+# hg19, txdb:hg19, TxDb.Hsapiens.UCSC.hg19.knownGene, great:hg19, refseq:hg19, refseqcurated:hg19, gencode_v19
+# human, txdb:chicken, refseq:mouse
+parse_tss_source = function(x) {
+	if(grepl("^TxDb\\.", x)) {
+		i = which(BIOC_ANNO_PKGS$txdb == x)
+		if(length(i) == 0) {
+			stop_wrap("TxDb: '@{x}' is not supported.")
+		}
+		list(category = "TxDb", source = x, genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	} else if(grepl("^txdb:", x, ignore.case = TRUE)) {
+		i = detect_txdb(gsub("^txdb:", "", x, ignore.case = TRUE))
+		if(length(i) == 0) {
+			stop_wrap("Cannot parse `tss_source`.")
+		}
+		i = i[1]
+		list(category = "TxDb", source = BIOC_ANNO_PKGS$txdb[i], genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	} else if(grepl("^org\\.", x)) {
+		i = which(BIOC_ANNO_PKGS$orgdb == x)
+		if(length(i) == 0) {
+			stop_wrap("OrgDb: '@{x}' is not supported.")
+		}
+		i = i[1]
+		list(category = "OrgDb", source = BIOC_ANNO_PKGS$orgdb[i], genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	} else if(grepl("^orgdb:", x, ignore.case = TRUE)) {
+		i = detect_txdb(gsub("^orgdb:", "", x, ignore.case = TRUE))
+		if(length(i) == 0) {
+			stop_wrap("Cannot parse `tss_source`.")
+		}
+		i = i[1]
+		list(category = "OrgDb", source = BIOC_ANNO_PKGS$orgdb[i], genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	} else if(grepl("^great:", x, ignore.case = TRUE)) {
+		list(category = "GREAT", genome = gsub("^great:", "", x, ignore.case = TRUE))
+	} else if(grepl("^refseq:", x, ignore.case = TRUE)) {
+		list(category = "RefSeq", genome = gsub("^refseq:", "", x, ignore.case = TRUE))
+	} else if(grepl("^refseqcurated:", x, ignore.case = TRUE)) {
+		list(category = "RefSeqCurated", genome = gsub("^refseqcurated:", "", x, ignore.case = TRUE))
+	} else if(grepl("^refseqselect:", x, ignore.case = TRUE)) {
+		list(category = "RefSeqSelect", genome = gsub("^refseqselect:", "", x, ignore.case = TRUE))
+	} else if(grepl("^gencode", x, ignore.case = TRUE)) {
+		version = gsub("^gencode_?", "", x, ignore.case = TRUE)
+		version = gsub("^V", "v", version)
+		if(!grepl("^v", version)) {
+			version = paste0("v", version)
+		}
+		if(version %in% paste0("v", 4:19)) {
+			genome = "hg19"
+		} else if(version %in% paste0("v", 20:40)) {
+			genome = "hg38"
+		} else if(version %in% paste0("vM", 1)) {
+			genome = "mm9"
+		} else if(version %in% paste0("vM", 2:25)) {
+			genome = "mm10"
+		} else if(version %in% paste0("vM", 26:29)) {
+			genome = "mm11"
+		}
+		list(category = "Gencode", source = version, genome = genome)
+	} else if(grepl("^[a-zA-Z]+\\d*$", x)) {
+		i = detect_txdb(x)
+		if(length(i) == 0) {
+			stop_wrap("Cannot parse `tss_source`.")
+		}
+		i = i[1]
+		list(category = "TxDb", source = BIOC_ANNO_PKGS$txdb[i], genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	} else {
+		stop_wrap("Cannot parse `tss_source`.")
+	}
+}
+
+
+get_orgdb_from_genome_version = function(x) {
+	if(x == "unknown") {
+		""
+	} else {
+		map = tapply(BIOC_ANNO_PKGS$orgdb, BIOC_ANNO_PKGS$genome_version_in_txdb, unique)
+		v = map[x]
+		if(is.na(v)) {
+			""
+		} else {
+			v
+		}
+	}
 }
 
 # support two types
@@ -733,7 +565,7 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 	}
 
 	if(name %in% c("go:bp", "bp", "go:cc", "cc", "go:mf", "mf")) {
-		lt = as.list(get_table_from_org_db("GO2ALL.*S$", orgdb))
+		lt = as.list(get_table_from_orgdb("GO2ALL.*S$", orgdb))
 
 		check_pkg("GO.db", bioc = TRUE)
 
@@ -765,7 +597,11 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 			}
 		}
 
-		if(!is.null(mt$org_db)) {
+		if(great_opt$test) {
+			gene_sets = gene_sets[order(-sapply(gene_sets, length))[1:10]]
+		}
+
+		if(!is.null(mt$orgdb)) {
 			return(gene_sets)
 		}
 
@@ -775,11 +611,11 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 			return(gene_sets)
 		} else {
 			if(gene_id_type == "ENSEMBL" || gene_id_type == "Ensembl gene ID") {
-				map = get_table_from_org_db("ENSEMBL$", orgdb)
+				map = get_table_from_orgdb("ENSEMBL$", orgdb)
 			} else if(gene_id_type == "SYMBOL") {
-				map = get_table_from_org_db("SYMBOL$", orgdb)
+				map = get_table_from_orgdb("SYMBOL$", orgdb)
 			} else if(gene_id_type == "REFSEQ") {
-				map = get_table_from_org_db("REFSEQ$", orgdb)
+				map = get_table_from_orgdb("REFSEQ$", orgdb)
 			} else {
 				stop_wrap("Wrong gene_id_type.")
 			}
@@ -858,7 +694,7 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 			stop_wrap("Wrong MSigDB gene set collection.")
 		}
 
-		if(!is.null(mt$org_db)) {
+		if(!is.null(mt$orgdb)) {
 			gene_id_type = NULL
 		}
 
@@ -887,56 +723,17 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 	}
 }
 
-# == title
-# Class for local GREAT analysis
-#
-# == details
-# `great` returns A `GreatObject-class` object.
-#
-GreatObject = setClass("GreatObject",
-    slots = list(table = "data.frame",
-    	         gr = "GRanges",
-    	         gene_sets = "list",
-    	         extended_tss = "GRanges",
-    	         gene_sets_name = "character",
-    	         background = "GRanges",
-    	         txdb = "character",
-    	         orgdb = "character",
-    	         param = "ANY")
-)
-
-
-# == title
-# Constructor method for GreatObject class
-#
-# == param
-# -... arguments.
-#
-# == details
-# There are following methods that can be applied on `GreatObject-class` object:
-#
-# - `getEnrichmentTable,GreatObject-method` to retrieve the result table. 
-# - `getRegionGeneAssociations,GreatObject-method` to get the associations between input regions and genes.
-# - `plotRegionGeneAssociations,GreatObject-method` to plot the associations bewteen input regions and genes.
-# - `shinyReport,GreatObject-method` to view the results by a shiny application.
-#
-# == value
-# No value is returned.
-#
-# == author
-# Zuguang Gu <z.gu@dkfz.de>
-#
-GreatObject = function(...) {
-    new("GreatObject", ...)
-}
 
 setMethod(f = "show",
 	signature = "GreatObject",
 	definition = function(object) {
 
 	qqcat("Associate @{length(object@gr)} regions to @{length(object@gene_sets)} gene sets.\n")
-	qqcat("  TxDb: @{object@txdb}\n")
-	qqcat("  orgDb: @{object@orgdb}\n")
+	qqcat("  TSS source: @{object@param$tss_source}\n")
+	qqcat("  Genome: @{object@param$genome}\n")
+	if(object@param$orgdb != "") {
+		qqcat("  OrgDb: @{object@param$orgdb}\n")
+	}
 	qqcat("  Gene sets: @{object@gene_sets_name}\n")
 
 	if(length(object@param)) {
@@ -1045,8 +842,8 @@ setMethod(f = "getRegionGeneAssociations",
 	all_genes = names(extended_tss)
 
 	if(use_symbols) {
-		if(grepl("eg.db$", object@orgdb)) {
-			map = get_table_from_org_db("egSYMBOL$", object@orgdb)
+		if(grepl("eg.db$", object@param$orgdb)) {
+			map = get_table_from_orgdb("egSYMBOL$", object@param$orgdb)
 			map = unlist(as.list(map))
 			all_genes2 = map[all_genes]
 			l = is.na(all_genes2)

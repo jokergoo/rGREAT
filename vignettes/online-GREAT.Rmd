@@ -46,7 +46,7 @@ In following example, we use a `GRanges` object which is randomly generated.
 
 ```{r}
 set.seed(123)
-gr = randomRegions(nr = 1000)
+gr = randomRegions(nr = 1000, genome = "hg19")
 head(gr)
 ```
 
