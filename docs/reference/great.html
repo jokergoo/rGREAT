@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -109,7 +112,6 @@ this is different from the original GREAT method which uses Fisher's exact test 
     <p>rGREAT supports TSS from many organisms. The value of <code>tss_source</code> should be encoded in a special format:</p>
 <ul><li><p>Name of <code>TxDb.*</code> packages. Supported packages are in <code>rGREAT:::BIOC_ANNO_PKGS$txdb</code>.</p></li>
 <li><p>Genome version of the organism, e.g. "hg19". Then the corresponding TxDb will be used.</p></li>
-<li><p>In a format of <code>OrgDb:$genome</code> where <code>$genome</code> is the name of an organism, such as hg19 or human. Gene information in org.xx.eg.db will be used.</p></li>
 <li><p>In a format of <code>RefSeqCurated:$genome</code> where <code>$genome</code> is the genome version of an organism, such as hg19. RefSeqCurated subset will be used.</p></li>
 <li><p>In a format of <code>RefSeqSelect:$genome</code> where <code>$genome</code> is the genome version of an organism, such as hg19. RefSeqSelect subset will be used.</p></li>
 <li><p>In a format of <code>Gencode_v$version</code> where <code>$version</code> is gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.</p></li>
@@ -128,7 +130,7 @@ this is different from the original GREAT method which uses Fisher's exact test 
 <dd><p>Molecular Function, from GO.db pacakge.</p></dd>
 
 
-</dl><p>rGREAT also supports built-in gene sets collections from MSigDB (with the msigdbr package, note this is only for human, "msigdb:" can be omitted):</p>
+</dl><p>rGREAT also supports built-in gene sets collections from MSigDB (note this is only for human, "msigdb:" can be omitted):</p>
 <dl><dt>"msigdb:H"</dt>
 <dd><p>Hallmark gene sets.</p></dd>
 

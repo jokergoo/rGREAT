@@ -6,7 +6,7 @@ takes `hg19` as default. `hg38` can be specified by the `species = 'hg38'` argum
 To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = '3.0.0')`."
     msg = paste(strwrap(msg), collapse = "\n")
 
-    msg2 = "From rGREAT version 1.99.0, it also implements the GREAT algorithm and it allows to integrate GREAT analysis with the Bioconductor annotation ecosystem. Check the new function `great()` and the new vignette."
+    msg2 = "From rGREAT version 1.99.0, it also implements the GREAT algorithm and it allows to integrate GREAT analysis with the Bioconductor annotation ecosystem. By default it supports more than 500 organisms. Check the new function `great()` and the new vignette."
     
     msg2 = paste(strwrap(msg2), collapse = "\n")
 

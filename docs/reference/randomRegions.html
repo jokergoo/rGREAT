@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -63,16 +66,16 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">randomRegions</span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="cn">NULL</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>,
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="cn">NULL</span>, nr <span class="op">=</span> <span class="fl">1000</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>,
     width_fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1000</span>, max <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>nr</dt>
-<dd><p>Number of regions.</p></dd>
-<dt>genome</dt>
+    <dl><dt>genome</dt>
 <dd><p>UCSC genome version, e.g. "hg19".</p></dd>
+<dt>nr</dt>
+<dd><p>Number of regions.</p></dd>
 <dt>seqlengths</dt>
 <dd><p>Alternatively, you can also specify a named vector of seqlengths (chromosome lengths).</p></dd>
 <dt>width_fun</dt>
@@ -85,10 +88,10 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegions</span><span class="op">(</span><span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu">width</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      0%     25%     50%     75%    100% </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1004.00 3291.50 5632.00 7836.25 9994.00 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1009.00 3338.50 5566.50 7657.75 9998.00 </span>
 </code></pre></div>
     </div>
   </div>

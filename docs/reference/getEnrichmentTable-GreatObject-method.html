@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -88,149 +91,209 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">obj</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatObject.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                            id genome_fraction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     HALLMARK_MYC_TARGETS_V1     0.011642707</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          HALLMARK_UNFOLDED_PROTEIN_RESPONSE     0.006757309</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  HALLMARK_ANDROGEN_RESPONSE     0.010824284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4               HALLMARK_BILE_ACID_METABOLISM     0.009296501</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5            HALLMARK_PI3K_AKT_MTOR_SIGNALING     0.008599731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                     HALLMARK_MYC_TARGETS_V2     0.002423861</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    HALLMARK_APICAL_JUNCTION     0.018194331</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8            HALLMARK_ESTROGEN_RESPONSE_EARLY     0.022701715</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                          HALLMARK_APOPTOSIS     0.014674361</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10                      HALLMARK_ANGIOGENESIS     0.004119025</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11                 HALLMARK_PROTEIN_SECRETION     0.008822785</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12                        HALLMARK_COMPLEMENT     0.016598136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13        HALLMARK_WNT_BETA_CATENIN_SIGNALING     0.005542205</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14             HALLMARK_XENOBIOTIC_METABOLISM     0.012976950</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15                  HALLMARK_MTORC1_SIGNALING     0.015080095</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16                HALLMARK_TGF_BETA_SIGNALING     0.006610374</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17                   HALLMARK_HEME_METABOLISM     0.014276961</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18                    HALLMARK_G2M_CHECKPOINT     0.018106247</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20             HALLMARK_FATTY_ACID_METABOLISM     0.010745530</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21                   HALLMARK_SPERMATOGENESIS     0.013006115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22           HALLMARK_IL6_JAK_STAT3_SIGNALING     0.005435178</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23                   HALLMARK_MITOTIC_SPINDLE     0.017755821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24                       HALLMARK_P53_PATHWAY     0.014873194</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25         HALLMARK_INTERFERON_ALPHA_RESPONSE     0.005849030</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26                           HALLMARK_HYPOXIA     0.021081168</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27                 HALLMARK_KRAS_SIGNALING_UP     0.026272398</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29               HALLMARK_PANCREAS_BETA_CELLS     0.005334173</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30                        HALLMARK_PEROXISOME     0.007503025</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31                HALLMARK_HEDGEHOG_SIGNALING     0.006454050</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32            HALLMARK_ESTROGEN_RESPONSE_LATE     0.018419104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33                        HALLMARK_MYOGENESIS     0.017575056</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34             HALLMARK_INFLAMMATORY_RESPONSE     0.019780450</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35           HALLMARK_CHOLESTEROL_HOMEOSTASIS     0.006140884</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36         HALLMARK_INTERFERON_GAMMA_RESPONSE     0.015035758</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37                    HALLMARK_UV_RESPONSE_UP     0.013188345</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38                 HALLMARK_KRAS_SIGNALING_DN     0.019711212</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39                       HALLMARK_COAGULATION     0.009798581</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40                        HALLMARK_GLYCOLYSIS     0.017980071</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41                        HALLMARK_DNA_REPAIR     0.007483856</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42                       HALLMARK_E2F_TARGETS     0.012429763</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43               HALLMARK_IL2_STAT5_SIGNALING     0.019680805</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45 HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION     0.028023230</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46                    HALLMARK_UV_RESPONSE_DN     0.026910921</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47           HALLMARK_TNFA_SIGNALING_VIA_NFKB     0.022877857</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48         HALLMARK_OXIDATIVE_PHOSPHORYLATION     0.011547980</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49               HALLMARK_ALLOGRAFT_REJECTION     0.015542363</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50                      HALLMARK_ADIPOGENESIS     0.013802630</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    observed_region_hits fold_enrichment    p_value  p_adjust observed_gene_hits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                    19       1.6319229 0.02829406 0.7643009                 17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                    12       1.7758549 0.04257468 0.7643009                 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                    17       1.5705426 0.04878516 0.7643009                 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                    14       1.5059430 0.08879107 0.7726876                 12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                    13       1.5116751 0.09614291 0.7726876                 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                     5       2.0628243 0.09864096 0.7726876                  4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                    23       1.2641300 0.15397579 0.9050732                 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8                    28       1.2333870 0.15405502 0.9050732                 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9                    18       1.2266292 0.22278024 0.9342498                 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10                    6       1.4566555 0.23344546 0.9342498                  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11                   11       1.2467719 0.27260920 0.9342498                  9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12                   19       1.1447068 0.30794451 0.9342498                 17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13                    7       1.2630351 0.32040625 0.9342498                  7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14                   15       1.1558956 0.32183296 0.9342498                 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15                   17       1.1273139 0.34290953 0.9342498                 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16                    8       1.2102190 0.34325471 0.9342498                  8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17                   16       1.1206867 0.35775714 0.9342498                 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18                   20       1.1045911 0.35779781 0.9342498                 17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20                   12       1.1167434 0.39022005 0.9652812                 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21                   14       1.0764167 0.42763057 0.9678292                 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22                    6       1.1039197 0.46014349 0.9678292                  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23                   18       1.0137520 0.50899590 0.9678292                 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24                   15       1.0085258 0.52197999 0.9678292                 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25                    6       1.0258111 0.53018631 0.9678292                  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26                   21       0.9961498 0.53704646 0.9678292                 19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27                   26       0.9896318 0.54851736 0.9678292                 24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29                    5       0.9373524 0.61664701 0.9678292                  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30                    7       0.9329571 0.62303244 0.9678292                  7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31                    6       0.9296488 0.62493622 0.9678292                  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32                   17       0.9229548 0.66298967 0.9678292                 16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33                   16       0.9103812 0.68071604 0.9678292                 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34                   18       0.9099894 0.68820594 0.9678292                 18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35                    5       0.8142150 0.73419971 0.9678292                  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36                   13       0.8646056 0.73723405 0.9678292                 12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37                   11       0.8340698 0.76587749 0.9678292                 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38                   16       0.8117208 0.83062315 0.9678292                 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39                    7       0.7143892 0.85791227 0.9678292                  7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40                   14       0.7786399 0.85869207 0.9678292                 14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41                    5       0.6681048 0.86771632 0.9678292                  4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42                    9       0.7240685 0.87272636 0.9678292                  8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43                   15       0.7621639 0.88456040 0.9678292                 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45                   22       0.7850630 0.89806116 0.9678292                 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46                   21       0.7803523 0.89871903 0.9678292                 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47                   17       0.7430766 0.91664688 0.9678292                 17</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48                    7       0.6061666 0.94229304 0.9678292                  7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49                   10       0.6434028 0.94723707 0.9678292                 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50                    7       0.5071497 0.98447649 0.9844765                  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    gene_set_size</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1            197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2            112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3            100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4            112</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5            104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6             58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7            196</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8            198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9            158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10            36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11            95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12           195</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13            41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15           200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16            54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20           157</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 21           134</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 22            81</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 23           198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 24           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 25            92</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 26           199</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 27           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 29            40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 30           104</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 31            36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 32           198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 33           200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 34           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 35            74</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 36           189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 37           154</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 38           198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 39           136</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 40           199</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 41           148</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 42           198</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 43           196</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 45           199</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 46           143</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 47           197</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 48           199</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 49           186</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 50           200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1            HALLMARK_TNFA_SIGNALING_VIA_NFKB     0.022877980</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          HALLMARK_INTERFERON_GAMMA_RESPONSE     0.015035871</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                        HALLMARK_P53_PATHWAY     0.014873320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                         HALLMARK_DNA_REPAIR     0.007483951</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                HALLMARK_ALLOGRAFT_REJECTION     0.015542476</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                   HALLMARK_MTORC1_SIGNALING     0.015080220</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                            HALLMARK_HYPOXIA     0.021081292</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8          HALLMARK_INTERFERON_ALPHA_RESPONSE     0.005849083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                HALLMARK_IL2_STAT5_SIGNALING     0.019680928</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                    HALLMARK_MYC_TARGETS_V2     0.002423898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11           HALLMARK_IL6_JAK_STAT3_SIGNALING     0.005435224</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                   HALLMARK_MITOTIC_SPINDLE     0.017755948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                    HALLMARK_MYC_TARGETS_V1     0.011642832</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14             HALLMARK_INFLAMMATORY_RESPONSE     0.019780566</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                   HALLMARK_HEME_METABOLISM     0.014277085</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                       HALLMARK_E2F_TARGETS     0.012429888</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17            HALLMARK_ESTROGEN_RESPONSE_LATE     0.018419227</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18         HALLMARK_UNFOLDED_PROTEIN_RESPONSE     0.006757380</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                         HALLMARK_APOPTOSIS     0.014674462</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                    HALLMARK_UV_RESPONSE_UP     0.013188443</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                HALLMARK_TGF_BETA_SIGNALING     0.006610408</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22           HALLMARK_PI3K_AKT_MTOR_SIGNALING     0.008599799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23             HALLMARK_XENOBIOTIC_METABOLISM     0.012977072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                    HALLMARK_G2M_CHECKPOINT     0.018106373</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                      HALLMARK_ADIPOGENESIS     0.013802757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                        HALLMARK_COMPLEMENT     0.016598256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27        HALLMARK_WNT_BETA_CATENIN_SIGNALING     0.005542232</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28             HALLMARK_FATTY_ACID_METABOLISM     0.010745631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                 HALLMARK_PROTEIN_SECRETION     0.008822846</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                        HALLMARK_PEROXISOME     0.007503092</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   HALLMARK_REACTIVE_OXYGEN_SPECIES_PATHWAY     0.003044080</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32           HALLMARK_ESTROGEN_RESPONSE_EARLY     0.022701837</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                   HALLMARK_NOTCH_SIGNALING     0.004082595</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34         HALLMARK_OXIDATIVE_PHOSPHORYLATION     0.011548106</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35                 HALLMARK_ANDROGEN_RESPONSE     0.010824347</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                        HALLMARK_GLYCOLYSIS     0.017980196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                        HALLMARK_MYOGENESIS     0.017575179</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38           HALLMARK_CHOLESTEROL_HOMEOSTASIS     0.006140932</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                   HALLMARK_SPERMATOGENESIS     0.013006202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                 HALLMARK_KRAS_SIGNALING_UP     0.026272523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41              HALLMARK_BILE_ACID_METABOLISM     0.009296570</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                    HALLMARK_APICAL_SURFACE     0.005146348</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                    HALLMARK_UV_RESPONSE_DN     0.026911011</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                       HALLMARK_COAGULATION     0.009798662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45               HALLMARK_PANCREAS_BETA_CELLS     0.005334198</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                      HALLMARK_ANGIOGENESIS     0.004119047</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                HALLMARK_HEDGEHOG_SIGNALING     0.006454074</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                   HALLMARK_APICAL_JUNCTION     0.018194454</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49 HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION     0.028023354</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                 HALLMARK_KRAS_SIGNALING_DN     0.019711338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    observed_region_hits fold_enrichment      p_value     p_adjust mean_tss_dist</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                   225       2.6240087 0.000000e+00 0.000000e+00        136782</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                   139       2.4665314 0.000000e+00 0.000000e+00        110305</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                   137       2.4576106 0.000000e+00 0.000000e+00         94877</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                    78       2.7807636 5.551115e-15 6.938894e-14        102965</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                   124       2.1286384 2.731149e-14 2.731149e-13        109342</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                   116       2.0523467 1.792788e-12 1.493990e-11         71572</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                   145       1.8351484 1.048006e-11 7.485758e-11        154740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                    58       2.6457000 1.008580e-10 6.303624e-10         73640</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                   131       1.7759313 7.579518e-10 4.210843e-09        107985</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                   32       3.5223795 2.563301e-09 1.281651e-08         22648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                   52       2.5526207 2.918667e-09 1.326667e-08        112002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                  117       1.7580953 1.024265e-08 4.267770e-08         92190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                   85       1.9478733 1.544269e-08 5.939495e-08         42520</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                  124       1.6725665 5.552367e-08 1.982988e-07         73325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                   91       1.7006004 1.601278e-06 5.337594e-06        111452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                   81       1.7386743 2.631618e-06 7.873554e-06         24539</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                  110       1.5933886 2.677008e-06 7.873554e-06        113146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                   49       1.9347200 1.811662e-05 5.032394e-05         76815</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                   85       1.5454578 9.338524e-05 2.457506e-04         75367</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                   77       1.5577494 1.530124e-04 3.726362e-04         90633</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                   45       1.8162877 1.565072e-04 3.726362e-04        214758</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22                   52       1.6133013 7.826623e-04 1.778778e-03         79961</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                   72       1.4803220 9.468521e-04 2.058374e-03         82734</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                   92       1.3556787 2.806391e-03 5.846647e-03         89868</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                   71       1.3724386 5.999304e-03 1.199861e-02         72626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                   83       1.3341850 6.367132e-03 1.224449e-02         87133</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                   33       1.5886553 7.841943e-03 1.452212e-02        144703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28                   56       1.3904537 1.055650e-02 1.885090e-02         99736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                   47       1.4213126 1.262225e-02 2.120072e-02         84906</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                   41       1.4579547 1.297361e-02 2.120072e-02        123711</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31                   20       1.7529693 1.314445e-02 2.120072e-02         41506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32                  106       1.2457913 1.478778e-02 2.310590e-02        124126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                   24       1.5684669 2.355855e-02 3.569477e-02        210461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34                   57       1.3169355 2.534671e-02 3.727458e-02         49573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35                   49       1.2077993 1.075795e-01 1.509988e-01        115681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                   78       1.1574456 1.087191e-01 1.509988e-01        112176</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                   76       1.1537567 1.171409e-01 1.582985e-01        126440</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                   29       1.2599815 1.274344e-01 1.676768e-01        120463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                   55       1.1282689 2.012929e-01 2.580678e-01        153792</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                  104       1.0561655 2.995893e-01 3.744867e-01        166240</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41                   38       1.0905894 3.176798e-01 3.874144e-01        165115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                   18       0.9331980 6.466488e-01 7.698200e-01        313183</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                   97       0.9617056 6.654653e-01 7.737968e-01        180934</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                   33       0.8985610 7.539308e-01 8.567395e-01        141944</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45                   16       0.8002971 8.437935e-01 9.375483e-01        185369</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                   11       0.7125188 9.017959e-01 9.802129e-01        185013</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                   17       0.7027736 9.483015e-01 1.000000e+00        103191</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                   46       0.6745579 9.983012e-01 1.000000e+00         94333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49                   58       0.5522151 9.999998e-01 1.000000e+00        170607</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                   28       0.3790027 1.000000e+00 1.000000e+00        162931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    observed_gene_hits gene_set_size fold_enrichment_hyper p_value_hyper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  96           197             2.3768986  0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  68           189             1.7549015  5.532986e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                  74           197             1.8321926  2.319365e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                  41           148             1.3512253  2.164514e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                  63           186             1.6520883  1.359518e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  57           200             1.3901143  4.178830e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                  66           199             1.6176945  1.858699e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                  30            92             1.5905198  4.331584e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                  64           196             1.5926837  4.227029e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                 22            58             1.8501218  1.690956e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                 30            81             1.8065163  4.342800e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                 63           198             1.5519617  1.130186e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                 58           197             1.4360429  1.749116e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                 72           197             1.7826739  1.281090e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                 51           197             1.2627274  3.913441e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                 49           198             1.2070813  8.304502e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                 53           198             1.3056186  1.986565e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                 31           112             1.3500483  4.192685e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                 53           158             1.6361549  8.441453e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                 44           154             1.3935983  1.032754e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                 22            54             1.9871679  5.489573e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22                 28           104             1.3131984  6.948869e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                 42           197             1.0398931  4.154699e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                 55           197             1.3617648  7.603210e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                 46           200             1.1218466  2.123926e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                 49           195             1.2256518  6.684081e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                 18            41             2.1413827  5.959418e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28                 34           157             1.0562942  3.904179e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                 28            95             1.4376066  2.386293e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                 20           104             0.9379988  6.642766e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31                 15            49             1.4931410  6.204395e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32                 48           198             1.1824470  1.121858e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                 11            32             1.6766729  4.807732e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34                 48           199             1.1765051  1.195536e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35                 30           100             1.4632782  1.552103e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                 51           199             1.2500366  4.610945e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                 37           200             0.9023549  7.842976e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                 17            74             1.1205283  3.419974e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                 32           134             1.1647985  1.920403e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                 50           197             1.2379680  5.565732e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41                 24           112             1.0451987  4.408976e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                 10            44             1.1085441  4.150620e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                 45           143             1.5349072  1.291134e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                 19           136             0.6814286  9.810608e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45                 11            40             1.3413383  1.814494e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                  5            36             0.6774436  8.876329e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                 11            36             1.4903759  1.021387e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                 35           196             0.8709989  8.441815e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49                 38           199             0.9313998  7.159596e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                 19           198             0.4680519  9.999893e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    p_adjust_hyper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0.000000e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    6.916232e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    5.798413e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    4.919350e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    1.359518e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    1.273995e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    1.548915e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    1.273995e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    3.019306e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   5.830387e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11   2.171400e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12   6.278812e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13   5.830387e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   2.135150e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15   8.153001e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1.297579e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17   4.729916e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18   8.385370e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19   5.275908e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20   2.717774e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21   2.483091e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   1.120785e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   4.946070e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24   2.112003e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25   2.794639e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26   1.114014e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27   2.483091e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28   4.880224e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29   5.187594e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30   7.548598e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31   1.069723e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32   1.649791e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33   8.903207e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34   1.707909e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35   3.880257e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36   8.867202e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37   8.524974e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38   4.384583e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39   2.595139e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40   9.938808e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   5.126716e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42   4.946070e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43   4.965898e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44   9.999893e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45   2.520130e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46   9.246176e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47   1.547556e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48   8.980654e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49   7.955107e-01</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50   9.999893e-01</span>
 </code></pre></div>
     </div>
   </div>

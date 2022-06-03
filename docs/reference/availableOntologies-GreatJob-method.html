@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -90,22 +93,12 @@ values. The meaning of ontology returned is quite self-explained by the name.</p
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># note the `job` was generated from GREAT 3.0.0</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"job.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu">availableOntologies</span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "GO Molecular Function"            "GO Biological Process"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "GO Cellular Component"            "Mouse Phenotype"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Human Phenotype"                  "Disease Ontology"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "MSigDB Oncogenic Signatures"      "MSigDB Immunologic Signatures"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "MSigDB Cancer Neighborhood"       "Placenta Disorders"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "PANTHER Pathway"                  "BioCyc Pathway"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "MSigDB Pathway"                   "MGI Expression: Detected"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "MSigDB Perturbation"              "MSigDB Predicted Promoter Motifs"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "MSigDB miRNA Motifs"              "InterPro"                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "TreeFam"                          "HGNC Gene Families"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "Ensembl Genes"                   </span>
-<span class="r-in"><span class="fu">availableOntologies</span><span class="op">(</span><span class="va">job</span>, category <span class="op">=</span> <span class="st">"Pathway Data"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "PANTHER Pathway" "BioCyc Pathway"  "MSigDB Pathway" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "GO Molecular Function"     "GO Biological Process"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "GO Cellular Component"     "Mouse Phenotype"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Mouse Phenotype Single KO" "Human Phenotype"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "Ensembl Genes"            </span>
 </code></pre></div>
     </div>
   </div>

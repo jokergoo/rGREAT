@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -84,7 +87,7 @@
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># note the `job` was generated from GREAT 3.0.0</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"job.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The default enrichment tables contain no associated genes for the input</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> regions.You can set `download_by = 'tsv'` to download the complete</span>
@@ -93,55 +96,48 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           ID</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GO:0070002</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GO:0004731</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GO:0016841</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GO:0016901</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GO:0008111</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 GO:0003796</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                    name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                      glutamic-type peptidase activity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                              purine-nucleoside phosphorylase activity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                                                ammonia-lyase activity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 oxidoreductase activity, acting on the CH-OH group of donors, quinone or similar compound as acceptor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                                                alpha-methylacyl-CoA racemase activity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                                                     lysozyme activity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Binom_Genome_Fraction Binom_Expected Binom_Observed_Region_Hits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1          8.106316e-06    0.008146847                          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          1.435477e-05    0.014426540                          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3          1.864956e-04    0.187428100                          2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4          9.768315e-04    0.981715700                          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5          1.855838e-05    0.018651170                          1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6          9.926527e-04    0.997616000                          4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Binom_Fold_Enrichment Binom_Region_Set_Coverage Binom_Raw_PValue</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1            122.746900              0.0009950249      0.008113784</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2             69.316690              0.0009950249      0.014323080</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3             10.670760              0.0019900500      0.015504970</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4              4.074500              0.0039801000      0.017829270</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5             53.615940              0.0009950249      0.018478480</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6              4.009559              0.0039801000      0.018781680</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Binom_Adjp_BH Hyper_Total_Genes Hyper_Expected Hyper_Observed_Gene_Hits</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1             1                 1     0.08785544                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2             1                 1     0.08785544                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3             1                 5     0.43927720                        2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4             1                 5     0.43927720                        3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5             1                 1     0.08785544                        1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6             1                11     0.96640980                        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Hyper_Fold_Enrichment Hyper_Gene_Set_Coverage Hyper_Term_Gene_Coverage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1             11.382330            0.0006309148                1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2             11.382330            0.0006309148                1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3              4.552934            0.0012618300                0.4000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4              6.829401            0.0018927440                0.6000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5             11.382330            0.0006309148                1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6              4.139031            0.0025236590                0.3636364</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Hyper_Raw_PValue Hyper_Adjp_BH</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1      0.087855440     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2      0.087855440     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3      0.064472140     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      0.005910147     0.4590875</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      0.087855440     1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      0.011837350     0.5820820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           ID                            name Binom_Genome_Fraction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 GO:0005515                 protein binding             0.7515051</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 GO:0005488                         binding             0.8694407</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 GO:0097159 organic cyclic compound binding             0.4561508</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 GO:1901363   heterocyclic compound binding             0.4511336</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 GO:0003723                     RNA binding             0.1199843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 GO:0003676            nucleic acid binding             0.3173138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Binom_Expected Binom_Observed_Region_Hits Binom_Fold_Enrichment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      2816.6410                       3186              1.131135</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      3258.6640                       3505              1.075594</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1709.6530                       2050              1.199074</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      1690.8490                       2031              1.201172</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       449.7013                        669              1.487654</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      1189.2920                       1482              1.246119</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Binom_Region_Set_Coverage Binom_Raw_PValue Binom_Adjp_BH Hyper_Total_Genes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 0.8500534     2.435386e-49  1.027489e-45             11129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 0.9351654     4.308462e-39  9.088701e-36             14268</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 0.5469584     5.192796e-29  5.646545e-26              5936</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                 0.5418890     5.353444e-29  5.646545e-26              5853</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                 0.1784952     1.794959e-25  1.514586e-22              1628</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                 0.3954109     3.948077e-24  2.776156e-21              3991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Hyper_Expected Hyper_Observed_Gene_Hits Hyper_Fold_Enrichment</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      2302.7170                     2635              1.144300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      2952.2120                     3159              1.070045</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      1228.2260                     1417              1.153696</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      1211.0530                     1400              1.156019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       336.8518                      448              1.329962</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       825.7835                     1005              1.217026</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Hyper_Gene_Set_Coverage Hyper_Term_Gene_Coverage Hyper_Raw_PValue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               0.6865555                0.2367688     1.078774e-35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               0.8230849                0.2214045     5.578685e-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               0.3692027                0.2387129     2.063283e-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               0.3647733                0.2391936     1.630373e-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               0.1167275                0.2751843     3.226236e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               0.2618551                0.2518166     4.628398e-15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Hyper_Adjp_BH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  4.551348e-32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  1.176824e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  1.740998e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  1.719636e-10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  1.723691e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  6.509070e-12</span>
 </code></pre></div>
     </div>
   </div>

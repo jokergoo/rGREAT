@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -64,6 +67,7 @@
 
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, bg <span class="op">=</span> <span class="cn">NULL</span>,
+    gr_is_zero_based      <span class="op">=</span> <span class="cn">FALSE</span>,
     species               <span class="op">=</span> <span class="st">"hg19"</span>,
     includeCuratedRegDoms <span class="op">=</span> <span class="cn">TRUE</span>,
     rule                  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"basalPlusExt"</span>, <span class="st">"twoClosest"</span>, <span class="st">"oneClosest"</span><span class="op">)</span>,
@@ -85,6 +89,8 @@
 <dd><p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object or a data frame which contains at least three columns (chr, start and end).</p></dd>
 <dt>bg</dt>
 <dd><p>Not supported any more. See explanations in section "When_background_regions_are_set".</p></dd>
+<dt>gr_is_zero_based</dt>
+<dd><p>Are start positions in <code>gr</code> zero-based?</p></dd>
 <dt>species</dt>
 <dd><p>Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.</p></dd>
 <dt>includeCuratedRegDoms</dt>
@@ -173,7 +179,7 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> submitGreatJob(..., version = "3"). Set argument `help` to `FALSE` to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> turn off this message.</span>
 <span class="r-in"><span class="va">job</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-05-25 13:35:14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-06-03 21:23:37 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Version: 4.0.4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Species: hg19 </span>
@@ -190,7 +196,7 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
 <span class="r-in"><span class="co"># more parameters can be set for the job</span></span>
 <span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># suppress running it when building the package</span></span>
 <span class="r-in">    <span class="co"># current GREAT version is 4.0.4</span></span>
-<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, species <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
+<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
 <span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, adv_upstream <span class="op">=</span> <span class="fl">10</span>, adv_downstream <span class="op">=</span> <span class="fl">2</span>, adv_span <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"twoClosest"</span>, adv_twoDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
 <span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"oneClosest"</span>, adv_oneDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>

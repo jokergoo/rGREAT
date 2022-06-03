@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
       </span>
     </div>
 
@@ -36,6 +36,9 @@
     </li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/other-docs.html">Other documents</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -103,8 +106,7 @@ in the table which is returned by <code><a href="getEnrichmentTables-dispatch.ht
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># note the `job` was generated from GREAT 3.0.0</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"job.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-1.png" alt="" width="700" height="433"></span>
@@ -112,6 +114,8 @@ in the table which is returned by <code><a href="getEnrichmentTables-dispatch.ht
 <span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,</span>
 <span class="r-in">    term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The webpage for 'GO Molecular Function:GO:0004984' is available at:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220603-public-4.0.4-IDdfjP&amp;species=hg19&amp;foreName=file36513507044d.gz&amp;backName=&amp;table=region</span>
 <span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
