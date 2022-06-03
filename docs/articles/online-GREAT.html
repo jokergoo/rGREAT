@@ -124,7 +124,7 @@
 <p>You can get the summary of your job by directly printing <code>job</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-06-03 21:24:20 </span>
+<pre><code><span class="co">## Submit time: 2022-06-03 21:52:18 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -147,7 +147,7 @@
 <code class="sourceCode R"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="../reference/submitGreatJob.html">submitGreatJob</a></span><span class="op">(</span><span class="va">gr</span>, version <span class="op">=</span> <span class="st">"3.0"</span><span class="op">)</span>
 <span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="../reference/submitGreatJob.html">submitGreatJob</a></span><span class="op">(</span><span class="va">gr</span>, version <span class="op">=</span> <span class="st">"2.0"</span><span class="op">)</span></code></pre></div>
 <p style="color:red">
-Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument is not supported any more (currently you can still use it, but you will see a warning message), because <b>GREAT</b> requires a special format for <code>gr</code> and <code>bg</code> if both are set, and it uses a completely different method for the enrichment analysis. <a href="local-GREAT.html#Set_background_regions">But still, you can use local <b>GREAT</b> to integrate background regions.</a>
+Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument is not supported any more (currently you can still use it, but you will see a warning message), because <b>GREAT</b> requires a special format for <code>gr</code> and <code>bg</code> if both are set, and it uses a different method for the enrichment analysis and returns enrichment tables in a different format. <a href="local-GREAT.html#Set_background_regions">But still, you can use local <b>GREAT</b> to integrate background regions.</a>
 </p>
 <p>Available parameters are (following content is copied from <strong>GREAT</strong> website):</p>
 <ul>
@@ -228,7 +228,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <p>Information stored in <code>job</code> will be updated after retrieving enrichment tables.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">job</span></code></pre></div>
-<pre><code><span class="co">## Submit time: 2022-06-03 21:24:20 </span>
+<pre><code><span class="co">## Submit time: 2022-06-03 21:52:18 </span>
 <span class="co">##   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="co">## Version: 4.0.4 </span>
 <span class="co">## Species: hg19 </span>
@@ -360,7 +360,7 @@ Note: from <b>rGREAT package</b> 1.99.0, background by <code>bg</code> argument 
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,
     term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">## The webpage for 'GO Molecular Function:GO:0004984' is available at:</span>
-<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220603-public-4.0.4-zxE0L9&amp;species=hg19&amp;foreName=file40567f94ab0d.gz&amp;backName=&amp;table=region</span></code></pre>
+<span class="co">##   http://great.stanford.edu/public-4.0.4/cgi-bin/showTermDetails.php?termId=GO:0004984&amp;ontoName=GOMolecularFunction&amp;ontoUiName=GO Molecular Function&amp;sessionName=20220603-public-4.0.4-k3eL1i&amp;species=hg19&amp;foreName=file42e54d1c59ee.gz&amp;backName=&amp;table=region</span></code></pre>
 <p><img src="online-GREAT_files/figure-html/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,

@@ -107,7 +107,7 @@ The prefix `msigdb:` can be omitted when specified in `great()` and the name of 
 
 - Name of a `TxDb.*` package, e.g. `TxDb.Hsapiens.UCSC.hg19.knownGene`. Supported packages are in `rGREAT:::BIOC_ANNO_PKGS$txdb`.
 - Genome version of the organism, e.g. "hg19". Then the corresponding TxDb package will be used.
-- In a format of `RefSeq:$genome` where `$genome` is the genome version of an organism. RefSeqCurated genes will be used.
+- In a format of `RefSeq:$genome` where `$genome` is the genome version of an organism. RefSeqSelect genes will be used.
 - In a format of `RefSeqCurated:$genome` where `$genome` is the genome version of an organism. RefSeqCurated subset will be used.
 - In a format of `RefSeqSelect:$genome` where `$genome` is the genome version of an organism. RefSeqSelect subset will be used.
 - In a format of `Gencode_v$version` where `$version` is Gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
@@ -225,7 +225,7 @@ is the same as the genome of your input regions.
 
 ## Set background regions
 
-In the online GREAT tool, if background regions are set, [it actually uses a completely different test for the enrichment analysis](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655456/Statistics#Statistics-ExplicitBackgroundSet).
+In the online GREAT tool, if background regions are set, [it actually uses a different test for the enrichment analysis](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655456/Statistics#Statistics-ExplicitBackgroundSet).
 In GREAT, when background is set, input regions should be **exactly subset of background**. For example, let's say a background region list contains
 five regions: `[1, 10], [15, 23], [34, 38], [40, 49], [54, 63]`, input regions can only be a subset of the five regions, which
 means they can take `[15, 23], [40, 49]`, but it cannot take `[16, 20], [39, 51]`. In this setting, regions are taken
