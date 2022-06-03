@@ -8,6 +8,7 @@ Perform online GREAT analysis
 }
 \usage{
 submitGreatJob(gr, bg = NULL,
+    gr_is_zero_based      = FALSE,
     species               = "hg19",
     includeCuratedRegDoms = TRUE,
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
@@ -26,6 +27,7 @@ submitGreatJob(gr, bg = NULL,
 
   \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame which contains at least three columns (chr, start and end).}
   \item{bg}{Not supported any more. See explanations in section "When_background_regions_are_set".}
+  \item{gr_is_zero_based}{Are start positions in \code{gr} zero-based?}
   \item{species}{Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains, see \url{https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains} .}
   \item{rule}{How to associate genomic regions to genes. See 'Details' section.}
@@ -99,7 +101,7 @@ job
 # more parameters can be set for the job
 if(FALSE) { # suppress running it when building the package
     # current GREAT version is 4.0.4
-    job = submitGreatJob(gr, species = "hg19")
+    job = submitGreatJob(gr, genome = "hg19")
     job = submitGreatJob(gr, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
     job = submitGreatJob(gr, rule = "twoClosest", adv_twoDistance = 2000)
     job = submitGreatJob(gr, rule = "oneClosest", adv_oneDistance = 2000)

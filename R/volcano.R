@@ -110,6 +110,7 @@ plot_volcano = function(
 		y = -log10(p_adjust)
 		ylab = "-log10(p_adjust)"
 	}
+	y[is.infinite(y)] = max(y[is.finite(y)])
 
 	l = observed_region_hits >= min_region_hits
 	if(!any(l)) {

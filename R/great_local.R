@@ -9,10 +9,13 @@
 GreatObject = setClass("GreatObject",
     slots = list(table = "data.frame",
     	         gr = "GRanges",
+    	         n_total = "numeric",
     	         gene_sets = "list",
     	         extended_tss = "GRanges",
+    	         n_gene_gr = "numeric",
     	         gene_sets_name = "character",
     	         background = "GRanges",
+    	         genome_as_background = "logical",
     	         param = "list")
 )
 
@@ -71,7 +74,6 @@ GreatObject = function(...) {
 #
 # - Name of ``TxDb.*`` packages. Supported packages are in ``rGREAT:::BIOC_ANNO_PKGS$txdb``.
 # - Genome version of the organism, e.g. "hg19". Then the corresponding TxDb will be used.
-# - In a format of ``OrgDb:$genome`` where ``$genome`` is the name of an organism, such as hg19 or human. Gene information in org.xx.eg.db will be used.
 # - In a format of ``RefSeqCurated:$genome`` where ``$genome`` is the genome version of an organism, such as hg19. RefSeqCurated subset will be used.
 # - In a format of ``RefSeqSelect:$genome`` where ``$genome`` is the genome version of an organism, such as hg19. RefSeqSelect subset will be used.
 # - In a format of ``Gencode_v$version`` where ``$version`` is gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
@@ -85,7 +87,7 @@ GreatObject = function(...) {
 # -"GO:CC": Cellular Component, from GO.db package.
 # -"GO:MP": Molecular Function, from GO.db pacakge.
 #
-# rGREAT also supports built-in gene sets collections from MSigDB (with the msigdbr package, note this is only for human, "msigdb:" can be omitted):
+# rGREAT also supports built-in gene sets collections from MSigDB (note this is only for human, "msigdb:" can be omitted):
 #
 # -"msigdb:H" Hallmark gene sets.
 # -"msigdb:C1" Positional gene sets.
@@ -166,11 +168,11 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 
 			gene_sets = tolower(gene_sets)
 			if(gene_sets %in% c("bp", "go:bp")) {
-				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
 			} else if(gene_sets %in% c("cc", "go:cc")) {
-				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
 			} else if(gene_sets %in% c("mf", "go:mf")) {
-				gene_sets = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
 			} else {
 				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
 			}
@@ -241,6 +243,18 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 
 			param$genome = tss_source$genome
 		}
+
+		# check genomic end coordinate and chr length
+		sl = seqlengths(extended_tss)
+		if(!is.na(sl[1])) {
+			gre = tapply(end(gr), seqnames(gr), max)
+
+			for(cn in intersect(names(sl), names(gre))) {
+				if(sl[cn] < gre[cn]) {
+					warning_wrap(qq("Inconsistent coordinate on '@{cn}': Max end position (@{gre[cn]}) is larger than chromosome length (@{sl[cn]})."))
+				}
+			}
+		}
 		
 	} else {
 		mt = attributes(metadata(extended_tss))
@@ -275,6 +289,8 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		gene_sets_name = "self-provided"
 	}
 
+	gene_sets = lapply(gene_sets, unique)
+
 	if(!"gene_id" %in% colnames(mcols(extended_tss))) {
 		stop_wrap("`extended_tss` must have a meta column `gene_id`")
 	}
@@ -295,6 +311,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	}
 
 	gr_genome = GRanges(seqnames = names(sl), ranges = IRanges(1, sl))
+	genome_as_background = TRUE
 	if(is.null(background)) {
 		background = gr_genome
 
@@ -309,6 +326,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			background_chr = background
 			background = gr_genome[seqnames(gr_genome) %in% background_chr]
 		}
+		genome_as_background = FALSE
 	}
 	strand(background) = "*"
 
@@ -322,8 +340,9 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		if(verbose){
 			message("* remove excluded regions from background.")
 		}
+		genome_as_background = FALSE
 	}
-
+	background = reduce(background)
 	background_total_length = sum(width(background))
 
 	strand(gr) = "*"
@@ -335,38 +354,45 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	gr = gr_mid
 
 	if(verbose) {
-		message("* overlap `gr` to background regions.")
+		message("* overlap `gr` to background regions (based on midpoint).")
 	}
 
-	gr <- intersect(gr, background)  # possible seqlevels are different due to different versions of organisms
+	gr = intersect(gr, background)  # possible seqlevels are different due to different versions of organisms
 
 	n_total = length(gr)
 
 	if(verbose) {
-		message("* overlap extended TSS to background regions.")
+		message(qq("* in total @{n_total} `gr`."))
 	}
+
+	if(verbose) {
+		message(qq("* overlap extended TSS to background regions."))
+	}
+
 	ov2 = findOverlaps(extended_tss, background)
 	r1 = extended_tss[queryHits(ov2)]
 	r2 = background[subjectHits(ov2)]
 
+	# note in extended_tss, there might be same gene in multi rows, due to a gene is segmented by background
 	extended_tss2 = pintersect(r1, r2)
 	extended_tss2$gene_id = r1$gene_id
 	names(extended_tss2) = r1$gene_id
 	extended_tss = extended_tss2
 	extended_tss$hit = NULL
 
-
 	# note, after overlap to background, an extended TSS may be split into several regions
 	if(verbose) {
 		message("* check which genes are in the gene sets.")
 	}
-	gene_sets = lapply(gene_sets, function(x) unique(as.character(x)))
+	gene_sets = lapply(gene_sets, function(x) intersect(x, names(extended_tss)))
+	
+	if(verbose) {
+		message(qq("* only take gene sets with size >= @{min_gene_set_size}."))
+	}
+	l = sapply(gene_sets, length) >= min_gene_set_size
+	gene_sets = gene_sets[l]
 	gene_sets_ind = lapply(gene_sets, function(x) which(names(extended_tss) %in% x))
-
-	l = sapply(gene_sets, function(x) length(x) >= min_gene_set_size)
-	gene_sets_ind = gene_sets_ind[l]
-	gene_sets = lapply(gene_sets_ind, function(x) unique(names(extended_tss)[x]))
-
+	
 	n_set = length(gene_sets)
 
 	if(n_set == 0) {
@@ -392,7 +418,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	ov = findOverlaps(gr, extended_tss)
 
 	if(verbose) {
-		message("* perform Binomial test for each biological term.")
+		message("* perform binomial test for each biological term.")
 	}
 	pb = progress::progress_bar$new(total = n_set)
 	for(i in 1:n_set) {
@@ -414,7 +440,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		n_obs[i] = n_hits
 		n_exp[i] = prop[i]*n_total
 
-		gene_hits[i] = length(intersect(subjectHits(ov), ind))
+		gene_hits[i] = length(unique(extended_tss[intersect(subjectHits(ov), ind)]$gene_id))
 	}
 
 	fold = n_obs/n_exp
@@ -426,7 +452,13 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		       p_value = p,
 		       p_adjust = p.adjust(p, "BH"),
 		       observed_gene_hits = gene_hits,
-		       gene_set_size = sapply(gene_sets_ind, length))
+		       gene_set_size = sapply(gene_sets, length))
+
+	n_gene_total = length(unique(extended_tss$gene_id))
+	n_gene_gr = length(unique(extended_tss[subjectHits(ov)]$gene_id))
+	df$fold_enrichment_hyper = df$observed_gene_hits/(df$gene_set_size*n_gene_gr/n_gene_total)
+	df$p_value_hyper = 1 - phyper(df$observed_gene_hits - 1, df$gene_set_size, n_gene_total - df$gene_set_size, n_gene_gr)
+	df$p_adjust_hyper = p.adjust(df$p_value_hyper, "BH")
 
 	df = df[order(df$p_adjust, df$p_value, -df$fold_enrichment), , drop = FALSE]
 
@@ -444,10 +476,13 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	obj = GreatObject(
 		table = df,
 		gr = gr_origin,
+		n_total = n_total,
 		gene_sets = gene_sets,
 		gene_sets_name = gene_sets_name,
-		extended_tss = extended_tss,  # has been intersected with background
+		extended_tss = extended_tss,  # has been intersected with background,
+		n_gene_gr = n_gene_gr,
 		background = background,
+		genome_as_background = genome_as_background, 
 		param = param
 	)
 
@@ -634,88 +669,41 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 			stop_wrap("MSigDB only supports human.")
 		}
 
-		check_pkg("msigdbr", bioc = FALSE)
-
-		if(name == "msigdb:h") {
-			tb = msigdbr(category = "H")
-		} else if(name == "msigdb:c2") {
-			tb = msigdbr(category = "C2")
-		} else if(name == "msigdb:c2:cgp") {
-			tb = msigdbr(category = "C2", subcategory = "CGP")
-		} else if(name == "msigdb:c2:cp") {
-			tb = msigdbr(category = "C2", subcategory = "CP")
-		} else if(name == "msigdb:c2:cp:biocarta" || name == "msigdb:c2:biocarta") {
-			tb = msigdbr(category = "C2", subcategory = "CP:BIOCARTA")
-		} else if(name == "msigdb:c2:cp:kegg" || name == "msigdb:c2:cp:kegg") {
-			tb = msigdbr(category = "C2", subcategory = "CP:KEGG")
-		} else if(name == "msigdb:c2:cp:pid" || name == "msigdb:c2:cp:pid") {
-			tb = msigdbr(category = "C2", subcategory = "CP:PID")
-		} else if(name == "msigdb:c2:cp:reactome" || name == "msigdb:c2:cp:reactome") {
-			tb = msigdbr(category = "C2", subcategory = "CP:REACTOME")
-		} else if(name == "msigdb:c2:cp:wikipathways" || name == "msigdb:c2:cp:wikipathways") {
-			tb = msigdbr(category = "C2", subcategory = "CP:WIKIPATHWAYS")
-		} else if(name == "msigdb:c3") {
-			tb = msigdbr(category = "C3")
-		} else if(name == "msigdb:c3:mir:mirdb") {
-			tb = msigdbr(category = "C3", subcategory = "MIR:MIRDB")
-		} else if(name == "msigdb:c3:mir:mir_legacy") {
-			tb = msigdbr(category = "C3", subcategory = "MIR:MIR_Legacy")
-		} else if(name == "msigdb:c3:tft:gtrd") {
-			tb = msigdbr(category = "C3", subcategory = "TFT:GTRD")
-		} else if(name == "msigdb:c3:tft:tft_legacy") {
-			tb = msigdbr(category = "C3", subcategory = "TFT:TFT_Legacy")
-		} else if(name == "msigdb:c4") {
-			tb = msigdbr(category = "C4")
-		} else if(name == "msigdb:c4:cgn") {
-			tb = msigdbr(category = "C4", subcategory = "CGN")
-		} else if(name == "msigdb:c4:cm") {
-			tb = msigdbr(category = "C4", subcategory = "CM")
-		} else if(name == "msigdb:c5") {
-			tb = msigdbr(category = "C5")
-		} else if(name == "msigdb:c5:go:bp") {
-			tb = msigdbr(category = "C5", subcategory = "GO:BP")
-		} else if(name == "msigdb:c5:go:cc") {
-			tb = msigdbr(category = "C5", subcategory = "GO:CC")
-		} else if(name == "msigdb:c5:go:mf") {
-			tb = msigdbr(category = "C5", subcategory = "GO:MF")
-		} else if(name == "msigdb:c5:hpo") {
-			tb = msigdbr(category = "C5", subcategory = "hpo")
-		} else if(name == "msigdb:c6") {
-			tb = msigdbr(category = "C6")
-		} else if(name == "msigdb:c7") {
-			tb = msigdbr(category = "C7")
-		} else if(name == "msigdb:c7:immunesigdb") {
-			tb = msigdbr(category = "C7", subcategory = "IMMUNESIGDB")
-		} else if(name == "msigdb:c7:vax") {
-			tb = msigdbr(category = "C7", subcategory = "VAX")
-		} else if(name == "msigdb:c8") {
-			tb = msigdbr(category = "C8")
+		name = gsub(":", ".", name)
+		name = gsub("^msigdb\\.?", "", name)
+		if(name %in% names(MSIGDB)) {
+			gene_sets = readRDS(get_url(MSIGDB[[name]]))
 		} else {
-			stop_wrap("Wrong MSigDB gene set collection.")
+			stop_wrap("Wrong MSigDB gene set collection. All supported gene sets are in `names(rGREAT:::MSIGDB)`.")
 		}
 
-		if(!is.null(mt$orgdb)) {
-			gene_id_type = NULL
-		}
-
-		if(!is.null(gene_id_type)) {
-			if(gene_id_type == "ENTREZ" || gene_id_type == "Entrez Gene ID") {
-				gene_sets = split(tb$entrez_gene, tb$gs_name)
+		orgdb = "org.Hs.eg.db"
+		if(is.null(gene_id_type)) {
+			return(gene_sets)
+		} else if(gene_id_type == "ENTREZ" || gene_id_type == "Entrez Gene ID" || gene_id_type == "SGD Gene ID" || gene_id_type == "TAIR ID") {
+			return(gene_sets)
+		} else {
+			if(gene_id_type == "ENSEMBL" || gene_id_type == "Ensembl gene ID") {
+				map = get_table_from_orgdb("ENSEMBL$", orgdb)
 			} else if(gene_id_type == "SYMBOL") {
-				gene_sets = split(tb$gene_symbol, tb$gs_name)
-			} else if(gene_id_type == "ENSEMBL" || gene_id_type == "Ensembl gene ID") {
-				gene_sets = split(tb$ensembl_gene, tb$gs_name)
+				map = get_table_from_orgdb("SYMBOL$", orgdb)
+			} else if(gene_id_type == "REFSEQ") {
+				map = get_table_from_orgdb("REFSEQ$", orgdb)
 			} else {
 				stop_wrap("Wrong gene_id_type.")
 			}
-		} else {
-			gene_sets = split(tb$entrez_gene, tb$gs_name)
+
+			map = unlist(as.list(map))
+			gene_sets = lapply(gene_sets, function(x) {
+				x = map[x]
+				unique(x[!is.na(x)])
+			})
+			gene_sets = gene_sets[sapply(gene_sets, length) > 0]
+			return(gene_sets)
 		}
 
-		gene_sets = lapply(gene_sets, unique)
-
 		if(verbose) {
-			message(qq("* use @{name} collection with @{length(gene_sets)} gene sets (source: msigdbr)."))
+			message(qq("* use @{name} collection with @{length(gene_sets)} gene sets (source: MSigDb)."))
 		}
 		return(gene_sets)
 	} else {
@@ -723,18 +711,56 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 	}
 }
 
+MSIGDB = c(
+	"c1" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c1.all.v7.5.1.entrez.gmt.rds",
+	"c2" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.all.v7.5.1.entrez.gmt.rds",
+	"c2.cgp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cgp.v7.5.1.entrez.gmt.rds",
+	"c2.cp.kegg" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.kegg.v7.5.1.entrez.gmt.rds",
+	"c2.cp.pid" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.pid.v7.5.1.entrez.gmt.rds",
+	"c2.cp.reactome" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.reactome.v7.5.1.entrez.gmt.rds",
+	"c2.cp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.v7.5.1.entrez.gmt.rds",
+	"c2.cp.wikipathways" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.wikipathways.v7.5.1.entrez.gmt.rds",
+	"c3" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.all.v7.5.1.entrez.gmt.rds",
+	"c3.mir.mir_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mir_legacy.v7.5.1.entrez.gmt.rds",
+	"c3.mir.mirdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mirdb.v7.5.1.entrez.gmt.rds",
+	"c3.mir" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.v7.5.1.entrez.gmt.rds",
+	"c3.tft.gtrd" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.gtrd.v7.5.1.entrez.gmt.rds",
+	"c3.tft.tft_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.tft_legacy.v7.5.1.entrez.gmt.rds",
+	"c3.tft" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.v7.5.1.entrez.gmt.rds",
+	"c4" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.all.v7.5.1.entrez.gmt.rds",
+	"c4.cgn" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cgn.v7.5.1.entrez.gmt.rds",
+	"c4.cm" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cm.v7.5.1.entrez.gmt.rds",
+	"c5" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.all.v7.5.1.entrez.gmt.rds",
+	"c5.go.bp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.bp.v7.5.1.entrez.gmt.rds",
+	"c5.go.cc" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.cc.v7.5.1.entrez.gmt.rds",
+	"c5.go.mf" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.mf.v7.5.1.entrez.gmt.rds",
+	"c5.go" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.v7.5.1.entrez.gmt.rds",
+	"c5.hpo" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.hpo.v7.5.1.entrez.gmt.rds",
+	"c6" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c6.all.v7.5.1.entrez.gmt.rds",
+	"c7" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.all.v7.5.1.entrez.gmt.rds",
+	"c7.immunesigdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.immunesigdb.v7.5.1.entrez.gmt.rds",
+	"c7.vax" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.vax.v7.5.1.entrez.gmt.rds",
+	"c8" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c8.all.v7.5.1.entrez.gmt.rds",
+	"h" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/h.all.v7.5.1.entrez.gmt.rds"
+)
+
 
 setMethod(f = "show",
 	signature = "GreatObject",
 	definition = function(object) {
 
-	qqcat("Associate @{length(object@gr)} regions to @{length(object@gene_sets)} gene sets.\n")
+	qqcat("@{object@n_total} regions are associated to @{object@n_gene_gr} genes' extended TSSs.\n")
 	qqcat("  TSS source: @{object@param$tss_source}\n")
 	qqcat("  Genome: @{object@param$genome}\n")
 	if(object@param$orgdb != "") {
 		qqcat("  OrgDb: @{object@param$orgdb}\n")
 	}
 	qqcat("  Gene sets: @{object@gene_sets_name}\n")
+	if(object@genome_as_background) {
+		qqcat("  Background: whole genome\n")
+	} else {
+		qqcat("  Background: user-defined\n")
+	}
 
 	if(length(object@param)) {
 		if(object@param$mode == "basalPlusExt") {
@@ -776,6 +802,7 @@ setMethod(f = "getEnrichmentTable",
 	tb = object@table
 	tb = tb[tb$observed_region_hits >= min_region_hits, , drop = FALSE]
 	tb$p_adjust = p.adjust(tb$p_value, "BH")
+	tb$p_adjust_hyper = p.adjust(tb$p_value_hyper, "BH")
 
 	tb
 })
@@ -836,7 +863,7 @@ setMethod(f = "getRegionGeneAssociations",
 		if(is.numeric(term_id)) {
 			stop_wrap("Do not use numeric index for `term_id`, use the character index.")
 		}
-		extended_tss = extended_tss[ object@gene_sets[[term_id]] ]
+		extended_tss = extended_tss[ extended_tss$gene_id %in% object@gene_sets[[term_id]] ]
 	}
 
 	all_genes = names(extended_tss)
@@ -915,6 +942,6 @@ setMethod(f = "plotRegionGeneAssociations",
         gr_term = NULL
     }
 
-    plot_great(gr_all, gr_term, which_plot = which_plot, gr_full_len = length(object@gr), term_id = term_id)
+    plot_great(gr_all, gr_term, which_plot = which_plot, gr_full_len = object@n_total, term_id = term_id)
 
 })

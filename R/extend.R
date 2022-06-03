@@ -544,6 +544,7 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL, gene_id_type = NULL
 		message(qq("* TSS extension mode is '@{mode}'."))
 	}
 
+	if(basal_downstream == 0) basal_downstream = 1
 	if(mode == "basalPlusExt") {
 		if(verbose) {
 			message(qq("* construct the basal domains by extending @{basal_upstream}bp to upstream and @{basal_downstream}bp to downsteram of TSS."))
@@ -613,10 +614,10 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL, gene_id_type = NULL
 	extended_tss = basal_tss[, "gene_id"]
 
 	extend_to_left = pmin(basal_tss$dist_to_left, extension)
-	start(extended_tss) = start(basal_tss) - extend_to_left + 1
+	start(extended_tss) = start(basal_tss) - extend_to_left
 
 	extend_to_right = pmin(basal_tss$dist_to_right, extension)
-	end(extended_tss) = end(basal_tss) + extend_to_right - 1
+	end(extended_tss) = end(basal_tss) + extend_to_right
 
 	names(extended_tss) = extended_tss$gene_id
 

@@ -76,11 +76,23 @@ for(f in all_files) {
 	saveRDS(gr, qq("genesets_processed/genes/granges_@{basename(f)}"))
 }
 
+
 #### for each GO term, merge all its offspring terms
 library(GO.db)
+library(hash)
+
+all_terms = data.frame(go_id = GOID(GOTERM), namespace = Ontology(GOTERM))
+bp_terms = all_terms$go_id[all_terms$namespace == "BP"]
+cc_terms = all_terms$go_id[all_terms$namespace == "CC"]
+mf_terms = all_terms$go_id[all_terms$namespace == "MF"]
+
+GOBPOFFSPRING = as.list(GOBPOFFSPRING)
+GOCCOFFSPRING = as.list(GOCCOFFSPRING)
+GOMFOFFSPRING = as.list(GOMFOFFSPRING)
 
 all_files = list.files(path = "genesets", pattern = "go_genesets.rds$", full.names = TRUE)
-for(f in all_files) {
+# for(f in all_files) {
+parallel::mclapply(all_files, function(f) {
 	cat(f, "\n")
 	df = readRDS(f)
 	df = df[df$go_id != "", , drop = FALSE]
@@ -88,33 +100,35 @@ for(f in all_files) {
 	df1 = df[df$namespace_1003 == "biological_process", , drop = FALSE]
 	gs = split(df1$ensembl_gene_id, df1$go_id)
 
-	gs2 = lapply(names(gs), function(nm) {
+	gs2 = lapply(bp_terms, function(nm) {
 		go_id = c(nm, GOBPOFFSPRING[[nm]])
 		unique(unlist(gs[go_id]))
 	})
-	names(gs2) = names(gs)
+	names(gs2) = bp_terms
+	gs2 = gs2[sapply(gs2, length) > 0]
 	saveRDS(gs2, qq("genesets_processed/genesets/bp_@{basename(f)}"))
 
 	df1 = df[df$namespace_1003 == "cellular_component", , drop = FALSE]
 	gs = split(df1$ensembl_gene_id, df1$go_id)
 
-	gs2 = lapply(names(gs), function(nm) {
+	gs2 = lapply(cc_terms, function(nm) {
 		go_id = c(nm, GOCCOFFSPRING[[nm]])
 		unique(unlist(gs[go_id]))
 	})
-	names(gs2) = names(gs)
+	names(gs2) = cc_terms
+	gs2 = gs2[sapply(gs2, length) > 0]
 	saveRDS(gs2, qq("genesets_processed/genesets/cc_@{basename(f)}"))
 
 	df1 = df[df$namespace_1003 == "molecular_function", , drop = FALSE]
 	gs = split(df1$ensembl_gene_id, df1$go_id)
 
-	gs2 = lapply(names(gs), function(nm) {
+	gs2 = lapply(mf_terms, function(nm) {
 		go_id = c(nm, GOMFOFFSPRING[[nm]])
 		unique(unlist(gs[go_id]))
 	})
-	names(gs2) = names(gs)
+	names(gs2) = mf_terms
+	gs2 = gs2[sapply(gs2, length) > 0]
 	saveRDS(gs2, qq("genesets_processed/genesets/mf_@{basename(f)}"))
-
-}
+}, mc.cores = 4)
 
 

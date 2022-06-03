@@ -223,6 +223,8 @@ getGenesFromGencode = function(version) {
 
 
 getTSSFromOrgDb = function(orgdb) {
+	stop_wrap("OrgDb is not supported any more.")
+	
 	i = detect_orgdb(orgdb)
 	if(length(i) == 0) {
 		stop_wrap(qq("OrgDb package '@{orgdb}' is not supported."))
@@ -230,7 +232,8 @@ getTSSFromOrgDb = function(orgdb) {
 	orgdb = BIOC_ANNO_PKGS$orgdb[i]
 
 	map_chr = get_table_from_orgdb("CHR$", orgdb)
-	map_pos = get_table_from_orgdb("CHRLOC$", orgdb)
+	map_pos_start = get_table_from_orgdb("CHRLOC$", orgdb)
+	map_pos_end = get_table_from_orgdb("CHRLOCEND$", orgdb)
 	chrlen = get_table_from_orgdb("CHRLENGTHS$", orgdb)
 
 	if(orgdb == "org.Sc.sgd.db") {
@@ -264,35 +267,47 @@ getTSSFromOrgDb = function(orgdb) {
 		names(chrlen) = paste0("chr", names(chrlen))
 	}
 	
-	map_pos = sapply(as.list(map_pos), function(x) {
+	map_pos_start = sapply(as.list(map_pos), function(x) {
 		if(!is.null(names(x))) {
 			x = x[nchar(names(x)) < 10]
 		}
-		x = x[x > 0]
 		if(length(x)) {
 			min(x)
 		} else {
 			NA
 		}
 	})
-	map_pos = map_pos[!is.na(map_pos)]
+	map_pos_end = sapply(as.list(map_pos), function(x) {
+		if(!is.null(names(x))) {
+			x = x[nchar(names(x)) < 10]
+		}
+		if(length(x)) {
+			max(x)
+		} else {
+			NA
+		}
+	})
+	l = !is.na(map_pos_start) & !is.na(map_pos_end)
+	map_pos_start = map_pos_start[l]
+	map_pos_end = map_pos_end[l]
 
 	map_chr = as.list(map_chr)
 
-	cn = intersect(names(map_pos), names(map_chr))
-	map_pos = map_pos[cn]
+	cn = intersect(names(map_pos_start), names(map_chr))
+	map_pos_start = map_pos_start[cn]
+	map_pos_end = map_pos_end[cn]
 	map_chr = sapply(map_chr[cn], function(x) x[1])
 
 	if(!grepl("^chr", sample(map_chr, 1))) {
 		map_chr = paste0("chr", map_chr)
 	}
 	
-	strand = ifelse(map_pos > 0, "+", "-")
-	map_pos = abs(map_pos)
+	strand = ifelse(map_pos_start > 0, "+", "-")
 
-	tss = GRanges(seqnames = map_chr, ranges = IRanges(map_pos, map_pos), strand = strand, gene_id = names(map_pos))
+	gene = GRanges(seqnames = map_chr, ranges = IRanges(abs(map_pos_start), abs(map_pos_end)), strand = strand, gene_id = names(map_pos))
+	tss = promoters(gene, upstream = 0, downstream = 1)
 
-	l = map_pos <= chrlen[map_chr]; l[is.na(l)] = FALSE  # possible chr in map_chr but not in chrlen
+	l = map_pos_end <= chrlen[map_chr]; l[is.na(l)] = FALSE  # possible chr in map_chr but not in chrlen
 	tss = tss[l]
 	tss = unique(tss)
 
@@ -391,7 +406,7 @@ getTSSFromTxDb = function(txdb_pkg) {
 
 
 getGenesFromBioMart = function(dataset) {
-	genes = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{dataset}_genes.rds")))
+	genes = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{dataset}_genes.rds")))
 	
 	x1 = tapply(genes$gene_id, seqnames(genes), length)
 	sl = tapply(end(genes), seqnames(genes), max)*1.0
@@ -434,7 +449,7 @@ getTSS = function(tss_source, biomart_dataset = NULL) {
 			stop_wrap(qq("Cannot find biomart dataset: @{biomart_dataset}."))
 		}
 
-		genes = readRDS(url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{biomart_dataset}_genes.rds")))
+		genes = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{biomart_dataset}_genes.rds")))
 		tss = promoters(genes, upstream = 0, downstream = 1)
 	} else {
 

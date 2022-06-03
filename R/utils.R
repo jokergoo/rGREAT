@@ -137,6 +137,84 @@ guess_gene_id_type = function(id) {
 }
 
 
+# == title
+# Read gmt gene sets file
+#
+# == param
+# -x The file name of a .gmt file.
+# -from Gene ID type in the original gmt file. Value can only take values in 'ENTREZ/SYMBOL/ENSEMBL/REFSEQ'.
+# -to Gene ID type that you want to convert to. Value can only take values in 'ENTREZ/SYMBOL/ENSEMBL/REFSEQ'.
+# -orgdb The name of an OrgDb database.
+#
+# == value
+# A named list of vectors.
+#
+# == example
+# read_gmt(url("http://dsigdb.tanlab.org/Downloads/D2_LINCS.gmt"))
+read_gmt = function(x, from = NULL, to = NULL, orgdb = NULL) {
+	ln = readLines(x)
+	lt = strsplit(ln, "\t")
+
+	nm = sapply(lt, function(x) x[1])
+	v = lapply(lt, function(x) x[-(1:2)])
+	names(v) = nm
+
+	if(!is.null(from) && !is.null(to) && !is.null(orgdb)) {
+
+		if(!from %in% c("ENTREZ", "SYMBOL", "ENSEMBL", "REFSEQ")) {
+			stop_wrap("`from` can only take values in 'ENTREZ/SYMBOL/ENSEMBL/REFSEQ'.")
+		}
+		if(!to %in% c("ENTREZ", "SYMBOL", "ENSEMBL", "REFSEQ")) {
+			stop_wrap("`to` can only take values in 'ENTREZ/SYMBOL/ENSEMBL/REFSEQ'.")
+		}
+
+		if(from == "ENTREZ") {
+			map = get_table_from_orgdb(paste0(to, "$"), orgdb)
+			map = unlist(as.list(map))
+			v = lapply(v, function(x) {
+				x2 = map[x]
+				x2 = x2[!is.na(x2)]
+				unique(x2)
+			})
+		} else if(to == "ENTREZ") {
+			map = get_table_from_orgdb(paste0(from, "2EG$"), orgdb)
+			map = unlist(as.list(map))
+			v = lapply(v, function(x) {
+				x2 = map[x]
+				x2 = x2[!is.na(x2)]
+				unique(x2)
+			})
+		} else {
+			map1 = get_table_from_orgdb(paste0(from, "2EG$"), orgdb)
+			map1 = unlist(as.list(map1))
+
+			map2 = get_table_from_orgdb(paste0(to, "$"), orgdb)
+			map2 = unlist(as.list(map2))
+			v = lapply(v, function(x) {
+				x2 = map2[map1[x]]
+				x2 = x2[!is.na(x2)]
+				unique(x2)
+			})
+		}
+	}
+	v = v[sapply(v, length) > 0]
+	v
+}
+
+
+get_url = function(url) {
+	nm = basename(url)
+
+	f = paste0(tempdir(), "/", nm)
+	if(!file.exists(f)) {
+		e = try(suppressWarnings(download.file(url, destfile = f, quiet = TRUE)), silent = TRUE)
+		if(inherits(e, "try-error")) {
+			stop_wrap(qq("Cannot download file from @{url}."))
+		}
+	}
+	f
+}
+
 # chr_len_db = tapply(BIOC_ANNO_PKGS$txdb, BIOC_ANNO_PKGS$genome_version_in_txdb, function(x) {
 # 	x = x[1]
 # 	check_pkg(x, bioc = TRUE)

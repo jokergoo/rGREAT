@@ -70,7 +70,7 @@ There are following supported gene set collections. The first category are GO ge
 
 The prefix `GO:` can be omitted when it is specified in `great()`.
 
-The second category of gene sets are from MSigDB with the **msigdbr** package. Note this is only for human:
+The second category of gene sets are from [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb/). Note this is only for human:
 
 - `"msigdb:H"` Hallmark gene sets.
 - `"msigdb:C1"` Positional gene sets.
@@ -101,13 +101,12 @@ The second category of gene sets are from MSigDB with the **msigdbr** package. N
 - `"msigdb:C7:VAX"` C7 subcategory: vaccine response gene sets.
 - `"msigdb:C8"` Cell type signature gene sets.
 
-The prefix `msigdb:` can be used as case insensitive and it can be omitted when specified in `great()`.
+The prefix `msigdb:` can be omitted when specified in `great()` and the name of a MSigDb can be used as case insensitive.
 
-rGREAT supports TSS from several sources. The value of argument `tss_source` should be encoded in a special format:
+**rGREAT** supports TSS from several sources. The value of argument `tss_source` should be encoded in a special format:
 
 - Name of a `TxDb.*` package, e.g. `TxDb.Hsapiens.UCSC.hg19.knownGene`. Supported packages are in `rGREAT:::BIOC_ANNO_PKGS$txdb`.
 - Genome version of the organism, e.g. "hg19". Then the corresponding TxDb package will be used.
-- Name of an `org.*` package, e.g. `org.Hs.eg.db`. Supported packages are in `rGREAT:::BIOC_ANNO_PKGS$orgdb`.
 - In a format of `RefSeq:$genome` where `$genome` is the genome version of an organism. RefSeqCurated genes will be used.
 - In a format of `RefSeqCurated:$genome` where `$genome` is the genome version of an organism. RefSeqCurated subset will be used.
 - In a format of `RefSeqSelect:$genome` where `$genome` is the genome version of an organism. RefSeqSelect subset will be used.
@@ -121,7 +120,6 @@ Some examples are:
 ```{r, eval = FALSE}
 great(gr, "GO:BP", "hg19")
 great(gr, "GO:BP", "TxDb.Hsapiens.UCSC.hg19.knownGene")
-great(gr, "GO:BP", "org.Hs.eg.db")
 great(gr, "GO:BP", "RefSeq:hg19")
 great(gr, "GO:BP", "GREAT:hg19")
 great(gr, "GO:BP", "Gencode_v19")
@@ -131,13 +129,16 @@ great(gr, "GO:BP", "Gencode_v19")
 ### Manually set gene sets
 
 If users have their own gene sets, the gene sets can be set as a named list of vectors where each vector corresponds to one gene set.
-Please note the genes in the gene sets must be in Entrez ID type. In the following example, we assume `gs` is a self-defined
-gene sets collection.
+Please note the genes in the gene sets **must be in Entrez ID type**. In the following example, we use a gene set collection from [DSigDB](http://dsigdb.tanlab.org/DSigDBv1.0/collection.html).
+This collection (FDA approved kinase inhibitors) only contains 28 gene sets.
+
+Here `read_gmt()` is a simple function that reads a gmt file as a list of vectors, also performs gene ID conversion.
+
 
 ```{r}
-library(msigdbr)
-map = msigdbr(category = "H")
-gs = split(map$entrez_gene, map$gs_name)
+gs = read_gmt(url("http://dsigdb.tanlab.org/Downloads/D2_LINCS.gmt"), 
+    from = "SYMBOL", to = "ENTREZ", orgdb = "org.Hs.eg.db")
+gs[1:2]
 great(gr, gs, "hg19")
 ```
 
@@ -196,18 +197,10 @@ et = extendTSS(gene, gl)
 head(et)
 ```
 
-We can also manually construct the gene sets object, which is a named list of vectors where each vector contains genes in a gene set.
-In the following example, I manually construct the "CP:KEGG" gene sets with the **msigdbr** package.
+We can also manually construct the gene sets object, which is simply a named list of vectors where each vector contains genes in a gene set.
+Here we directly use the object `gs` generated before which is a gene set collection from DSigDB.
 
-```{r}
-library(msigdbr)
-map = msigdbr(category = "C2", subcategory = "CP:KEGG")
-gs = split(map$entrez_gene, map$gs_name)
-gs = lapply(gs, as.character)
-gs[1:2]
-```
-
-Please note again, gene IDs in `gs` should be the same as in `et`. 
+**Please note again, gene IDs in `gs` should be the same as in `et`.**
 
 Now `gs` and `et` can be sent to `great()` to perform local GREAT with the annotation data you manually provided.
 
@@ -227,7 +220,8 @@ great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 
 Note both TSS and gene sets are from BioMart. The value for gene sets (the second argument) can only be one of `"GO:BP"`, `"GO:CC"` and `"GO:MF"`.
 
-**rGREAT** now supports 562 organisms. The complete list can be found at https://jokergoo.github.io/rGREAT_genesets/.
+**rGREAT** now supports 562 organisms. The complete list can be found at https://jokergoo.github.io/rGREAT_genesets/. Just make sure the genome version 
+is the same as the genome of your input regions.
 
 ## Set background regions
 

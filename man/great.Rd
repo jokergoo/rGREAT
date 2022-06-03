@@ -40,7 +40,6 @@ rGREAT supports TSS from many organisms. The value of \code{tss_source} should b
 \itemize{
   \item Name of \code{TxDb.*} packages. Supported packages are in \code{rGREAT:::BIOC_ANNO_PKGS$txdb}.
   \item Genome version of the organism, e.g. "hg19". Then the corresponding TxDb will be used.
-  \item In a format of \code{OrgDb:$genome} where \code{$genome} is the name of an organism, such as hg19 or human. Gene information in org.xx.eg.db will be used.
   \item In a format of \code{RefSeqCurated:$genome} where \code{$genome} is the genome version of an organism, such as hg19. RefSeqCurated subset will be used.
   \item In a format of \code{RefSeqSelect:$genome} where \code{$genome} is the genome version of an organism, such as hg19. RefSeqSelect subset will be used.
   \item In a format of \code{Gencode_v$version} where \code{$version} is gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
@@ -55,7 +54,7 @@ rGREAT supports the following built-in GO gene sets for all organisms (note "GO:
   \item{"GO:MP":}{Molecular Function, from GO.db pacakge.}
 }
 
-rGREAT also supports built-in gene sets collections from MSigDB (with the msigdbr package, note this is only for human, "msigdb:" can be omitted):
+rGREAT also supports built-in gene sets collections from MSigDB (note this is only for human, "msigdb:" can be omitted):
 
 \describe{
   \item{"msigdb:H"}{Hallmark gene sets.}

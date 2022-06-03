@@ -100,6 +100,10 @@ Available parameters are (following content is copied from **GREAT** website):
     * `oneClosest`: mode 'Single nearest gene'. Gene regulatory domain definition: Each gene is assigned a regulatory domain that extends in both directions to the midpoint between the gene's TSS and the nearest gene's TSS but no more than the maximum extension in one direction.
         + `adv_oneDistance`: maximum extension (unit: kb)
 
+**GREAT** uses [the UCSC bed-format](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655452/File+Formats#FileFormats-WhatisBEDformat?) where genomic coordinates
+are 0-based. Many R packages generate genomic regions as 1-based. Thus by default, the start positions of regions are subtracted by 1. If your regions are already 0-based,
+you can specify `gr_is_zero_based = TRUE` in `submitGreatJob()`. Anyway in most cases, this will only slightly affect the enrichment results.
+
 ## Get enrichment tables
 
 With `job`, we can now retrieve results from **GREAT**. The first and the primary results are

@@ -58,6 +58,7 @@ GreatJob = function(...) {
 # == param
 # -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end).
 # -bg Not supported any more. See explanations in section "When_background_regions_are_set".
+# -gr_is_zero_based Are start positions in ``gr`` zero-based?
 # -species Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
 # -includeCuratedRegDoms  Whether to include curated regulatory domains, see https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains .
 # -rule How to associate genomic regions to genes. See 'Details' section.
@@ -138,13 +139,14 @@ GreatJob = function(...) {
 # # more parameters can be set for the job
 # if(FALSE) { # suppress running it when building the package
 #     # current GREAT version is 4.0.4
-#     job = submitGreatJob(gr, species = "hg19")
+#     job = submitGreatJob(gr, genome = "hg19")
 #     job = submitGreatJob(gr, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
 #     job = submitGreatJob(gr, rule = "twoClosest", adv_twoDistance = 2000)
 #     job = submitGreatJob(gr, rule = "oneClosest", adv_oneDistance = 2000)
 # }
 #
 submitGreatJob = function(gr, bg = NULL,
+    gr_is_zero_based      = FALSE,
     species               = "hg19",
     includeCuratedRegDoms = TRUE,
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
@@ -187,17 +189,17 @@ to turn off this message.')
     qq.options(code.pattern = "@\\{CODE\\}")
     
     if(inherits(gr, "data.frame")) {
+        df = gr
         gr = GRanges(seqnames = gr[[1]],
                      ranges = IRanges(start = gr[[2]],
                                        end = gr[[3]]))
     } else if(inherits(gr, "character")) {
-        gr = read.table(gr, stringsAsFactors = FALSE)
-        gr = GRanges(seqnames = gr[[1]],
-                     ranges = IRanges(start = gr[[2]],
-                                       end = gr[[3]]))
+        df = read.table(gr, stringsAsFactors = FALSE)
+        gr = GRanges(seqnames = df[[1]],
+                     ranges = IRanges(start = df[[2]],
+                                       end = df[[3]]))
     }
     mcols(gr) = NULL
-    # gr = reduce(sort(gr))
 
     bgChoice = ifelse(is.null(bg), "wholeGenome", "file")
 
@@ -206,34 +208,59 @@ to turn off this message.')
         warning_wrap("From rGREAT 1.99.0, `bg` will not be supported any more because GREAT requires a special format for `gr` and `bg` if both are set, and it uses a completely different method for the enrichment analysis. Please see the documentation of `submitGreatJob()` for more explanations.")
         
         if(inherits(bg, "data.frame")) {
+            df_bg = bg
             bg = GRanges(seqnames = bg[[1]],
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
+            i_strand = sapply(df_bg, function(x) all(x %in% c("+", "-", "*")))
+            if(any(i_strand)) {
+                strand(df_bg) = df_bg[, i_strand]
+            }
         } else if(inherits(bg, "character")) {
-            bg = read.table(bg, stringsAsFactors = FALSE)
-            bg = GRanges(seqnames = bg[[1]],
-                         ranges = IRanges(start = bg[[2]],
-                                           end = bg[[3]]))
+            df_bg = read.table(bg, stringsAsFactors = FALSE)
+            bg = GRanges(seqnames = df_bg[[1]],
+                         ranges = IRanges(start = df_bg[[2]],
+                                           end = df_bg[[3]]))
+            i_strand = sapply(df_bg, function(x) all(x %in% c("+", "-", "*")))
+            if(any(i_strand)) {
+                strand(df_bg) = df_bg[, i_strand]
+            }
         }
         mcols(bg) = NULL
-
     }
 
     # check seqnames should have 'chr' prefix
-    if(!all(grepl("^chr", seqnames(gr)))) {
-        stop("Chromosome names (in `gr`) should have 'chr' prefix.\n")
-    }
-    if(!is.null(bg)) {
-        if(!all(grepl("^chr", seqnames(bg)))) {
-            stop("Chromosome names (in `bg`) should have 'chr' prefix.\n")
+    if(species %in% c("hg19", "hg18", "hg38", "mm10", "mm9")) {
+        if(!all(grepl("^chr", seqnames(gr)))) {
+            stop("Chromosome names (in `gr`) should have 'chr' prefix.\n")
+        }
+        if(!is.null(bg)) {
+            if(!all(grepl("^chr", seqnames(bg)))) {
+                stop("Chromosome names (in `bg`) should have 'chr' prefix.\n")
+            }
+        }
+    } else if(species == "danRer7") {
+        if(!all(grepl("^(chr|Zv9)", seqnames(gr)))) {
+            stop("Chromosome names (in `gr`) should have 'chr/Zv9' prefix.\n")
+        }
+        if(!is.null(bg)) {
+            if(!all(grepl("^(chr|Zv9)", seqnames(bg)))) {
+                stop("Chromosome names (in `bg`) should have 'chr/Zv9' prefix.\n")
+            }
         }
     }
 
     # transform GRanges to data frame
     bed = as.data.frame(gr)
+    if(!gr_is_zero_based) {
+        bed[, 2] = bed[, 2] - 1
+    }
     bed_bg = NULL
     if(!is.null(bg)) {
         bed_bg = as.data.frame(bg)[, 1:3]
+        if(!gr_is_zero_based) {
+            bed_bg[, 2] = bed_bg[, 2] - 1
+        }
     }
 
     # check request frequency
@@ -1008,24 +1035,26 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
     }
     if(2 %in% which_plot) {
         v = cbind(
-            c("<-500"       = sum(df_all$distTSS <= -500000),
-              "-500 to -50" = sum(df_all$distTSS > -500000 & df_all$distTSS <= -50000),
-              "-50 to -5"   = sum(df_all$distTSS > -50000  & df_all$distTSS <= -5000),
-              "-5 to 0"     = sum(df_all$distTSS > -5000   & df_all$distTSS < 0),
-              "0 to 5"      = sum(df_all$distTSS >= 0       & df_all$distTSS <= 5000),
-              "5 to 50"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
-              "50 to 500"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
+            c("<-500"       = sum(df_all$distTSS < -500000),
+              "[-500, -50)" = sum(df_all$distTSS >= -500000 & df_all$distTSS < -50000),
+              "[-50, -5)"   = sum(df_all$distTSS >= -50000  & df_all$distTSS < -5000),
+              "[-5, 0]"     = sum(df_all$distTSS >= -5000   & df_all$distTSS < 0),
+              "0"           = sum(df_all$distTSS == 0),
+              "(0, 5]"      = sum(df_all$distTSS > 0       & df_all$distTSS <= 5000),
+              "(5, 50]"     = sum(df_all$distTSS > 5000    & df_all$distTSS <= 50000),
+              "(50, 500]"   = sum(df_all$distTSS > 50000   & df_all$distTSS <= 500000),
               "> 500"       = sum(df_all$distTSS > 500000)))
         
         if(using_term) {
             v = cbind( 
-            c("<-500"       = sum(df_term$distTSS <= -500000),
-              "-500 to -50" = sum(df_term$distTSS > -500000 & df_term$distTSS <= -50000),
-              "-50 to -5"   = sum(df_term$distTSS > -50000  & df_term$distTSS <= -5000),
-              "-5 to 0"     = sum(df_term$distTSS > -5000   & df_term$distTSS < 0),
-              "0 to 5"      = sum(df_term$distTSS >= 0       & df_term$distTSS <= 5000),
-              "5 to 50"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
-              "50 to 500"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
+            c("<-500"       = sum(df_term$distTSS < -500000),
+              "[-500, -50)" = sum(df_term$distTSS >= -500000 & df_term$distTSS < -50000),
+              "[-50, -5)"   = sum(df_term$distTSS >= -50000  & df_term$distTSS < -5000),
+              "[-5, 0]"     = sum(df_term$distTSS >= -5000   & df_term$distTSS < 0),
+              "0"           = sum(df_term$distTSS == 0),
+              "(0, 5]"      = sum(df_term$distTSS > 0       & df_term$distTSS <= 5000),
+              "(5, 50]"     = sum(df_term$distTSS > 5000    & df_term$distTSS <= 50000),
+              "(50, 500]"   = sum(df_term$distTSS > 50000   & df_term$distTSS <= 500000),
               "> 500"       = sum(df_term$distTSS > 500000)), v)
         }
         p = v
@@ -1046,27 +1075,29 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
         par(xpd = NA)
         text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
         par(xpd = op)
-        x1 = (mean(pos[, 4]) + mean(pos[, 5]))/2
-        x2 = (mean(pos[, 5]) + mean(pos[, 6]))/2
+        x1 = (mean(pos[, 5]) + mean(pos[, 5]))/2
+        x2 = (mean(pos[, 6]) + mean(pos[, 6]))/2
         y = max(p)*1.2
         lines( c(x1, x1), c(0, y))
         arrows(x1, y, x2, y, angle = 15, length = 0.1, code = 2)
-        text(mean(pos[, 5]), y+0.01, "TSS", adj = c(0.5, 0), cex = 0.8)
+        text(mean(pos[, 6]), y+0.01, "TSS", adj = c(0.5, 0), cex = 0.8)
         if(using_term) {
             legend("topright", pch = 15, col = c("green", "blue"), legend = c("This term's region-gene associations", "Set-wide region-gene associations"), cex = 0.8)
         }
     }
     if(3 %in% which_plot) {
         v = cbind(
-            c("0 to 5"      = sum(abs(df_all$distTSS) >= 0       & abs(df_all$distTSS) <= 5000),
-              "5 to 50"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
-              "50 to 500"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
+            c("0"           = sum(abs(df_all$distTSS) == 0),
+              "(0, 5]"      = sum(abs(df_all$distTSS) > 0       & abs(df_all$distTSS) <= 5000),
+              "(5, 50]"     = sum(abs(df_all$distTSS) > 5000    & abs(df_all$distTSS) <= 50000),
+              "(50, 500]"   = sum(abs(df_all$distTSS) > 50000   & abs(df_all$distTSS) <= 500000),
               "> 500"       = sum(abs(df_all$distTSS) > 500000)))
         if(using_term) {
             v = cbind( 
-            c("0 to 5"      = sum(abs(df_term$distTSS) >= 0       & abs(df_term$distTSS) <= 5000),
-              "5 to 50"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
-              "50 to 500"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
+            c("0"           = sum(abs(df_term$distTSS) == 0),
+              "(0, 5]"      = sum(abs(df_term$distTSS) > 0       & abs(df_term$distTSS) <= 5000),
+              "(5, 50]"     = sum(abs(df_term$distTSS) > 5000    & abs(df_term$distTSS) <= 50000),
+              "(50, 500]"   = sum(abs(df_term$distTSS) > 50000   & abs(df_term$distTSS) <= 500000),
               "> 500"       = sum(abs(df_term$distTSS) > 500000)), v)
         }
         p = v
