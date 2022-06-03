@@ -567,7 +567,7 @@ setMethod(f = "param",
 #
 # == example
 # # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # tbl = getEnrichmentTables(job)
 # names(tbl)
 # head(tbl[[1]])
@@ -655,7 +655,7 @@ setMethod(f = "getEnrichmentTables",
 # 
 # == example
 # # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # tb = getEnrichmentTable(job, ontology = "GO Molecular Function")
 # head(tb)
 setMethod(f = "getEnrichmentTable",
@@ -740,10 +740,8 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
-# # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # availableOntologies(job)
-# availableOntologies(job, category = "Pathway Data")
 #
 setMethod(f = "availableOntologies",
     signature = "GreatJob",
@@ -786,8 +784,7 @@ setMethod(f = "availableOntologies",
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
-# # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # availableCategories(job)
 #
 setMethod(f = "availableCategories",
@@ -966,8 +963,7 @@ parseRegionGeneAssociationFile = function(f1) {
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
-# # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 #
 # plotRegionGeneAssociations(job)
 # plotRegionGeneAssociations(job, which_plot = 1)
@@ -1167,8 +1163,7 @@ setMethod(f = "plotRegionGeneAssociationGraphs",
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
-# # note the `job` was generated from GREAT 3.0.0
-# job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+# job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 #
 # gr = getRegionGeneAssociations(job)
 # gr

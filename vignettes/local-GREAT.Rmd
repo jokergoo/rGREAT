@@ -263,6 +263,10 @@ set, and $K_2$ as the number of regions that overlap to the gene set associated
 regions <u>and also overlap to background</u>, then the enrichment test is based on
 the random variable $K_2$ which follows Binomial distribution $K_2 \sim B(p_2, N_2)$.
 
+In fact, the native hypergeometric method in GREAT can be approximated to the
+binomial method here. Nevertheless, the binomial method is more general and it has
+no restriction as the hypergeometric method where input regions must be
+perfect subsets of backgrounds.
 
 In the following example, `getGapFromUCSC()` can be used to retrieve gap regions from UCSC table browser.
 
@@ -271,9 +275,6 @@ gap = getGapFromUCSC("hg19", paste0("chr", c(1:22, "X", "Y")))
 great(gr, "MSigDB:H", "hg19", exclude = gap)
 ```
 
-If you want to use the Fisher's exact test-based or Hypergeometric-based method, you can directly use
-the GREAT website (currently you can still use **rGREAT** to set `bg`, but you will see a warning 
-message) or use the Bioconductor package [**LOLA**](https://bioconductor.org/packages/LOLA/).
 
 Alternatively, `background` and `exclude` can also be set to a vector of chromosome names, then
 the whole selected chromosomes will be included/excluded from the analysis.
@@ -295,6 +296,14 @@ head(tb)
 In `getEnrichmentTable()`, you can set argument `min_region_hits` to set
 the minimal number of input regions that hit a geneset-associated regions.
 Note the adjusted p-values will be recalculated in the table.
+
+There are also columns for hypergeometric test on the numbers of genes, the same
+as in the original GREAT method.
+
+<p style='color:red'>There is a new column "mean_tss_dist" in the result table which is the mean absolute distance
+of input regions to TSS of genes in a gene set. Please note with larger
+distance to TSS, the more we need to be careful with the reliability of the
+associations between input regions to genes.</p>
 
 ## Make volcano plot
 

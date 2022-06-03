@@ -71,8 +71,8 @@ get_table_from_orgdb = function(pattern, orgdb) {
 # Generate random regions
 #
 # == param
-# -nr Number of regions.
 # -genome UCSC genome version, e.g. "hg19".
+# -nr Number of regions.
 # -seqlengths Alternatively, you can also specify a named vector of seqlengths (chromosome lengths).
 # -width_fun A function which defines the distribution of region widths.
 #
@@ -80,9 +80,9 @@ get_table_from_orgdb = function(pattern, orgdb) {
 # The number of regions per chromosome is proportional to the chromsome length.
 #
 # == example
-# gr = randomRegions(1000, genome = "hg19")
+# gr = randomRegions(genome = "hg19")
 # quantile(width(gr))
-randomRegions = function (nr = 1000, genome = NULL, seqlengths = NULL,
+randomRegions = function (genome = NULL, nr = 1000, seqlengths = NULL,
 	width_fun = function(n) runif(n, min = 1000, max = 10000)) {
 
 	if(is.null(genome) && is.null(seqlengths)) {

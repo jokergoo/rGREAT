@@ -21,7 +21,7 @@ A data frame of the enrichment results for a single ontology.
 }
 \examples{
 # note the `job` was generated from GREAT 3.0.0
-job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 tb = getEnrichmentTable(job, ontology = "GO Molecular Function")
 head(tb)
 }

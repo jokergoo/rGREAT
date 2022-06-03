@@ -248,6 +248,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		sl = seqlengths(extended_tss)
 		if(!is.na(sl[1])) {
 			gre = tapply(end(gr), seqnames(gr), max)
+			gre[is.na(gre)] = 0
 
 			for(cn in intersect(names(sl), names(gre))) {
 				if(sl[cn] < gre[cn]) {
@@ -408,9 +409,9 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	n_exp = numeric(n_set)
 	fold = numeric(n_set)
 	prop = numeric(n_set)
+	mean_tss_dist = numeric(n_set)
 
 	gene_hits = numeric(n_set)
-
 
 	if(verbose) {
 		message(qq("* overlap `gr` to every extended TSS."))
@@ -430,7 +431,10 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		fgr = reduce(fgr)
 		prop[i] = sum(width(fgr))/background_total_length
 
-		n_hits = length(unique(queryHits(ov)[subjectHits(ov) %in% ind]))
+		l = subjectHits(ov) %in% ind
+		n_hits = length(unique(queryHits(ov)[l]))
+
+		mean_tss_dist[i] = mean(abs(extended_tss$tss_position[subjectHits(ov)[l]] - start(gr[queryHits(ov)[l]])))
 
 		if(n_hits == 0) {
 			p[i] = 1
@@ -451,6 +455,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		       fold_enrichment = fold,
 		       p_value = p,
 		       p_adjust = p.adjust(p, "BH"),
+		       mean_tss_dist = round(mean_tss_dist),
 		       observed_gene_hits = gene_hits,
 		       gene_set_size = sapply(gene_sets, length))
 

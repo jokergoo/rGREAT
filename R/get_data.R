@@ -259,7 +259,7 @@ getTSSFromOrgDb = function(orgdb) {
 		}
 	}
 
-	if(is.null(map_chr) || is.null(map_pos) || is.null(chrlen)) {
+	if(is.null(map_chr) || is.null(map_pos_start) || is.null(chrlen)) {
 		stop_wrap(qq("@{orgdb} does not contain gene coordinates information."))
 	}
 
@@ -267,7 +267,7 @@ getTSSFromOrgDb = function(orgdb) {
 		names(chrlen) = paste0("chr", names(chrlen))
 	}
 	
-	map_pos_start = sapply(as.list(map_pos), function(x) {
+	map_pos_start = sapply(as.list(map_pos_start), function(x) {
 		if(!is.null(names(x))) {
 			x = x[nchar(names(x)) < 10]
 		}
@@ -277,7 +277,7 @@ getTSSFromOrgDb = function(orgdb) {
 			NA
 		}
 	})
-	map_pos_end = sapply(as.list(map_pos), function(x) {
+	map_pos_end = sapply(as.list(map_pos_end), function(x) {
 		if(!is.null(names(x))) {
 			x = x[nchar(names(x)) < 10]
 		}
@@ -304,7 +304,7 @@ getTSSFromOrgDb = function(orgdb) {
 	
 	strand = ifelse(map_pos_start > 0, "+", "-")
 
-	gene = GRanges(seqnames = map_chr, ranges = IRanges(abs(map_pos_start), abs(map_pos_end)), strand = strand, gene_id = names(map_pos))
+	gene = GRanges(seqnames = map_chr, ranges = IRanges(abs(map_pos_start), abs(map_pos_end)), strand = strand, gene_id = names(map_pos_start))
 	tss = promoters(gene, upstream = 0, downstream = 1)
 
 	l = map_pos_end <= chrlen[map_chr]; l[is.na(l)] = FALSE  # possible chr in map_chr but not in chrlen

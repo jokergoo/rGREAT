@@ -1,0 +1,18 @@
+---
+title: "Other documents"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{Other documents}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+There are following documents:
+
+- [Use backgrond regions](https://jokergoo.github.io/rGREAT_suppl/use_background.html)
+- [Compare GO annotations from online and local GREAT](https://jokergoo.github.io/rGREAT_suppl/compare_GO.html)
+- [Compare online and local GREAT](https://jokergoo.github.io/rGREAT_suppl/compare_online_and_local.html)
+- [Compare different TSS sources](https://jokergoo.github.io/rGREAT_suppl/compare_tss.html)

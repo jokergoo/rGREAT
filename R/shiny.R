@@ -19,6 +19,8 @@ setMethod(f = "shinyReport",
 	signature = "GreatJob",
 	definition = function(object) {
 
+	obj_name = "object"
+
 	job = object
 
 	all_ontologies = availableOntologies(job)
@@ -29,8 +31,8 @@ setMethod(f = "shinyReport",
 		h2("Report for online GREAT analysis"),
 		h3("Job description"),
 		verbatimTextOutput(outputId = "job_desc"),
-		HTML(qq("<h3>Global region-gene associations <a class='fake_link' data-toggle='tooltip' data-html='true' title='The plot can be made by <br><code>plotRegionGeneAssociationGraphs(job)</code>.' onclick='false'>?</a></h3>")),
-		HTML("<script>$('h3 a').tooltip();</script>"),
+		HTML(qq("<h3>Global region-gene associations</h3>")),
+		HTML(qq("<pre>plotRegionGeneAssociations(@{obj_name})</pre>")),
 		plotOutput(outputId = "global_plot", width = "1000px", height= "400px"),
 		hr(),
 		h3("Global controls"),
@@ -167,11 +169,13 @@ setMethod(f = "shinyReport",
 					ui_list[[i]] = div(
 						tabsetPanel(type = "tabs",
 							tabPanel("Enrichment table",
-								HTML(qq("<h3>@{onto_name} (@{nrow(tbl[[i]])} significant terms) <a class='fake_link' data-toggle='tooltip' data-html='true' title='The complete table can be obtained by <br><code>getEnrichmentTables(job, ontology = \"@{names(tbl)[i]}\")[[1]]</code>.' onclick='false'>?</a></h3>")),
+								HTML(qq("<h3>@{onto_name} (@{nrow(tbl[[i]])} significant terms)</h3>")),
+								HTML(qq("<pre>getEnrichmentTable(job, ontology = '@{names(tbl)[i]}')</pre>")),
 								format_table(tbl[[i]], names(tbl)[i])
 							),
 							tabPanel("Volcano plot",
 								tags$br(),
+								HTML(qq("<pre>plotVolcano(@{obj_name}, ontology = '@{onto_name}')</pre>")),
 								radioButtons(qq("volcano_x_values_@{onto_name2}"), "Values on x-axis",
 									c("Fold enrichment: log2(obs/exp)" = "fold_enrichment",
 									  "z-score: (obs-exp)/sd" = "z-score"),
@@ -231,14 +235,16 @@ setMethod(f = "shinyReport",
 	signature = "GreatObject",
 	definition = function(object) {
 
+	obj_name = "object"
+
 	object = object
 
 	ui = fluidPage(
 		h2("Report for local GREAT analysis"),
 		h3("Job description"),
 		verbatimTextOutput(outputId = "job_desc"),
-		HTML(qq("<h3>Global region-gene associations <a class='fake_link' data-toggle='tooltip' data-html='true' title='The plot can be made by <br><code>plotRegionGeneAssociationGraphs(object)</code>.' onclick='false'>?</a></h3>")),
-		HTML("<script>$('h3 a').tooltip();</script>"),
+		HTML(qq("<h3>Global region-gene associations</h3>")),
+		HTML(qq("<pre>plotRegionGeneAssociationGraphs(@{obj_name})</pre>")),
 		plotOutput(outputId = "global_plot", width = "1000px", height= "400px"),
 		hr(),
 		h3("Global controls"),
@@ -256,6 +262,7 @@ setMethod(f = "shinyReport",
 			),
 			tabPanel("Volcano plot",
 				tags$br(),
+				HTML(qq("<pre>plotVolcano(@{obj_name})</pre>")),
 				radioButtons("volcano_x_values", "Values on x-axis",
 					c("Fold enrichment: log2(obs/exp)" = "fold_enrichment",
 					  "z-score: (obs-exp)/sd" = "z-score"),
@@ -319,23 +326,27 @@ setMethod(f = "shinyReport",
 			
 		if("description" %in% colnames(tb)) {
 			offset = 1
-			tb = tb[, c("id", "description", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "observed_gene_hits", "gene_set_size")]
-			colnames(tb) = c("Term Name", "Term Description", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Observed Gene Hits", "Total Genes in Gene Set")
+			tb = tb[, c("id", "description", "mean_tss_dist", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "p_value_hyper", "p_adjust_hyper", "fold_enrichment_hyper", "observed_gene_hits", "gene_set_size")]
+			colnames(tb) = c("Term Name", "Mean Abs Dist to TSS (bp)", "Term Description", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Hyper Raw P-value", "Hyper Adjusted P-value", "Hyper Fold Enrichment", "Observed Gene Hits", "Total Genes in Gene Set")
 		} else {
 			offset = 0
-			tb = tb[, c("id", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "observed_gene_hits", "gene_set_size")]
-			colnames(tb) = c("Term Name", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Observed Gene Hits", "Total Genes in Gene Set")
+			tb = tb[, c("id", "mean_tss_dist", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "p_value_hyper", "p_adjust_hyper", "fold_enrichment_hyper", "observed_gene_hits", "gene_set_size")]
+			colnames(tb) = c("Term Name", "Mean Abs Dist to TSS (bp)", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Hyper Raw P-value", "Hyper Adjusted P-value", "Hyper Fold Enrichment", "Observed Gene Hits", "Total Genes in Gene Set")
 		}
 
 		dt = datatable(tb, escape = FALSE, rownames = FALSE, selection = 'none', width = "100%", height = "auto",
 			options = list(searching = FALSE, rowCallback = JS(qq(
 	'function(row, data) {
-		$(this.api().cell(row, @{1+offset}).node()).html(data[@{1+offset}].toExponential(3));
 		$(this.api().cell(row, @{2+offset}).node()).html(data[@{2+offset}].toExponential(3));
+		$(this.api().cell(row, @{3+offset}).node()).html(data[@{3+offset}].toExponential(3));
+
+		$(this.api().cell(row, @{7+offset}).node()).html(data[@{7+offset}].toExponential(3));
+		$(this.api().cell(row, @{8+offset}).node()).html(data[@{8+offset}].toExponential(3));
 	}
 	'))))
 		dt = formatRound(dt, "Binom Fold Enrichment", 3)
 		dt = formatPercentage(dt, "Genome Fraction", 3)
+		dt = formatPercentage(dt, "Hyper Fold Enrichment", 3)
 
 		dt
 	}
@@ -386,8 +397,8 @@ setMethod(f = "shinyReport",
 				})
 				output[["enrichment_table"]] = renderUI({
 					div(
-						HTML(qq("<h3>Enrichment table (@{nrow(tb)} significant terms) <a class='fake_link' data-toggle='tooltip' data-html='true' title='The complete table can be obtained by <code>getEnrichmentTable(object)</code>.' onclick='false'>?</a></h3>")),
-						HTML("<script>$('#enrichment_table h3 a').tooltip();</script>"),
+						HTML(qq("<h3>Enrichment table (@{nrow(tb)} significant terms)</h3>")),
+						HTML(qq("<pre>getEnrichmentTable(@{obj_name})</pre>")),
 						format_table(tb)
 					)
 				})
@@ -399,13 +410,15 @@ setMethod(f = "shinyReport",
 
 			tb = getRegionGeneAssociations(object, term_id = term)
 			tb = as.data.frame(tb)
-			colnames(tb) = c("Chromosome", "Start", "End", "Width", "Strand", "Annotated Genes", "Distance to Genes")
+			colnames(tb) = c("Chromosome", "Start", "End", "Width", "Strand", "Annotated Genes", "Distance to TSSs")
 			tb = tb[, -5]
 
 			showModal(modalDialog(
 		        title = qq("Region-gene associations for term: @{term}"),
+		        HTML(qq("<pre>plotRegionGeneAssociations(@{obj_name}, term_id = '@{term}')</pre>")),
 		        plotOutput(outputId = "select_term_plot", width = "1000px", height= "400px"),
 		        hr(),
+		        HTML(qq("<pre>getRegionGeneAssociations(@{obj_name}, term_id = '@{term}')</pre>")),
 		        renderDT(datatable(tb, escape = FALSE, rownames = FALSE, selection = 'none', 
 					options = list(searching = FALSE))),
 		        easyClose = TRUE,

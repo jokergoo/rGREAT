@@ -39,8 +39,7 @@ in the table which is returned by \code{\link{getEnrichmentTables}}.
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-# note the `job` was generated from GREAT 3.0.0
-job = readRDS(system.file("extdata", "job.rds", package = "rGREAT"))
+job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 
 plotRegionGeneAssociations(job)
 plotRegionGeneAssociations(job, which_plot = 1)
