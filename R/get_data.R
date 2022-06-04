@@ -13,18 +13,26 @@
 # getGapFromUCSC("hg19")
 getGapFromUCSC = function(genome, seqnames = NULL) {
 
-	url = paste0("https://hgdownload.cse.ucsc.edu/goldenPath/", genome, "/database/gap.txt.gz")
+	lt = readRDS(system.file("extdata", "ucsc_gaps.rds", package = "rGREAT"))
+
+	if(genome %in% names(lt)) {
+		tb = lt[[genome]]
+	} else {
+
+		url = paste0("https://hgdownload.cse.ucsc.edu/goldenPath/", genome, "/database/gap.txt.gz")
 
 
-	gap = paste0(tempdir(), "/", genome, "_gap.txt.gz")
-	if(!file.exists(gap)) {
-		e = try(suppressWarnings(download.file(url, destfile = gap, quiet = TRUE)), silent = TRUE)
-		if(inherits(e, "try-error")) {
-			stop_wrap(qq("It seems UCSC does not provide 'gap.txt.gz' for @{genome} or the internet connection was interrupted. If possible, download gap file directly from @{url}."))
+		gap = paste0(tempdir(), "/", genome, "_gap.txt.gz")
+		if(!file.exists(gap)) {
+			e = try(suppressWarnings(download.file(url, destfile = gap, quiet = TRUE)), silent = TRUE)
+			if(inherits(e, "try-error")) {
+				stop_wrap(qq("It seems UCSC does not provide 'gap.txt.gz' for @{genome} or the internet connection was interrupted. If possible, download gap file directly from @{url}."))
+			}
 		}
+		
+		tb = read.table(gzfile(gap), sep = "\t", stringsAsFactors = FALSE)[, 2:4]
 	}
 	
-	tb = read.table(gzfile(gap), sep = "\t", stringsAsFactors = FALSE)[, 2:4]
 	tb[, 2] = tb[, 2] + 1
 
 	if(!is.null(seqnames)) {

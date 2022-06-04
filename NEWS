@@ -1,3 +1,10 @@
+CHANGES in VERSION 1.99.2
+
+* by default exclude gap regions
+* chr prefix in `gr` is removed when `biomart_dataset` is set.
+
+-----------------------------------------------
+
 CHANGES in VERSION 1.99.0
 
 * add `great()` and related functions to support local GREAT.

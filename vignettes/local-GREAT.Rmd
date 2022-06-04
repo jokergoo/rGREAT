@@ -275,6 +275,8 @@ gap = getGapFromUCSC("hg19", paste0("chr", c(1:22, "X", "Y")))
 great(gr, "MSigDB:H", "hg19", exclude = gap)
 ```
 
+**Note by default, rGREAT excludes gap regions from the analysis.**
+
 
 Alternatively, `background` and `exclude` can also be set to a vector of chromosome names, then
 the whole selected chromosomes will be included/excluded from the analysis.

@@ -3,11 +3,11 @@
 if(identical(topenv(), .GlobalEnv)) {
 	BIOC_ANNO_PKGS = read.table("~/project/development/rGREAT/inst/extdata/bioc_anno_pkgs.csv", header = TRUE, sep = ";")
 	CHR_LEN_DB = readRDS("~/project/development/rGREAT/inst/extdata/CHR_LEN_DB.rds")
-	BIOMART = read.csv("~/project/development/rGREAT/inst/extdata/biomart.csv", header = TRUE)
+	BIOMART = read.csv("~/project/development/rGREAT/inst/extdata/biomart.csv", header = TRUE, sep = ";")
 } else {
 	BIOC_ANNO_PKGS = read.table(system.file("extdata", "bioc_anno_pkgs.csv", package = "rGREAT"), header = TRUE, sep = ";")
 	CHR_LEN_DB = readRDS(system.file("extdata", "CHR_LEN_DB.rds", package = "rGREAT"))
-	BIOMART = read.csv(system.file("extdata", "biomart.csv", package = "rGREAT"), header = TRUE)
+	BIOMART = read.csv(system.file("extdata", "biomart.csv", package = "rGREAT"), header = TRUE, sep = ';')
 }
 
 

@@ -15,7 +15,7 @@ GreatObject = setClass("GreatObject",
     	         n_gene_gr = "numeric",
     	         gene_sets_name = "character",
     	         background = "GRanges",
-    	         genome_as_background = "logical",
+    	         background_type = "character",
     	         param = "list")
 )
 
@@ -63,11 +63,14 @@ GreatObject = function(...) {
 #      and set the object to this argument. Please see more examples in the vignette.
 # -background Background regions. The value can also be a vector of chromosome names.
 # -exclude Regions that are excluded from analysis such as gap regions (which can be get by `getGapFromUCSC`). The value can also be a vector of chromosome names.
+#     It also allows a special character value ``"gap"`` so that gap regions for corresponding organism will be removed from the analysis.
 # -verbose Whether to print messages.
 #
 # == details
 # When ``background`` or ``exclude`` is set, the analysis is restricted in the background regions, still by using Binomial method. Note
 # this is different from the original GREAT method which uses Fisher's exact test if background regions is set. See `submitGreatJob` for explanations.
+#
+# By default, gap regions are excluded from the analysis.
 #
 # == TSS
 # rGREAT supports TSS from many organisms. The value of ``tss_source`` should be encoded in a special format:
@@ -146,23 +149,54 @@ GreatObject = function(...) {
 great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000, 
 	basal_downstream = 1000, extension = 1000000,
-	extended_tss = NULL, background = NULL, exclude = NULL,
+	extended_tss = NULL, background = NULL, exclude = "gap",
 	verbose = great_opt$verbose) {
 
 	param = list()
 	if(is.null(extended_tss)) {
 		if(!is.null(biomart_dataset)) {
-			if(verbose) {
-				message(qq("* get gene and GO genesets from biomart (dataset: @{dataset})."))
-			}
+
 			biomart_dataset = tolower(biomart_dataset)
 			if(!biomart_dataset %in% BIOMART[, 1]) {
-				stop_wrap(qq("Cannot find biomart dataset: @{biomart_dataset}."))
+				i = grep(paste0("\\b", biomart_dataset, "\\b"), BIOMART[, 1], ignore.case = TRUE)
+				if(length(i) == 1) {
+					biomart_dataset = BIOMART[i, 1]
+				} else {
+					i = grep(paste0("\\b", biomart_dataset, "\\b"), BIOMART[, "genome"], ignore.case = TRUE)
+					if(length(i) == 1) {
+						biomart_dataset = BIOMART[i, 1]
+					} else {
+						i = grep(paste0("\\b", biomart_dataset, "\\b"), BIOMART[, "description"], ignore.case = TRUE)
+						if(length(i) == 1) {
+							biomart_dataset = BIOMART[i, 1]
+						} else {
+							stop_wrap(qq("Cannot find biomart dataset: @{biomart_dataset}."))
+						}
+					}
+				}
 			}
 
+			if(verbose) {
+				message(qq("* get gene and GO genesets from biomart (dataset: @{biomart_dataset})."))
+			}
+
+			i = which(BIOMART[, 1] == biomart_dataset)
+			genome = BIOMART[i, "genome"]
+
 			genes = getGenesFromBioMart(biomart_dataset)
-			sl = tapply(end(genes), seqnames(genes), max)
-			sl = structure(as.vector(sl), names = names(sl))
+
+			if(genome == "") {
+				sl = tapply(end(genes), seqnames(genes), max)
+				sl = structure(as.vector(sl), names = names(sl))
+			} else {
+				oe = try(sl <- getChromInfoFromUCSC(genome), silent = TRUE)
+				if(inherits(oe, "try-error")) {
+					sl = tapply(end(genes), seqnames(genes), max)
+					sl = structure(as.vector(sl), names = names(sl))
+				} else {
+					names(sl) = gsub("^chr", "", names(sl))
+				}
+			}
 			extended_tss = extendTSS(genes, seqlengths = sl, mode = mode, basal_upstream = basal_upstream,
 					basal_downstream = basal_downstream, extension = extension)
 
@@ -176,9 +210,31 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			} else {
 				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
 			}
-
-			param$genome = gsub("_eg_gene", "", biomart_dataset)
+			
+			param$genome = BIOMART[i, "description"]
+			if(genome != "") {
+				param$genome = paste0(param$genome, '; ', genome)
+			}
+			
 			param$tss_source = biomart_dataset
+
+			gr = GRanges(seqnames = gsub("^chr", "", as.vector(seqnames(gr))), ranges = ranges(gr))
+			if(inherits(background, "GRanges")) {
+				background = GRanges(seqnames = gsub("^chr", "", as.vector(seqnames(background))), ranges = ranges(background))
+			}
+			if(inherits(exclude, "GRanges")) {
+				exclude = GRanges(seqnames = gsub("^chr", "", as.vector(seqnames(exclude))), ranges = ranges(exclude))
+			} else if(identical(exclude, "gap") || identical(exclude, "gaps")) {
+				oe = try(exclude <- getGapFromUCSC(genome), silent = TRUE)
+				if(inherits(oe, "try-error")) {
+					exclude = NULL
+				} else {
+					new_seqnames = gsub("^chr", "", as.vector(seqnames(exclude)))
+					l = new_seqnames %in% seqlevels(extended_tss)
+					exclude = GRanges(seqnames = new_seqnames[l], ranges = ranges(exclude)[l])
+					attr(exclude, "exclude_is_gap") = TRUE
+				}
+			}
 		} else {
 
 			tss_source = parse_tss_source(tss_source)
@@ -312,7 +368,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	}
 
 	gr_genome = GRanges(seqnames = names(sl), ranges = IRanges(1, sl))
-	genome_as_background = TRUE
+	background_type = "whole genome"
 	if(is.null(background)) {
 		background = gr_genome
 
@@ -327,22 +383,49 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			background_chr = background
 			background = gr_genome[seqnames(gr_genome) %in% background_chr]
 		}
-		genome_as_background = FALSE
+		background_type = "self-provided"
 	}
 	strand(background) = "*"
 
 	if(!is.null(exclude)) {
-		if(inherits(exclude, "character")) {
+		if(identical(exclude, "gap") || identical(exclude, "gaps")) {
+			
+			if(!is.null(param$genome)) {
+				genome = param$genome
+				oe = try(exclude <- getGapFromUCSC(genome, seqnames = seqlevels(background)), silent = TRUE)
+				if(!inherits(oe, "try-error")) {
+					strand(exclude) = "*"
+					background = setdiff(background, exclude)
+
+					if(background_type == "whole genome") {
+						background_type = "whole genome excluding gaps"
+					}
+				}
+			}
+
+		} else if(inherits(exclude, "character")) {
 			background = background[!seqnames(background) %in% exclude]
+			background_type = "self-provided"
 		} else {
 			strand(exclude) = "*"
 			background = setdiff(background, exclude)
+
+			if(background_type == "whole genome") {
+				if(!is.null(attr(exclude, "exclude_is_gap"))) {
+					background_type = "whole genome excluding gaps"
+				} else {
+					background_type = "self-provided"
+				}
+			} else {
+				background_type = "self-provided"
+			}
 		}
+
 		if(verbose){
 			message("* remove excluded regions from background.")
 		}
-		genome_as_background = FALSE
 	}
+
 	background = reduce(background)
 	background_total_length = sum(width(background))
 
@@ -487,7 +570,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		extended_tss = extended_tss,  # has been intersected with background,
 		n_gene_gr = n_gene_gr,
 		background = background,
-		genome_as_background = genome_as_background, 
+		background_type = background_type, 
 		param = param
 	)
 
@@ -761,11 +844,7 @@ setMethod(f = "show",
 		qqcat("  OrgDb: @{object@param$orgdb}\n")
 	}
 	qqcat("  Gene sets: @{object@gene_sets_name}\n")
-	if(object@genome_as_background) {
-		qqcat("  Background: whole genome\n")
-	} else {
-		qqcat("  Background: user-defined\n")
-	}
+	qqcat("  Background: @{object@background_type}\n")
 
 	if(length(object@param)) {
 		if(object@param$mode == "basalPlusExt") {

@@ -10,7 +10,7 @@ Perform GREAT analysis
 great(gr, gene_sets, tss_source, biomart_dataset = NULL,
     min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000,
     basal_downstream = 1000, extension = 1000000,
-    extended_tss = NULL, background = NULL, exclude = NULL,
+    extended_tss = NULL, background = NULL, exclude = "gap",
     verbose = great_opt$verbose)
 }
 \arguments{
@@ -26,13 +26,15 @@ great(gr, gene_sets, tss_source, biomart_dataset = NULL,
   \item{extension}{Extensions from the basal domains.}
   \item{extended_tss}{If your organism is not defaultly supported, you can first prepare one by \code{\link{extendTSSFromDataFrame}} or \code{\link{extendTSS}}, and set the object to this argument. Please see more examples in the vignette.}
   \item{background}{Background regions. The value can also be a vector of chromosome names.}
-  \item{exclude}{Regions that are excluded from analysis such as gap regions (which can be get by \code{\link{getGapFromUCSC}}). The value can also be a vector of chromosome names.}
+  \item{exclude}{Regions that are excluded from analysis such as gap regions (which can be get by \code{\link{getGapFromUCSC}}). The value can also be a vector of chromosome names. It also allows a special character value \code{"gap"} so that gap regions for corresponding organism will be removed from the analysis.}
   \item{verbose}{Whether to print messages.}
 
 }
 \details{
 When \code{background} or \code{exclude} is set, the analysis is restricted in the background regions, still by using Binomial method. Note
 this is different from the original GREAT method which uses Fisher's exact test if background regions is set. See \code{\link{submitGreatJob}} for explanations.
+
+By default, gap regions are excluded from the analysis.
 }
 \section{Tss}{
 rGREAT supports TSS from many organisms. The value of \code{tss_source} should be encoded in a special format:
