@@ -147,7 +147,7 @@ great(gr, gs, "hg19")
 Users may have their own set of genes/TSS, as in the following example:
 
 ```{r}
-df = read.table(gzfile(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT")))
+df = read.table(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT"))
 # note there must be a 'gene_id' column
 tss = GRanges(seqnames = df[, 2], ranges = IRanges(df[, 3], df[, 3]), 
     strand = df[, 4], gene_id = df[, 5])
