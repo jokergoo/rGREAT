@@ -120,6 +120,27 @@ randomRegions = function (genome = NULL, nr = 1000, seqlengths = NULL,
     return(gr)
 }
 
+# == title
+# Generate random regions from a BioMart genome
+#
+# == param
+# -biomart_dataset A BioMart dataset.
+# -nr Number of regions.
+# -... Pass to `randomRegions`.
+#
+# == details
+# The number of regions per chromosome is proportional to the chromsome length.
+#
+# == example
+# # Giant panda
+# gr = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
+randomRegionsFromBioMartGenome = function(biomart_dataset, nr = 1000, ...) {
+	genes = getGenesFromBioMart(biomart_dataset)
+	sl = tapply(end(genes), seqnames(genes), max)
+	sl = structure(as.vector(sl), names = names(sl))
+	randomRegions(nr = nr, seqlengths = sl, ...)
+}
+
 guess_gene_id_type = function(id) {
     l = grepl("^\\d+$", id)
     if (sum(l)/length(l) > 0.5) {

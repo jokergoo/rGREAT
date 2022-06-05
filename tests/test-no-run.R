@@ -1,15 +1,33 @@
 
 
+test_great = function(...) {
+	
+	cat("======= test start =========\n")
+	res = great(...)
+	print(res)
+	cat("------- top terms --------\n")
+	tb = getEnrichmentTable(res)
+	print(head(tb))
+}
 
+#### msigdb #####
 gr = randomRegions(genome = "hg19")
 
-great(gr, "msigdb:h", "hg19")
-great(gr, "msigdb:h", "TxDb.Hsapiens.UCSC.hg19.knownGene")
-great(gr, "msigdb:h", "RefSeq:hg19")
-great(gr, "msigdb:h", "RefSeqSelect:hg19")
-great(gr, "msigdb:h", "GREAT:hg19")
-great(gr, "msigdb:h", "Gencode_v19")
+test_great(gr, "msigdb:h", "hg19")
+test_great(gr, "msigdb:h", "TxDb.Hsapiens.UCSC.hg19.knownGene")
+test_great(gr, "msigdb:h", "RefSeq:hg19")
+test_great(gr, "msigdb:h", "RefSeqSelect:hg19")
+test_great(gr, "msigdb:h", "GREAT:hg19")
+test_great(gr, "msigdb:h", "Gencode_v19")
 
+
+
+great_opt = setGlobalOptions(
+	verbose = TRUE,
+	test = TRUE
+)
+
+###### txdb and refseq ###
 
 for(i in 1:nrow(BIOC_ANNO_PKGS)) {
 	genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i]
@@ -20,18 +38,21 @@ for(i in 1:nrow(BIOC_ANNO_PKGS)) {
 		gr = randomRegions(genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
 	}
 
-	great(gr, "GO:BP", BIOC_ANNO_PKGS$genome_version_in_txdb[i])
-	great(gr, "GO:BP", BIOC_ANNO_PKGS$txdb[i])
+	test_great(gr, "GO:BP", BIOC_ANNO_PKGS$genome_version_in_txdb[i])
+	test_great(gr, "GO:BP", BIOC_ANNO_PKGS$txdb[i])
 
 	
 	if(genome != "araTha") {
 		try({
-			great(gr, "GO:BP", qq("RefSeqCurated:@{genome}"))
-			great(gr, "GO:BP", qq("RefSeqSelect:@{genome}"))
-			great(gr, "GO:BP", qq("RefSeq:@{genome}"))
+			test_great(gr, "GO:BP", qq("RefSeqCurated:@{genome}"))
+			test_great(gr, "GO:BP", qq("RefSeqSelect:@{genome}"))
+			test_great(gr, "GO:BP", qq("RefSeq:@{genome}"))
 		})
 	}
 }
+
+
+#### orgdb #####
 
 for(orgdb in unique(BIOC_ANNO_PKGS$orgdb)) {
 	i = which(BIOC_ANNO_PKGS$orgdb == orgdb)[1]
@@ -43,46 +64,71 @@ for(orgdb in unique(BIOC_ANNO_PKGS$orgdb)) {
 		} else {
 			gr = randomRegions(genome = BIOC_ANNO_PKGS$genome_version_in_txdb[i])
 		}
-		great(gr, "GO:BP", orgdb)
+		test_great(gr, "GO:BP", orgdb)
 	}
 }
+
+#### GREAT tss
 
 for(genome in c("hg19", "hg38", "mm9", "mm10")) {
 	gr = randomRegions(genome = genome)
 
-	great(gr, "GO:BP", qq("GREAT:@{genome}"))
+	test_great(gr, "GO:BP", qq("GREAT:@{genome}"))
 }
+
+
+###### gencode
 
 for(v in paste0("v", 18:19)) {
 	gr = randomRegions(genome = "hg19")
-	great(gr, "GO:BP", qq("gencode_@{v}"))
+	test_great(gr, "GO:BP", qq("gencode_@{v}"))
 }
 for(v in paste0("v", 20:40)) {
 	gr = randomRegions(genome = "hg38")
-	great(gr, "GO:BP", qq("gencode_@{v}"))
+	test_great(gr, "GO:BP", qq("gencode_@{v}"))
 }
 for(v in paste0("vM", 1)) {
 	gr = randomRegions(genome = "mm9")
-	great(gr, "GO:BP", qq("gencode_@{v}"))
+	test_great(gr, "GO:BP", qq("gencode_@{v}"))
 }
 for(v in paste0("vM", 2:25)) {
 	gr = randomRegions(genome = "mm10")
-	great(gr, "GO:BP", qq("gencode_@{v}"))
+	test_great(gr, "GO:BP", qq("gencode_@{v}"))
 }
 
 
-for(dataset in sample(BIOMART[, 1], 10)) {
-	genes = getGenesFromBioMart(dataset)
-	sl = tapply(end(genes), seqnames(genes), max)
-	sl = structure(as.vector(sl), names = names(sl))
-	gr = randomRegions(seqlengths = sl)
-	great(gr, "GO:BP", biomart_dataset = dataset)
-}
 
 
+##### set background
 gr = randomRegions(genome = "hg19")
-great(gr, "GO:BP", "hg19", background = paste0("chr", 1:22))
-great(gr, "GO:BP", "hg19", exclude = c("chrX", "chrY"))
-great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
+test_great(gr, "GO:BP", "hg19", background = paste0("chr", 1:22))
+test_great(gr, "GO:BP", "hg19", exclude = c("chrX", "chrY"))
+test_great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
 
 
+
+###### BioMart
+
+wrong_dataset = NULL
+for(i in 1:nrow(BIOMART)) {
+	dataset = BIOMART[i, 1]
+
+	oe = try({
+		gr = randomRegionsFromBioMartGenome(dataset)
+		test_great(gr, "GO:BP", biomart_dataset = dataset)
+	})
+	if(inherits(oe, "try-error")) {
+		wrong_dataset = c(wrong_dataset, dataset)
+	}
+}
+
+wrong_dataset2 = NULL
+for(dataset in wrong_dataset) {
+	oe = try({
+		gr = randomRegionsFromBioMartGenome(dataset)
+		test_great(gr, "GO:BP", biomart_dataset = dataset)
+	})
+	if(inherits(oe, "try-error")) {
+		wrong_dataset2 = c(wrong_dataset2, dataset)
+	}
+}

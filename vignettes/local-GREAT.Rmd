@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
     error = FALSE,
     tidy  = FALSE,
     message = FALSE,
+    warning = FALSE,
     fig.align = "center")
 ```
 
@@ -39,8 +40,7 @@ are always very well maintained and updated, which means the data source of your
 
 First let's load the **rGREAT** package and generate a random set of regions:
 
-```{r, echo = 2}
-suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
+```{r}
 library(rGREAT)
 
 set.seed(123)
@@ -147,7 +147,7 @@ great(gr, gs, "hg19")
 Users may have their own set of genes/TSS, as in the following example:
 
 ```{r}
-df = read.table(system.file("extdata", "GREATv4.genes.hg19.tsv.gz", package = "rGREAT"))
+df = read.table(url("https://jokergoo.github.io/rGREAT_suppl/data/GREATv4.genes.hg19.tsv"))
 # note there must be a 'gene_id' column
 tss = GRanges(seqnames = df[, 2], ranges = IRanges(df[, 3], df[, 3]), 
     strand = df[, 4], gene_id = df[, 5])
@@ -200,7 +200,7 @@ head(et)
 We can also manually construct the gene sets object, which is simply a named list of vectors where each vector contains genes in a gene set.
 Here we directly use the object `gs` generated before which is a gene set collection from DSigDB.
 
-**Please note again, gene IDs in `gs` should be the same as in `et`.**
+<p style='color:red'>Please note again, gene IDs in `gs` should be the same as in `et`.</p>
 
 Now `gs` and `et` can be sent to `great()` to perform local GREAT with the annotation data you manually provided.
 
@@ -213,14 +213,15 @@ great(gr, gene_sets = gs, extended_tss = et)
 **rGREAT** also supports GO gene sets for a huge number of organisms retrieved from [Ensembl BioMart](https://www.ensembl.org/info/data/biomart/index.html).
 A specific organism can be set with the `biomart_dataset` argument:
 
-```{r, eval = FALSE}
-# giant panda
-great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
+```{r}
+# Giant panda
+gr_panda = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
+great(gr_panda, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 ```
 
 Note both TSS and gene sets are from BioMart. The value for gene sets (the second argument) can only be one of `"GO:BP"`, `"GO:CC"` and `"GO:MF"`.
 
-**rGREAT** now supports 562 organisms. The complete list can be found at https://jokergoo.github.io/rGREAT_genesets/. Just make sure the genome version 
+**rGREAT** now supports 556 organisms. The complete list can be found at https://jokergoo.github.io/rGREAT_genesets/. Just make sure the genome version 
 is the same as the genome of your input regions.
 
 ## Set background regions

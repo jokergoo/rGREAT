@@ -566,7 +566,6 @@ setMethod(f = "param",
 # Zuguang gu <z.gu@dkfz.de>
 #
 # == example
-# # note the `job` was generated from GREAT 3.0.0
 # job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # tbl = getEnrichmentTables(job)
 # names(tbl)
@@ -654,7 +653,6 @@ setMethod(f = "getEnrichmentTables",
 # A data frame of the enrichment results for a single ontology.
 # 
 # == example
-# # note the `job` was generated from GREAT 3.0.0
 # job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 # tb = getEnrichmentTable(job, ontology = "GO Molecular Function")
 # head(tb)
@@ -967,6 +965,7 @@ parseRegionGeneAssociationFile = function(f1) {
 #
 # plotRegionGeneAssociations(job)
 # plotRegionGeneAssociations(job, which_plot = 1)
+# # Do not use other term_id for this example, or you need to generate a new `job` object.
 # plotRegionGeneAssociations(job, ontology = "GO Molecular Function",
 #     term_id = "GO:0004984")
 #

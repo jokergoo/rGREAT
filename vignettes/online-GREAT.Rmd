@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
     error = FALSE,
     tidy  = FALSE,
     message = FALSE,
+    warning = FALSE,
     fig.align = "center")
 ```
 
@@ -36,8 +37,7 @@ according to user's input and retrieving results from **GREAT** web server after
 
 Load the package:
 
-```{r, echo = 2}
-suppressWarnings(suppressPackageStartupMessages(library(rGREAT)))
+```{r}
 library(rGREAT)
 ```
 

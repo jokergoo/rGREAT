@@ -41,16 +41,36 @@ getGapFromUCSC = function(genome, seqnames = NULL) {
 	GRanges(seqnames = tb[, 1], ranges = IRanges(tb[, 2], tb[, 3]))
 }
 
-getChromInfoFromUCSC = function(genome) {
+getChromInfoFromUCSC = function(genome, seqlevels = NULL, max_seq = 500) {
 
-	tb = GenomeInfoDb::getChromInfoFromUCSC(genome, assembled.molecules.only = TRUE)
+	suppressWarnings(tb <- GenomeInfoDb::getChromInfoFromUCSC(genome, assembled.molecules.only = TRUE))
 	if(genome %in% registered_UCSC_genomes()[, "genome"]) {
 		chrlen = structure(tb[, 2], names = tb[, 1])
 	} else {
 		chrlen = structure(tb[, 2], names = tb[, 1])
-		chrlen = chrlen[nchar(names(chrlen) <= 7)]
+		if(is.null(seqlevels)) {
+			chrlen = filter_seqlength(chrlen, max_seq = max_seq)
+		} else {
+			chrlen = chrlen[intersect(names(chrlen), seqlevels)]
+		}
 	}
 	chrlen
+}
+
+filter_seqlength = function(sl, max_seq = 500) {
+	sl = sl*1.0
+	sl = structure(sl, names = names(sl))
+
+	sl = sort(sl)	
+	l = cumsum(sl*1.0)/sum(sl*1.0) > 0.05 & nchar(names(sl)) < min(nchar(names(sl))) + 5
+	if(sum(l) < 5) {
+		l = cumsum(sl*1.0)/sum(sl*1.0) > 0.05
+	}
+	sl = sl[l]
+	if(length(sl) > max_seq) {
+		sl = sl[order(-sl)[1:max_seq]]
+	}
+	sl
 }
 
 
@@ -71,7 +91,11 @@ getRefSeqGenesFromUCSC = function(genome, subset = c("RefSeqSelect", "RefSeqCura
 	if(!file.exists(refseq)) {
 		e = try(suppressWarnings(download.file(url, destfile = refseq, quiet = TRUE)), silent = TRUE)
 		if(inherits(e, "try-error")) {
-			stop_wrap(qq("It seems UCSC does not provide 'ncbi@{subset}.txt.gz' for @{genome} or the internet connection was interrupted. If possible, download file directly from @{url}."))
+			if(subset == "RefSeqSelect") {
+				stop_wrap(qq("It seems UCSC does not provide 'ncbi@{subset}.txt.gz' for @{genome} or the internet connection was interrupted. If possible, download file directly from @{url}. Or you can try 'RefSeqCurated' subset."))
+			} else {
+				stop_wrap(qq("It seems UCSC does not provide 'ncbi@{subset}.txt.gz' for @{genome} or the internet connection was interrupted. If possible, download file directly from @{url}."))
+			}
 		}
 	}
 	
@@ -413,31 +437,22 @@ getTSSFromTxDb = function(txdb_pkg) {
 }
 
 
-getGenesFromBioMart = function(dataset) {
-	genes = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{dataset}_genes.rds")))
-	
-	x1 = tapply(genes$gene_id, seqnames(genes), length)
-	sl = tapply(end(genes), seqnames(genes), max)*1.0
-	sl = sl[names(x1)]
+getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
+	g = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{dataset}_genes.rds")))
+	if(filter) {
+		sl = tapply(end(g), seqnames(g), max)
+		sl = filter_seqlength(sl, max_seq = max_seq)
+		g = g[seqnames(g) %in% names(sl)]
 
-	od = order(x1)
-	x1 = x1[od]
-	sl = sl[od]
-
-	l1 = cumsum(x1)/sum(x1) > 0.05
-	l2 = cumsum(sl)/sum(sl) > 0.05
-	l = l1 & l2
-
-	min_nc = min(nchar(names(sl)))
-
-	l3 = nchar(names(sl)) < min_nc + 5
-	l = l & l3
-
-	genes = genes[seqnames(genes) %in% names(sl)[l]]
-	seqlevels(genes) = names(sl)[l]
-	genes
+		seqlevels(g) = unique(as.character(seqnames(g)))
+	}
+	g
 }
 
+
+getGeneSetsFromBioMart = function(dataset, ontology = "bp") {
+	readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/@{ontology}_@{dataset}_go_genesets.rds")))
+}
 
 # == title
 # Get the internally used TSS

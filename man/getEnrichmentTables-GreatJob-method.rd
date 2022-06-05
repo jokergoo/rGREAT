@@ -31,7 +31,6 @@ The structure of the data frames are same as the tables available on GREAT websi
 Zuguang gu <z.gu@dkfz.de>
 }
 \examples{
-# note the `job` was generated from GREAT 3.0.0
 job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 tbl = getEnrichmentTables(job)
 names(tbl)

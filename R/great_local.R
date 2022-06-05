@@ -153,6 +153,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	verbose = great_opt$verbose) {
 
 	param = list()
+	gene_sets_name = ""
 	if(is.null(extended_tss)) {
 		if(!is.null(biomart_dataset)) {
 
@@ -180,37 +181,63 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				message(qq("* get gene and GO genesets from biomart (dataset: @{biomart_dataset})."))
 			}
 
+			gene_sets = tolower(gene_sets)
+			if(gene_sets %in% c("bp", "go:bp")) {
+				gene_sets_name = "GO:BP"
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
+			} else if(gene_sets %in% c("cc", "go:cc")) {
+				gene_sets_name = "GO:CC"
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
+			} else if(gene_sets %in% c("mf", "go:mf")) {
+				gene_sets_name = "GO:MF"
+				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
+			} else {
+				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
+			}
+
+			if(great_opt$test) {
+				gene_sets = gene_sets[order(-sapply(gene_sets, length))[1:10]]
+			}
+
 			i = which(BIOMART[, 1] == biomart_dataset)
 			genome = BIOMART[i, "genome"]
 
-			genes = getGenesFromBioMart(biomart_dataset)
-
+			genes = getGenesFromBioMart(biomart_dataset, filter = TRUE)
+			
 			if(genome == "") {
 				sl = tapply(end(genes), seqnames(genes), max)
 				sl = structure(as.vector(sl), names = names(sl))
 			} else {
-				oe = try(sl <- getChromInfoFromUCSC(genome), silent = TRUE)
+				allg = unique(unlist(gene_sets))
+				all_seqlevels = unique(seqnames(genes)[genes$gene_id %in% allg])
+
+				oe = try(sl <- getChromInfoFromUCSC(genome, seqlevels = all_seqlevels), silent = TRUE)
+				
 				if(inherits(oe, "try-error")) {
 					sl = tapply(end(genes), seqnames(genes), max)
 					sl = structure(as.vector(sl), names = names(sl))
 				} else {
 					names(sl) = gsub("^chr", "", names(sl))
 				}
+				# there might be inconsistency between UCSC and Ensembl...
+				if(length(intersect(seqlevels(genes), names(sl))) == 0) {
+					sl = tapply(end(genes), seqnames(genes), max)
+					sl = structure(as.vector(sl), names = names(sl))
+				}
 			}
+
+			if(verbose) {
+				message_str = qq("* background chromosomes from BioMart are '@{paste(names(sl), collapse=', ')}'.")
+				message_str = strwrap(message_str, width = 90)
+				if(length(message_str) > 1) {
+					message_str[2:length(message_str)]= paste0("    ", message_str[2:length(message_str)])
+				}
+				message(paste(message_str, collapse = "\n"))
+			}
+
 			extended_tss = extendTSS(genes, seqlengths = sl, mode = mode, basal_upstream = basal_upstream,
 					basal_downstream = basal_downstream, extension = extension)
 
-			gene_sets = tolower(gene_sets)
-			if(gene_sets %in% c("bp", "go:bp")) {
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
-			} else if(gene_sets %in% c("cc", "go:cc")) {
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
-			} else if(gene_sets %in% c("mf", "go:mf")) {
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
-			} else {
-				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
-			}
-			
 			param$genome = BIOMART[i, "description"]
 			if(genome != "") {
 				param$genome = paste0(param$genome, '; ', genome)
@@ -238,6 +265,13 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		} else {
 
 			tss_source = parse_tss_source(tss_source)
+
+			orgdb = get_orgdb_from_genome_version(tss_source$genome)
+			if(is.character(gene_sets) && is.atomic(gene_sets)) {
+				if(orgdb == "") {
+					stop_wrap("There is no pre-defined gene sets for this organism.")
+				}
+			}
 
 			if(tss_source$category == "TxDb") {
 				if(verbose) {
@@ -339,11 +373,13 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			gene_id = extended_tss$gene_id)
 
 		if(is.null(gene_sets)) {
-			stop_wrap("Please set `gene_sets` as a named list of vectors where each vector corresponds to a gene set. The gene ID type should be the same as in `txdb` or `extended_tss`. If the defaultly supported TxDb package is used, Entrez gene ID is the main gene ID.")
+			stop_wrap("Cannot find the pre-defined gene sets for the specified organism. Please set `gene_sets` as a named list of vectors where each vector corresponds to a gene set. The gene ID type should be the same as in `txdb` or `extended_tss`. If the defaultly supported TxDb package is used, Entrez gene ID is the main gene ID.")
 		}
 		
 	} else {
-		gene_sets_name = "self-provided"
+		if(gene_sets_name == "") {
+			gene_sets_name = "self-provided"
+		}
 	}
 
 	gene_sets = lapply(gene_sets, unique)
@@ -357,8 +393,8 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		message("* check gene ID type in `gene_sets` and in `extended_tss`.")
 	}
 
-	v1 = unique(unlist(gene_sets[seq_len(min(10, length(gene_sets)))]))
-	if(length(intersect(v1, extended_tss$gene_id))/length(v1) < 0.05) {
+	v1 = unique(unlist(gene_sets))
+	if(length(intersect(v1, extended_tss$gene_id))/length(v1) < 0.5) {
 		stop_wrap(qq("It seems the gene ID type in `gene_sets` (e.g. '@{gene_sets[[1]][1]}') is different from in `extended_tss` (e.g. '@{names(extended_tss)[1]}')."))
 	}
 	
@@ -381,6 +417,9 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		}
 		if(inherits(background, "character")) {
 			background_chr = background
+			if(!is.null(biomart_dataset)) {
+				background_chr = gsub("^chr", "", background_chr)
+			}
 			background = gr_genome[seqnames(gr_genome) %in% background_chr]
 		}
 		background_type = "self-provided"
@@ -680,6 +719,9 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 	}
 
 	orgdb = BIOC_ANNO_PKGS$orgdb[ BIOC_ANNO_PKGS$genome_version_in_txdb == mt$genome ][1]
+	if(is.na(orgdb)) {
+		return(NULL)
+	}
 
 	name = tolower(name)
 

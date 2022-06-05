@@ -523,7 +523,7 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL, gene_id_type = NULL
 		}
 	}
 	sl = seqlengths
-	
+
 	if(is.null(gene_id_type)) {
 		mt = attributes(metadata(gene))
 		if(!is.null(mt$gene_id_type)) {

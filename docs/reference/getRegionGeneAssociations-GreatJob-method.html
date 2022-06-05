@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
       </span>
     </div>
 
@@ -101,36 +101,10 @@ Please note, the distance is from the middle points of input regions to TSS.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>EOF within quoted string</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (data[i, 2] == "NONE") {    region = c(region, data[i, 1])    gene = c(gene, NA)    distance = c(distance, NA)} else {    r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]?\\d+)\\)", data[i,         2], perl = TRUE)[[1]]    capture.start = attr(r, "capture.start")    capture.length = attr(r, "capture.length")    k = nrow(capture.start)    region = c(region, rep(data[i, 1], k))    gene = c(gene, substr(rep(data[i, 2], k), capture.start[,         1], capture.start[, 1] + capture.length[, 1] - 1))    distance = c(distance, substr(rep(data[i, 2], k), capture.start[,         2], capture.start[, 2] + capture.length[, 2] - 1))}:</span> argument is of length zero</span>
 <span class="r-in"><span class="va">gr</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 3734 ranges and 2 metadata columns:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames              ranges strand |        annotated_genes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |        &lt;CharacterList&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]     chr1     1310672-1311002      * |               AURKAIP1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]     chr1     1342595-1342925      * |                 MRPL20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]     chr1     1509773-1510103      * |                  SSU72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]     chr1     1711637-1711967      * |                   NADK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]     chr1     2323001-2323331      * |                   RER1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ...      ...                 ...    ... .                    ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3730]     chrX 130912591-130912921      * | ENSG00000134602,OR13H1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3731]     chrX 130947194-130947524      * | ENSG00000134602,OR13H1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3732]     chrX 134449748-134450078      * |            CT55,ZNF75D</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3733]     chrX 138877458-138877788      * |            MCF2,ATP11C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3734]     chrX 147691650-147691980      * |               AFF2,IDS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             dist_to_TSS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;IntegerList&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]           -300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]            -67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]            311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]          -1893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]           -106</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ...            ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3730] -244537,234806</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3731] -209934,269409</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3732]  -144591,28099</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3733]   -87237,36824</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3734]  109676,895062</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'gr' not found</span>
 </code></pre></div>
     </div>
   </div>

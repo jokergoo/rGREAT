@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
       </span>
     </div>
 
@@ -69,7 +69,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="va">gene_sets</span>, <span class="va">tss_source</span>, biomart_dataset <span class="op">=</span> <span class="cn">NULL</span>,
     min_gene_set_size <span class="op">=</span> <span class="fl">5</span>, mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>,
     basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,
-    extended_tss <span class="op">=</span> <span class="cn">NULL</span>, background <span class="op">=</span> <span class="cn">NULL</span>, exclude <span class="op">=</span> <span class="cn">NULL</span>,
+    extended_tss <span class="op">=</span> <span class="cn">NULL</span>, background <span class="op">=</span> <span class="cn">NULL</span>, exclude <span class="op">=</span> <span class="st">"gap"</span>,
     verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></code></pre></div>
     </div>
 
@@ -98,7 +98,7 @@
 <dt>background</dt>
 <dd><p>Background regions. The value can also be a vector of chromosome names.</p></dd>
 <dt>exclude</dt>
-<dd><p>Regions that are excluded from analysis such as gap regions (which can be get by <code><a href="getGapFromUCSC.html">getGapFromUCSC</a></code>). The value can also be a vector of chromosome names.</p></dd>
+<dd><p>Regions that are excluded from analysis such as gap regions (which can be get by <code><a href="getGapFromUCSC.html">getGapFromUCSC</a></code>). The value can also be a vector of chromosome names. It also allows a special character value <code>"gap"</code> so that gap regions for corresponding organism will be removed from the analysis.</p></dd>
 <dt>verbose</dt>
 <dd><p>Whether to print messages.</p></dd>
 </dl></div>
@@ -106,6 +106,7 @@
     <h2>Details</h2>
     <p>When <code>background</code> or <code>exclude</code> is set, the analysis is restricted in the background regions, still by using Binomial method. Note
 this is different from the original GREAT method which uses Fisher's exact test if background regions is set. See <code><a href="submitGreatJob.html">submitGreatJob</a></code> for explanations.</p>
+<p>By default, gap regions are excluded from the analysis.</p>
     </div>
     <div id="tss">
     <h2>Tss</h2>

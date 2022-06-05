@@ -43,6 +43,7 @@ job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 
 plotRegionGeneAssociations(job)
 plotRegionGeneAssociations(job, which_plot = 1)
+# Do not use other term_id for this example, or you need to generate a new `job` object.
 plotRegionGeneAssociations(job, ontology = "GO Molecular Function",
     term_id = "GO:0004984")
 }

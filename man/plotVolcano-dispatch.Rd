@@ -10,8 +10,8 @@ Method dispatch page for \code{plotVolcano}.
 \code{plotVolcano} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{plotVolcano,GreatJob-method}}, \code{\link{GreatJob-class}} class method
 \item \code{\link{plotVolcano,GreatObject-method}}, \code{\link{GreatObject-class}} class method
+\item \code{\link{plotVolcano,GreatJob-method}}, \code{\link{GreatJob-class}} class method
 }
 }
 \examples{
