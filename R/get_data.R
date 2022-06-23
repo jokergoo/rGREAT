@@ -145,7 +145,7 @@ getGREATDefaultTSS = function(genome) {
 		stop_wrap("`genome` can only take value in 'hg19', 'hg38', 'mm9', 'mm10'.")
 	}
 
-	tb = read.table(system.file("extdata", paste0("GREATv4.genes.", genome, ".tsv.gz"), package = "rGREAT"))
+	tb = read.table(gzfile(system.file("extdata", paste0("GREATv4.genes.", genome, ".tsv.gz"), package = "rGREAT")))
 	tb[is.na(tb[, 1]), 1] = ""
 	if(genome %in% c("hg19", "hg38")) {
 		map1 =  unlist(as.list(org.Hs.eg.db::org.Hs.egENSEMBL2EG))
