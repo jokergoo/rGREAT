@@ -55,8 +55,12 @@ Submit genomic regions by `submitGreatJob()`.
 The returned variable `job` is a `GreatJob` class instance which can be used to retrieve results from
 **GREAT** server and store results which are already downloaded.
 
-```{r}
+```{r, eval = FALSE}
 job = submitGreatJob(gr)
+```
+
+```{r, echo = FALSE}
+job = readRDS(system.file("extdata", "GreatJob.rds", package = "rGREAT"))
 ```
 
 You can get the summary of your job by directly printing `job`.

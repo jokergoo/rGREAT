@@ -995,7 +995,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
 
     op = par(no.readonly = TRUE)
     on.exit(par(op))
-    par(mfrow = c(1, length(intersect(which_plot, 1:3))), mar = c(6, 4, 4, 1))
+    par(mfrow = c(1, length(intersect(which_plot, 1:3))), mar = c(6, 4, 4, 1), xpd = NA)
 
     using_term = !is.null(gr_term)
 
@@ -1066,10 +1066,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
         mtext("Distance to TSS (kb)", line = 4, side = 1, cex = 0.7)
         text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         axis(side = 2)
-        op = par("xpd")
-        par(xpd = NA)
         text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
-        par(xpd = op)
         x1 = (mean(pos[, 5]) + mean(pos[, 5]))/2
         x2 = (mean(pos[, 6]) + mean(pos[, 6]))/2
         y = max(p)*1.2
@@ -1109,8 +1106,6 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
         mtext("Absolute distance to TSS (kb)", line = 4, side = 1, cex = 0.7)
         text(t(pos), p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         axis(side = 2)
-        op = par("xpd")
-        par(xpd = NA)
         text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
         par(xpd = op)
         x1 = 0.9
