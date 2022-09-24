@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,20 +69,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="cn">NULL</span>, nr <span class="op">=</span> <span class="fl">1000</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>,
-    width_fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1000</span>, max <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="cn">NULL</span>, nr <span class="op">=</span> <span class="fl">1000</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    width_fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1000</span>, max <span class="op">=</span> <span class="fl">10000</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>genome</dt>
 <dd><p>UCSC genome version, e.g. "hg19".</p></dd>
-<dt>nr</dt>
+
+  <dt>nr</dt>
 <dd><p>Number of regions.</p></dd>
-<dt>seqlengths</dt>
+
+  <dt>seqlengths</dt>
 <dd><p>Alternatively, you can also specify a named vector of seqlengths (chromosome lengths).</p></dd>
-<dt>width_fun</dt>
+
+  <dt>width_fun</dt>
 <dd><p>A function which defines the distribution of region widths.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -88,10 +96,10 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu">width</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      0%     25%     50%     75%    100% </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1019.00 3162.75 5511.50 7663.75 9979.00 </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegions</span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu">width</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     0%    25%    50%    75%   100% </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1006.0 3191.5 5170.5 7715.0 9994.0 </span>
 </code></pre></div>
     </div>
   </div>
@@ -106,7 +114,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

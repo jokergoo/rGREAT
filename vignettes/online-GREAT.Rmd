@@ -88,7 +88,7 @@ job = submitGreatJob(gr, version = "2.0")
 <p style='color:red'>Note: from <b>rGREAT package</b> 1.99.0, background by `bg`
 argument is not supported any more (currently you can still use it, but you will see a warning message), because <b>GREAT</b> requires a special format
 for <code>gr</code> and <code>bg</code> if both are set, and it uses a different method
-for the enrichment analysis and returns enrichment tables in a different format. <a href="local-GREAT.html#Set_background_regions">But still, you can use local <b>GREAT</b> to integrate background regions.</a></p>
+for the enrichment analysis and returns enrichment tables in a different format. <a href="local-GREAT.html#Set_background_regions">But still, you can use local <b>GREAT</b> to integrate background regions.</a> Seel the rGREAT paper for more details.</p>
 
 Available parameters are (following content is copied from **GREAT** website):
 
@@ -144,10 +144,8 @@ As you have seen in the previous messages and results, The enrichment tables con
 However, you can set `download_by = 'tsv'` in `getEnrichmentTables()` to download the complete
 tables, but due to [the restriction from GREAT web server](https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport), only the top 500 regions can be retreived (check the last two columns of `tbl2[["GO Molecular Function"]]` in the following example).
 
-```{r, message = TRUE}
+```{r, eval = FALSE}
 tbl2 = getEnrichmentTables(job, download_by = "tsv")
-nrow(tbl2[["GO Molecular Function"]])
-head(tbl2[["GO Molecular Function"]])
 ```
 
 All available ontology names for a given species can be get by `availableOntologies()` 

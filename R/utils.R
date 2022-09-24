@@ -124,7 +124,7 @@ randomRegions = function (genome = NULL, nr = 1000, seqlengths = NULL,
 # Generate random regions from a BioMart genome
 #
 # == param
-# -biomart_dataset A BioMart dataset.
+# -biomart_dataset A BioMart dataset. Values should be in `BioMartGOGeneSets::supportedOrganisms`.
 # -nr Number of regions.
 # -... Pass to `randomRegions`.
 #
@@ -132,8 +132,10 @@ randomRegions = function (genome = NULL, nr = 1000, seqlengths = NULL,
 # The number of regions per chromosome is proportional to the chromsome length.
 #
 # == example
-# # Giant panda
-# gr = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
+# if(FALSE) {
+#     # Giant panda
+#     gr = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
+# }
 randomRegionsFromBioMartGenome = function(biomart_dataset, nr = 1000, ...) {
 	genes = getGenesFromBioMart(biomart_dataset)
 	sl = tapply(end(genes), seqnames(genes), max)
@@ -250,3 +252,48 @@ get_url = function(url) {
 # 	}
 # 	x
 # })
+
+
+# manually curated
+BIOMART_GENOME = c(vpacos_gene_ensembl = "vicPac1", bbbison_gene_ensembl = "bisBis1",
+	dnovemcinctus_gene_ensembl = "dasNov3", gmorhua_gene_ensembl = "gadMor3",
+	sbboliviensis_gene_ensembl = "saiBol1", ppaniscus_gene_ensembl = "panPan2",
+	ogarnettii_gene_ensembl = "otoGar3", cbrenneri_eg_gene = "caePb2",
+	cbriggsae_eg_gene = "cb4", celegans_gene_ensembl = "ce11", celegans_eg_gene = "ce11",
+	cjaponica_eg_gene = "caeJap1", cremanei_eg_gene = "caeRem3",
+	fcatus_gene_ensembl = "felCat9", ggallus_gene_ensembl = "galGal6",
+	ptroglodytes_gene_ensembl = "panTro5", cgchok1gshd_gene_ensembl = "criGriChoV2",
+	lchalumnae_gene_ensembl = "latCha1", btaurus_gene_ensembl = "bosTau9",
+	mfascicularis_gene_ensembl = "macFas5", clfamiliaris_gene_ensembl = "canFam4",
+	ttruncatus_gene_ensembl = "turTru2", dananassae_eg_gene = "droAna3",
+	derecta_eg_gene = "droEre2", dgrimshawi_eg_gene = "droGri2",
+	dmelanogaster_gene_ensembl = "dm6", dmelanogaster_eg_gene = "dm6",
+	dmojavensis_eg_gene = "droMoj3", dpersimilis_eg_gene = "droPer1",
+	dpseudoobscura_eg_gene = "dp4", dsechellia_eg_gene = "droSec1",
+	dsimulans_eg_gene = "droSim1", dvirilis_eg_gene = "droVir3",
+	dwillistoni_eg_gene = "droWil1", dyakuba_eg_gene = "droYak2",
+	lafricana_gene_ensembl = "loxAfr3", cmilii_gene_ensembl = "calMil1",
+	mpfuro_gene_ensembl = "musFur1", trubripes_gene_ensembl = "fr3",
+	nleucogenys_gene_ensembl = "nomLeu3", acchrysaetos_gene_ensembl = "aquChr2",
+	rroxellana_gene_ensembl = "rhiRox1", ggorilla_gene_ensembl = "gorGor4",
+	acarolinensis_gene_ensembl = "anoCar2", cporcellus_gene_ensembl = "cavPor3",
+	eeuropaeus_gene_ensembl = "eriEur1", ecaballus_gene_ensembl = "equCab3",
+	hsapiens_gene_ensembl = "hg38", pcapensis_gene_ensembl = "proCap1",
+	dordii_gene_ensembl = "dipOrd1", pmarinus_gene_ensembl = "petMar2",
+	gfortis_gene_ensembl = "geoFor1", pvampyrus_gene_ensembl = "pteVam1",
+	mlucifugus_gene_ensembl = "myoLuc2", mmusculus_gene_ensembl = "mm39",
+	hgfemale_gene_ensembl = "hetGla2", oniloticus_gene_ensembl = "oreNil2",
+	mdomestica_gene_ensembl = "monDom5", cpbellii_gene_ensembl = "chrPic1",
+	sscrofa_gene_ensembl = "susScr11", oprinceps_gene_ensembl = "ochPri2",
+	oanatinus_gene_ensembl = "ornAna1", ppacificus_eg_gene = "priPac1",
+	ocuniculus_gene_ensembl = "oryCun2", rnorvegicus_gene_ensembl = "rn7",
+	scerevisiae_eg_gene = "sacCer3", scerevisiae_gene_ensembl = "sacCer3",
+	oaries_gene_ensembl = "oviAri3", saraneus_gene_ensembl = "sorAra1",
+	choffmanni_gene_ensembl = "choHof1", itridecemlineatus_gene_ensembl = "speTri2",
+	gaculeatus_gene_ensembl = "gasAcu1", csyrichta_gene_ensembl = "tarSyr2",
+	sharrisii_gene_ensembl = "sarHar1", tnigroviridis_gene_ensembl = "tetNig2",
+	tbelangeri_gene_ensembl = "tupBel1", tcastaneum_eg_gene = "triCas2",
+	xtropicalis_gene_ensembl = "xenTro9", mgallopavo_gene_ensembl = "melGal5",
+	csabaeus_gene_ensembl = "chlSab2", neugenii_gene_ensembl = "macEug2",
+	tguttata_gene_ensembl = "taeGut1", drerio_gene_ensembl = "danRer11"
+)

@@ -438,7 +438,9 @@ getTSSFromTxDb = function(txdb_pkg) {
 
 
 getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
-	g = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{dataset}_genes.rds")))
+	check_pkg("BioMartGOGeneSets", bioc = TRUE)
+	g = BioMartGOGeneSets::getBioMartGenes(dataset)
+	colnames(mcols(g))[1] = "gene_id"
 	if(filter) {
 		sl = tapply(end(g), seqnames(g), max)
 		sl = filter_seqlength(sl, max_seq = max_seq)
@@ -450,8 +452,23 @@ getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
 }
 
 
+# == title
+# Get gene sets from BioMart
+#
+# == param
+# -dataset Name of the dataset.
+# -ontology Value should be bp, mf or cc.
+#
+# == details
+# GO gene sets are from `BioMartGOGeneSets::getBioMartGOGeneSets`.
+#
+# == value
+# A list of vectors where each vector contains Ensembl IDs annotated to a GO term.
 getGeneSetsFromBioMart = function(dataset, ontology = "bp") {
-	readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/@{ontology}_@{dataset}_go_genesets.rds")))
+	check_pkg("BioMartGOGeneSets", bioc = TRUE)
+
+	ontology = tolower(ontology)
+	BioMartGOGeneSets::getBioMartGOGeneSets(dataset, ontology)
 }
 
 # == title
@@ -468,11 +485,7 @@ getTSS = function(tss_source, biomart_dataset = NULL) {
 	if(!is.null(biomart_dataset)) {
 		
 		biomart_dataset = tolower(biomart_dataset)
-		if(!biomart_dataset %in% BIOMART[, 1]) {
-			stop_wrap(qq("Cannot find biomart dataset: @{biomart_dataset}."))
-		}
-
-		genes = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genes/granges_@{biomart_dataset}_genes.rds")))
+		genes = getGenesFromBioMart(biomart_dataset)
 		tss = promoters(genes, upstream = 0, downstream = 1)
 	} else {
 

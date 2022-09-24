@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,36 +69,43 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for GreatJob</span>
-<span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">ontology</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for GreatJob</span></span>
+<span><span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">ontology</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A <code><a href="GreatJob-class.html">GreatJob-class</a></code> object returned by <code><a href="submitGreatJob.html">submitGreatJob</a></code>.</p></dd>
-<dt>ontology</dt>
+
+  <dt>ontology</dt>
 <dd><p>A single ontology names. Valid values are in <code><a href="availableOntologies-GreatJob-method.html">availableOntologies</a></code>.</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>All pass to <code><a href="getEnrichmentTables-GreatJob-method.html">getEnrichmentTables,GreatJob-method</a></code>.</p></dd>
+
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A data frame of the enrichment results for a single ontology.</p>
+    
+
+<p>A data frame of the enrichment results for a single ontology.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># note the `job` was generated from GREAT 3.0.0</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The default enrichment tables contain no associated genes for the input</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> regions.You can set `download_by = 'tsv'` to download the complete</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> table,but note only the top 500 regions can be retreived. See the</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> following link:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> or you can try the local GREAT analysis with the function `great()`.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">tb</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           ID                            name Binom_Genome_Fraction</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 GO:0005515                 protein binding             0.7515051</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 GO:0005488                         binding             0.8694407</span>
@@ -152,7 +162,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

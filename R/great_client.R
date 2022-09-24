@@ -617,7 +617,8 @@ setMethod(f = "getEnrichmentTables",
         message_wrap("The default enrichment tables contain no associated genes for the input regions.",
             "You can set `download_by = 'tsv'` to download the complete table,",
             "but note only the top 500 regions can be retreived. See the following link:\n\n",
-            "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n")
+            "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n\n",
+            "or you can try the local GREAT analysis with the function `great()`.")
     }
 
     res = lapply(ontology, function(onto) {
@@ -994,7 +995,7 @@ setMethod(f = "plotRegionGeneAssociations",
 plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, term_id = NULL) {
 
     op = par(no.readonly = TRUE)
-    on.exit(par(op))
+    on.exit(suppressWarnings(par(op)))
     par(mfrow = c(1, length(intersect(which_plot, 1:3))), mar = c(6, 4, 4, 1), xpd = NA)
 
     using_term = !is.null(gr_term)

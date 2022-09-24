@@ -1,0 +1,104 @@
+---
+title: "Work with other organisms"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_collapsed: false
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{3. Work with other organisms}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+## Use TxDb packages
+
+In the Bioconductor annotation ecosystem, there are **TxDb.\*** packages which
+provide data for Gene Ontology gene sets. The **TxDb.\*** packages supported in **rGREAT** are:
+
+```{r}
+library(rGREAT)
+rGREAT:::BIOC_ANNO_PKGS$txdb
+```
+
+To perform GREAT anlaysis with GO gene sets for other organisms, you can either
+specify the genome version:
+
+```{r, eval = FALSE}
+great(gr, "GO:BP", "galGal6")
+```
+
+or with the full name of the corresponding TxDb package:
+
+```{r, eval = FALSE}
+great(gr, "GO:BP", "TxDb.Ggallus.UCSC.galGal6.refGene")
+```
+
+These two are internally the same.
+
+## Use BioMart GO gene sets
+
+You can specify a BioMart dataset (which corresponds to a specific organism), e.g.:
+
+```{r, eval = FALSE}
+# Giant panda
+great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
+```
+
+A full list of supported BioMart datasets (organisms) can be found with the function `BioMartGOGeneSets::supportedOrganisms()`.
+
+## Use MSigDB gene sets
+
+MSigDB contains gene sets only for human, but it can be extended to other organisms
+by mapping to the homologues genes. The package [**msigdbr**](https://cran.r-project.org/web/packages/msigdbr/index.html) has
+already mapped genes to many other organisms. A full list of supported organisms in **msigdbr** can be obtained by：
+
+```{r}
+library(msigdbr)
+msigdbr_species()
+```
+
+To obtain gene sets for non-human organisms, e.g.:
+
+```{r}
+h_gene_sets = msigdbr(species = "chimpanzee", category = "H")
+head(h_gene_sets)
+```
+
+If the organism you selected has a corresponding TxDb package available which provides TSS information, 
+you need to make sure the gene sets use Entrez gene ID as the identifier (Most TxDb packages use Entrez ID
+as primary ID, you can check the variable `rGREAT:::BIOC_ANNO_PKGS`).
+
+```{r}
+# convert to a list of gene sets
+h_gene_sets = split(h_gene_sets$entrez_gene, h_gene_sets$gs_name)
+h_gene_sets = lapply(h_gene_sets, as.character)  # just to make sure gene IDs are all in character.
+h_gene_sets[1:2]
+```
+
+Now we can perform the local GREAT analysis.
+
+```{r, eval = FALSE}
+great(gr, h_gene_sets, "panTro6")
+```
+
+## Self-define TSS and gene sets
+
+Since `great()` allows both self-defined TSS and gene sets, this means `great()` can be independent to organisms. 
+Please refer to the vignette ["Analyze with local GREAT"](local-GREAT.html#manually-set-gene-sets-and-transcriptome-annotations) to
+find out how to manuallly set both TSS and gene sets.
+
+

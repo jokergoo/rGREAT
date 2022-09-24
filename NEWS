@@ -1,3 +1,15 @@
+CHANGES in VERSION 1.99.7
+
+* Calculation has been speeded up.
+
+--------------------------------------------
+
+CHANGES in VERSION 1.99.6
+
+* set `getGeneSetsFromBioMart()` public
+
+---------------------------------------------
+
 CHANGES in VERSION 1.99.2
 
 * by default exclude gap regions

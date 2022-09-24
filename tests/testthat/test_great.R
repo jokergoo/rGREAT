@@ -48,3 +48,12 @@ df = plotRegionGeneAssociationGraphs(job, ontology = "GO_Molecular_Function", te
 
 
 }
+
+genes = getGenesFromGencode("v19")
+genes = genes[seqnames(genes) == "chr1"]
+strand(genes) = "*"
+gr = sort(genes)
+
+test_that("test reduce and reduce_by_start_and_end", {
+	expect_that(rGREAT:::reduce_by_start_and_end(start(gr), end(gr)), equals(sum(width(reduce(gr)))))
+})

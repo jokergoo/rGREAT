@@ -53,7 +53,7 @@ GreatObject = function(...) {
 #     of the input regions and the internal TSS regions. Use `getTSS` to see the format of internal TSS regions.
 # -gene_sets A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.
 # -tss_source Source of TSS. See "TSS" section.
-# -biomart_dataset The value should be in ``rGREAT:::BIOMART[, 1]``. Or you can find it on https://jokergoo.github.io/rGREAT_genesets/. 
+# -biomart_dataset The value should be in `BioMartGOGeneSets::supportedOrganisms`. 
 # -min_gene_set_size Minimal size of gene sets.
 # -mode The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See `extendTSS` for details.
 # -basal_upstream In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.
@@ -64,6 +64,7 @@ GreatObject = function(...) {
 # -background Background regions. The value can also be a vector of chromosome names.
 # -exclude Regions that are excluded from analysis such as gap regions (which can be get by `getGapFromUCSC`). The value can also be a vector of chromosome names.
 #     It also allows a special character value ``"gap"`` so that gap regions for corresponding organism will be removed from the analysis.
+# -cores Number of cores to use.
 # -verbose Whether to print messages.
 #
 # == details
@@ -127,7 +128,7 @@ GreatObject = function(...) {
 # == BioMart
 #
 # rGREAT supports a large number of organisms of which the information is retrieved from Ensembl BioMart. The name of a BioMart dataset
-# can be assigned to argument ``biomart_dataset``. All supported organisms can be found from https://jokergoo.github.io/rGREAT_genesets .
+# can be assigned to argument ``biomart_dataset``. All supported organisms can be found with `BioMartGOGeneSets::supportedOrganisms`.
 #
 # == value
 # A `GreatObject-class` object. The following methods can be applied on it:
@@ -145,17 +146,29 @@ GreatObject = function(...) {
 # res = great(gr, "MSigDB:H", "RefSeq:hg19")
 # res = great(gr, "MSigDB:H", "GREAT:hg19")
 # res = great(gr, "MSigDB:H", "Gencode_v19")
+# res = great(gr, "GO:BP", "hsapiens_gene_ensembl")
 # }
 great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000, 
 	basal_downstream = 1000, extension = 1000000,
 	extended_tss = NULL, background = NULL, exclude = "gap",
-	verbose = great_opt$verbose) {
+	cores = 1, verbose = great_opt$verbose) {
 
 	param = list()
 	gene_sets_name = ""
 	if(is.null(extended_tss)) {
 		if(!is.null(biomart_dataset)) {
+			
+			if(is.null(rGREAT_env$BIOMART)) {
+				check_pkg("BioMartGOGeneSets", bioc = TRUE)
+				rGREAT_env$BIOMART = BioMartGOGeneSets::supportedOrganisms(html = FALSE)
+			}
+			if(is.null(rGREAT_env$BIOMART$genome)) {
+				rGREAT_env$BIOMART$genome = BIOMART_GENOME[rGREAT_env$BIOMART[, 1]]
+				rGREAT_env$BIOMART$genome[is.na(rGREAT_env$BIOMART$genome)] = ""
+			}
+
+			BIOMART = rGREAT_env$BIOMART
 
 			biomart_dataset = tolower(biomart_dataset)
 			if(!biomart_dataset %in% BIOMART[, 1]) {
@@ -184,13 +197,13 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			gene_sets = tolower(gene_sets)
 			if(gene_sets %in% c("bp", "go:bp")) {
 				gene_sets_name = "GO:BP"
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/bp_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = getGeneSetsFromBioMart(biomart_dataset, "bp")
 			} else if(gene_sets %in% c("cc", "go:cc")) {
 				gene_sets_name = "GO:CC"
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/cc_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = getGeneSetsFromBioMart(biomart_dataset, "cc")
 			} else if(gene_sets %in% c("mf", "go:mf")) {
 				gene_sets_name = "GO:MF"
-				gene_sets = readRDS(get_url(qq("https://jokergoo.github.io/rGREAT_genesets/genesets/mf_@{biomart_dataset}_go_genesets.rds")))
+				gene_sets = getGeneSetsFromBioMart(biomart_dataset, "mf")
 			} else {
 				stop_wrap("When `biomart_dataset` is set, `gene_sets` can only be one of 'GO:BP/GO:CC/GO:MF'.")
 			}
@@ -203,7 +216,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			genome = BIOMART[i, "genome"]
 
 			genes = getGenesFromBioMart(biomart_dataset, filter = TRUE)
-			
+
 			if(genome == "") {
 				sl = tapply(end(genes), seqnames(genes), max)
 				sl = structure(as.vector(sl), names = names(sl))
@@ -360,6 +373,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 
 	param$orgdb = get_orgdb_from_genome_version(param$genome)
 
+	extended_tss = sort(extended_tss)
 	mode_param = attr(extended_tss, "mode")
 	param = c(param, mode_param)
 
@@ -394,7 +408,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	}
 
 	v1 = unique(unlist(gene_sets))
-	if(length(intersect(v1, extended_tss$gene_id))/length(v1) < 0.5) {
+	if(length(intersect(v1, extended_tss$gene_id))/length(v1) <= 0) {
 		stop_wrap(qq("It seems the gene ID type in `gene_sets` (e.g. '@{gene_sets[[1]][1]}') is different from in `extended_tss` (e.g. '@{names(extended_tss)[1]}')."))
 	}
 	
@@ -544,30 +558,56 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		message("* perform binomial test for each biological term.")
 	}
 	pb = progress::progress_bar$new(total = n_set)
-	for(i in 1:n_set) {
 
-		if(verbose) pb$tick()
+	all_chr = as.vector(seqnames(extended_tss))
+	all_s = start(extended_tss)
+	all_e = end(extended_tss)
+	tss_position = extended_tss$tss_position
+	gr_start = start(gr)
 
+	registerDoParallel(cores)
+	lt <- foreach(i = seq_len(n_set)) %dopar% {
+		if(verbose && cores <= 1) {
+			pb$tick()
+		}
 		ind = gene_sets_ind[[i]]
-		fgr = extended_tss[ind]
-		fgr = reduce(fgr)
-		prop[i] = sum(width(fgr))/background_total_length
-
+		
+		if(length(ind) == 0) {
+			width_fgr = 0
+		} else {
+			sl = split(all_s[ind], all_chr[ind])
+			el = split(all_e[ind], all_chr[ind])
+			width_fgr = sum(sapply(seq_along(sl), function(i) {
+				reduce_by_start_and_end(sl[[i]], el[[i]])
+			}))
+		}
+		prop = width_fgr/background_total_length
+	
 		l = subjectHits(ov) %in% ind
 		n_hits = length(unique(queryHits(ov)[l]))
 
-		mean_tss_dist[i] = mean(abs(extended_tss$tss_position[subjectHits(ov)[l]] - start(gr[queryHits(ov)[l]])))
+		mean_tss_dist = mean(abs(tss_position[subjectHits(ov)[l]] - gr_start[queryHits(ov)[l]]))
 
 		if(n_hits == 0) {
-			p[i] = 1
+			p = 1
 		} else {
-			p[i] = 1 - pbinom(n_hits - 1, n_total, prop[i])
+			p = 1 - pbinom(n_hits - 1, n_total, prop)
 		}
-		n_obs[i] = n_hits
-		n_exp[i] = prop[i]*n_total
+		n_obs = n_hits
+		n_exp = prop*n_total
 
-		gene_hits[i] = length(unique(extended_tss[intersect(subjectHits(ov), ind)]$gene_id))
+		gene_hits = length(unique(extended_tss$gene_id[subjectHits(ov)[l]]))
+
+		return(list(prop = prop, n_obs = n_obs, n_exp = n_exp, p = p, mean_tss_dist = mean_tss_dist, gene_hits = gene_hits))
 	}
+	stopImplicitCluster()
+
+	prop = sapply(lt, function(x) x$prop)
+	n_obs = sapply(lt, function(x) x$n_obs)
+	n_exp = sapply(lt, function(x) x$n_exp)
+	p = sapply(lt, function(x) x$p)
+	mean_tss_dist = sapply(lt, function(x) x$mean_tss_dist)
+	gene_hits = sapply(lt, function(x) x$gene_hits)
 
 	fold = n_obs/n_exp
 

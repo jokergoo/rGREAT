@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -47,7 +47,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul>
 </li>
@@ -94,37 +97,37 @@
 </h2>
 <p><strong>rGREAT</strong> is available on Bioconductor (<a href="http://bioconductor.org/packages/devel/bioc/html/rGREAT.html" class="external-link uri">http://bioconductor.org/packages/devel/bioc/html/rGREAT.html</a>)</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"rGREAT"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"rGREAT"</span><span class="op">)</span></span></code></pre></div>
 <p>If you want the latest version, install it directly from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span>
-<span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jokergoo/rGREAT"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"jokergoo/rGREAT"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="online-great-analysis">Online GREAT analysis<a class="anchor" aria-label="anchor" href="#online-great-analysis"></a>
 </h2>
 <p>With online GREAT analysis, the input regions will be directly submitted to GREAT server, and the results are automatically retrieved from GREAT server.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span>
-<span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span>
-
-<span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="reference/submitGreatJob.html">submitGreatJob</a></span><span class="op">(</span><span class="va">gr</span><span class="op">)</span>
-<span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
+<span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="reference/submitGreatJob.html">submitGreatJob</a></span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></span>
+<span><span class="va">tbl</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTables-dispatch.html">getEnrichmentTables</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="local-great-analysis">Local GREAT analysis<a class="anchor" aria-label="anchor" href="#local-great-analysis"></a>
 </h2>
 <p><strong>rGREAT</strong> also implements the GREAT algorithms locally and it can be seamlessly integrated to the Bioconductor annotation ecosystem. This means, theoretically, with <strong>rGREAT</strong>, it is possible to perform GREAT analysis with any organism and with any type of gene set collection / ontology</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span>
-<span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">=</span> <span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span></span>
+<span><span class="va">tb</span> <span class="op">=</span> <span class="fu"><a href="reference/getEnrichmentTable-dispatch.html">getEnrichmentTable</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p>To apply <code><a href="reference/great.html">great()</a></code> on other organisms, set the <code>biomart_dataset</code> argument:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># giant panda</span>
-<span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># giant panda</span></span>
+<span><span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span></code></pre></div>
 <p>For more details, please go to <a href="https://jokergoo.github.io/rGREAT/" class="external-link">the package vignettes</a>.</p>
 </div>
 <div class="section level2">
@@ -189,7 +192,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

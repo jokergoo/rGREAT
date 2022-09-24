@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,27 +69,35 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S4 method for GreatJob</span>
-<span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">object</span>, ontology <span class="op">=</span> <span class="cn">NULL</span>, term_id <span class="op">=</span> <span class="cn">NULL</span>, which_plot <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,
-    request_interval <span class="op">=</span> <span class="fl">10</span>, max_tries <span class="op">=</span> <span class="fl">100</span>, verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S4 method for GreatJob</span></span>
+<span><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">object</span>, ontology <span class="op">=</span> <span class="cn">NULL</span>, term_id <span class="op">=</span> <span class="cn">NULL</span>, which_plot <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
+<span>    request_interval <span class="op">=</span> <span class="fl">10</span>, max_tries <span class="op">=</span> <span class="fl">100</span>, verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>A <code><a href="GreatJob-class.html">GreatJob-class</a></code> object returned by <code><a href="submitGreatJob.html">submitGreatJob</a></code>.</p></dd>
-<dt>ontology</dt>
+
+  <dt>ontology</dt>
 <dd><p>A single ontology names. Valid values are in <code><a href="availableOntologies-GreatJob-method.html">availableOntologies</a></code>.</p></dd>
-<dt>term_id</dt>
+
+  <dt>term_id</dt>
 <dd><p>Term id in the selected ontology</p></dd>
-<dt>which_plot</dt>
+
+  <dt>which_plot</dt>
 <dd><p>Which plots to draw? The value should be in <code>1, 2, 3</code>. See "Details" section for explanation.</p></dd>
-<dt>request_interval</dt>
+
+  <dt>request_interval</dt>
 <dd><p>Time interval for two requests. Default is 300 seconds.</p></dd>
-<dt>max_tries</dt>
+
+  <dt>max_tries</dt>
 <dd><p>Maximal times for automatically reconnecting GREAT web server.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>Whether to show messages.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -106,18 +117,16 @@ in the table which is returned by <code><a href="getEnrichmentTables-dispatch.ht
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>EOF within quoted string</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (data[i, 2] == "NONE") {    region = c(region, data[i, 1])    gene = c(gene, NA)    distance = c(distance, NA)} else {    r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]?\\d+)\\)", data[i,         2], perl = TRUE)[[1]]    capture.start = attr(r, "capture.start")    capture.length = attr(r, "capture.length")    k = nrow(capture.start)    region = c(region, rep(data[i, 1], k))    gene = c(gene, substr(rep(data[i, 2], k), capture.start[,         1], capture.start[, 1] + capture.length[, 1] - 1))    distance = c(distance, substr(rep(data[i, 2], k), capture.start[,         2], capture.start[, 2] + capture.length[, 2] - 1))}:</span> argument is of length zero</span>
-<span class="r-in"><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, which_plot <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>EOF within quoted string</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (data[i, 2] == "NONE") {    region = c(region, data[i, 1])    gene = c(gene, NA)    distance = c(distance, NA)} else {    r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]?\\d+)\\)", data[i,         2], perl = TRUE)[[1]]    capture.start = attr(r, "capture.start")    capture.length = attr(r, "capture.length")    k = nrow(capture.start)    region = c(region, rep(data[i, 1], k))    gene = c(gene, substr(rep(data[i, 2], k), capture.start[,         1], capture.start[, 1] + capture.length[, 1] - 1))    distance = c(distance, substr(rep(data[i, 2], k), capture.start[,         2], capture.start[, 2] + capture.length[, 2] - 1))}:</span> argument is of length zero</span>
-<span class="r-in"><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,</span>
-<span class="r-in">    term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>EOF within quoted string</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (data[i, 2] == "NONE") {    region = c(region, data[i, 1])    gene = c(gene, NA)    distance = c(distance, NA)} else {    r = gregexpr("([a-zA-Z0-9\\-_.]+) \\(([+-]?\\d+)\\)", data[i,         2], perl = TRUE)[[1]]    capture.start = attr(r, "capture.start")    capture.length = attr(r, "capture.length")    k = nrow(capture.start)    region = c(region, rep(data[i, 1], k))    gene = c(gene, substr(rep(data[i, 2], k), capture.start[,         1], capture.start[, 1] + capture.length[, 1] - 1))    distance = c(distance, substr(rep(data[i, 2], k), capture.start[,         2], capture.start[, 2] + capture.length[, 2] - 1))}:</span> argument is of length zero</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">job</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"GreatJob.rds"</span>, package <span class="op">=</span> <span class="st">"rGREAT"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, which_plot <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># Do not use other term_id for this example, or you need to generate a new `job` object.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="plotRegionGeneAssociations-dispatch.html">plotRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span>, ontology <span class="op">=</span> <span class="st">"GO Molecular Function"</span>,</span></span>
+<span class="r-in"><span>    term_id <span class="op">=</span> <span class="st">"GO:0004984"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plotRegionGeneAssociations-GreatJob-method-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
@@ -132,7 +141,7 @@ in the table which is returned by <code><a href="getEnrichmentTables-dispatch.ht
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

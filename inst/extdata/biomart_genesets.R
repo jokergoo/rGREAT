@@ -49,6 +49,7 @@ get_datasets = function(ensembl, label = "") {
 	}
 }
 
+setwd("~/workspace/rGREAT")
 
 library(biomaRt)
 ensembl <- useEnsembl(biomart = "genes", mirror = "uswest")
@@ -130,5 +131,9 @@ parallel::mclapply(all_files, function(f) {
 	gs2 = gs2[sapply(gs2, length) > 0]
 	saveRDS(gs2, qq("genesets_processed/genesets/mf_@{basename(f)}"))
 }, mc.cores = 4)
+
+
+created_date = Sys.Date()
+
 
 

@@ -3,13 +3,12 @@
 if(identical(topenv(), .GlobalEnv)) {
 	BIOC_ANNO_PKGS = read.table("~/project/development/rGREAT/inst/extdata/bioc_anno_pkgs.csv", header = TRUE, sep = ";")
 	CHR_LEN_DB = readRDS("~/project/development/rGREAT/inst/extdata/CHR_LEN_DB.rds")
-	BIOMART = read.csv("~/project/development/rGREAT/inst/extdata/biomart.csv", header = TRUE, sep = ";")
 } else {
 	BIOC_ANNO_PKGS = read.table(system.file("extdata", "bioc_anno_pkgs.csv", package = "rGREAT"), header = TRUE, sep = ";")
 	CHR_LEN_DB = readRDS(system.file("extdata", "CHR_LEN_DB.rds", package = "rGREAT"))
-	BIOMART = read.csv(system.file("extdata", "biomart.csv", package = "rGREAT"), header = TRUE, sep = ';')
 }
 
+rGREAT_env$BIOMART = NULL
 
 rGREAT_env$extended_tss = list()
 
@@ -385,7 +384,8 @@ extendTSSFromOrgDb = function(orgdb, verbose = great_opt$verbose, ...) {
 # == value
 # A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
 #
-extendTSSFromDataFrame = function(df, seqlengths, genome = NULL, strand = NULL, gene_id = NULL, 
+extendTSSFromDataFrame = function(df, seqlengths, genome = NULL, 
+	strand = NULL, gene_id = NULL, 
 	gene_id_type = NULL, verbose = great_opt$verbose, ...) {
 
 	colnames(df) = tolower(colnames(df))
@@ -493,8 +493,9 @@ extendTSSFromDataFrame = function(df, seqlengths, genome = NULL, strand = NULL, 
 # == value
 # A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
 #
-extendTSS = function(gene, seqlengths = NULL, genome = NULL, gene_id_type = NULL,
-	mode = "basalPlusExt", basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
+extendTSS = function(gene, seqlengths = NULL, genome = NULL, 
+	gene_id_type = NULL, mode = "basalPlusExt", basal_upstream = 5000, 
+	basal_downstream = 1000, extension = 1000000,
 	verbose = great_opt$verbose, .attr = list()) {
 
 	if(is.null(seqlengths)) {

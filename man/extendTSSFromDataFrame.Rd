@@ -7,7 +7,8 @@ Extend TSS
 Extend TSS
 }
 \usage{
-extendTSSFromDataFrame(df, seqlengths, genome = NULL, strand = NULL, gene_id = NULL,
+extendTSSFromDataFrame(df, seqlengths, genome = NULL,
+    strand = NULL, gene_id = NULL,
     gene_id_type = NULL, verbose = great_opt$verbose, ...)
 }
 \arguments{

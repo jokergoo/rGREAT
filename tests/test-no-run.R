@@ -108,7 +108,7 @@ test_great(gr, "MSigDB:H", "hg19", exclude = getGapFromUCSC("hg19"))
 
 
 ###### BioMart
-
+BIOMART = BioMartGOGeneSets::supportedOrganisms(html = FALSE)
 wrong_dataset = NULL
 for(i in 1:nrow(BIOMART)) {
 	dataset = BIOMART[i, 1]
@@ -132,3 +132,48 @@ for(dataset in wrong_dataset) {
 		wrong_dataset2 = c(wrong_dataset2, dataset)
 	}
 }
+
+#################################################
+
+t = NULL
+for(nr in c(100, 1000, 1e4, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5, 9e5, 1e6)) {
+	gr = randomRegions(nr = nr, genome = "hg19")
+	t = c(t, system.time(tb <- great(gr, "GO:BP", "hg19"))[3])
+}
+
+plot(c(100, 1000, 1e4, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5, 9e5, 1e6), t,
+	xlab = "Number of input regions", ylab = "runtime / sec", main = "GO:BP gene sets")
+
+t3 = NULL
+for(nr in c(100, 1000, 1e4, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5, 9e5, 1e6)) {
+	gr = randomRegions(nr = nr, genome = "hg19")
+	t3 = c(t3, system.time(tb <- great(gr, "GO:BP", "hg19", cores = 4))[3])
+}
+points(c(100, 1000, 1e4, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5, 7e5, 8e5, 9e5, 1e6), t3, col = "red")
+legend("topleft", pch = 1, col = "red", legend = "4 cores")
+
+
+t2 = NULL
+for(gs in names(rGREAT:::MSIGDB)) {
+	gr = randomRegions(genome = "hg19")
+	t2 = c(t2, system.time(tb <- great(gr, gs, "hg19"))[3])
+}
+
+size = sapply(rGREAT:::MSIGDB, function(x) {
+	x = readRDS(url(x))
+	length(x)
+})
+
+plot(size, t2, xlab = "Gene set size", ylab = "runtime / sec", main=  "MSigDB gene set collections")
+
+
+t4 = NULL
+for(gs in names(rGREAT:::MSIGDB)) {
+	gr = randomRegions(genome = "hg19")
+	t4 = c(t4, system.time(tb <- great(gr, gs, "hg19", cores = 4))[3])
+}
+
+points(size, t4, col = "red")
+legend("topleft", pch = 1, col = "red", legend = "4 cores")
+
+

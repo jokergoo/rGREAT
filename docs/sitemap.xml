@@ -19,6 +19,9 @@
     <loc>/articles/other-docs.html</loc>
   </url>
   <url>
+    <loc>/articles/other-organisms.html</loc>
+  </url>
+  <url>
     <loc>/articles/rGREAT.html</loc>
   </url>
   <url>
@@ -83,6 +86,9 @@
   </url>
   <url>
     <loc>/reference/getGencodeGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getGeneSetsFromBioMart.html</loc>
   </url>
   <url>
     <loc>/reference/getGenesFromGencode.html</loc>

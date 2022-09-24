@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,33 +69,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">extendTSS</span><span class="op">(</span><span class="va">gene</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>, genome <span class="op">=</span> <span class="cn">NULL</span>, gene_id_type <span class="op">=</span> <span class="cn">NULL</span>,
-    mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>, basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,
-    verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span>, .attr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extendTSS</span><span class="op">(</span><span class="va">gene</span>, seqlengths <span class="op">=</span> <span class="cn">NULL</span>, genome <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    gene_id_type <span class="op">=</span> <span class="cn">NULL</span>, mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>    basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,</span>
+<span>    verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span>, .attr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>gene</dt>
 <dd><p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object of gene (or TSS) coordinates.</p></dd>
-<dt>seqlengths</dt>
+
+  <dt>seqlengths</dt>
 <dd><p>A named vector of chromosome lengths. If it is not provided, it is taken by <code>seqlengths(gene)</code>.</p></dd>
-<dt>genome</dt>
+
+  <dt>genome</dt>
 <dd><p>UCSC genome can be set here, then <code>seqlengths</code> will be automatically retrieved from UCSC server.</p></dd>
-<dt>gene_id_type</dt>
+
+  <dt>gene_id_type</dt>
 <dd><p>Gene ID types in <code>gene</code>. You need to set this argument if you use built-in gene sets in <code><a href="great.html">great</a></code> so that genes can be correctly mapped. The value can only be one of "SYMBOL", "ENTREZ", "ENSEMBL" and "REFSEQ".</p></dd>
-<dt>mode</dt>
+
+  <dt>mode</dt>
 <dd><p>The mode to extend TSS. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See "Details" section.</p></dd>
-<dt>basal_upstream</dt>
+
+  <dt>basal_upstream</dt>
 <dd><p>In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.</p></dd>
-<dt>basal_downstream</dt>
+
+  <dt>basal_downstream</dt>
 <dd><p>In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.</p></dd>
-<dt>extension</dt>
+
+  <dt>extension</dt>
 <dd><p>Extensions from the basal domains.</p></dd>
-<dt>verbose</dt>
+
+  <dt>verbose</dt>
 <dd><p>Whether to print messages.</p></dd>
-<dt>.attr</dt>
+
+  <dt>.attr</dt>
 <dd><p>Only used internally.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -111,15 +126,17 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object with one meta column 'gene_id'.</p>
+    
+
+<p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object with one meta column 'gene_id'.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># There is no example</span></span>
-<span class="r-in"><span class="cn">NULL</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># There is no example</span></span></span>
+<span class="r-in"><span><span class="cn">NULL</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -134,7 +151,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

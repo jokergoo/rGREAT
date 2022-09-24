@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,57 +69,74 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, bg <span class="op">=</span> <span class="cn">NULL</span>,
-    gr_is_zero_based      <span class="op">=</span> <span class="cn">FALSE</span>,
-    species               <span class="op">=</span> <span class="st">"hg19"</span>,
-    includeCuratedRegDoms <span class="op">=</span> <span class="cn">TRUE</span>,
-    rule                  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"basalPlusExt"</span>, <span class="st">"twoClosest"</span>, <span class="st">"oneClosest"</span><span class="op">)</span>,
-    adv_upstream          <span class="op">=</span> <span class="fl">5.0</span>,
-    adv_downstream        <span class="op">=</span> <span class="fl">1.0</span>,
-    adv_span              <span class="op">=</span> <span class="fl">1000.0</span>,
-    adv_twoDistance       <span class="op">=</span> <span class="fl">1000.0</span>,
-    adv_oneDistance       <span class="op">=</span> <span class="fl">1000.0</span>,
-    request_interval <span class="op">=</span> <span class="fl">60</span>,
-    max_tries <span class="op">=</span> <span class="fl">10</span>,
-    version <span class="op">=</span> <span class="va">DEFAULT_VERSION</span>,
-    base_url <span class="op">=</span> <span class="st">"http://great.stanford.edu/public/cgi-bin"</span>,
-    help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, bg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    gr_is_zero_based      <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    species               <span class="op">=</span> <span class="st">"hg19"</span>,</span>
+<span>    includeCuratedRegDoms <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    rule                  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"basalPlusExt"</span>, <span class="st">"twoClosest"</span>, <span class="st">"oneClosest"</span><span class="op">)</span>,</span>
+<span>    adv_upstream          <span class="op">=</span> <span class="fl">5.0</span>,</span>
+<span>    adv_downstream        <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>    adv_span              <span class="op">=</span> <span class="fl">1000.0</span>,</span>
+<span>    adv_twoDistance       <span class="op">=</span> <span class="fl">1000.0</span>,</span>
+<span>    adv_oneDistance       <span class="op">=</span> <span class="fl">1000.0</span>,</span>
+<span>    request_interval <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>    max_tries <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    version <span class="op">=</span> <span class="va">DEFAULT_VERSION</span>,</span>
+<span>    base_url <span class="op">=</span> <span class="st">"http://great.stanford.edu/public/cgi-bin"</span>,</span>
+<span>    help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>gr</dt>
 <dd><p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object or a data frame which contains at least three columns (chr, start and end).</p></dd>
-<dt>bg</dt>
+
+  <dt>bg</dt>
 <dd><p>Not supported any more. See explanations in section "When_background_regions_are_set".</p></dd>
-<dt>gr_is_zero_based</dt>
+
+  <dt>gr_is_zero_based</dt>
 <dd><p>Are start positions in <code>gr</code> zero-based?</p></dd>
-<dt>species</dt>
+
+  <dt>species</dt>
 <dd><p>Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.</p></dd>
-<dt>includeCuratedRegDoms</dt>
+
+  <dt>includeCuratedRegDoms</dt>
 <dd><p>Whether to include curated regulatory domains, see <a href="https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains" class="external-link">https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains</a> .</p></dd>
-<dt>rule</dt>
+
+  <dt>rule</dt>
 <dd><p>How to associate genomic regions to genes. See 'Details' section.</p></dd>
-<dt>adv_upstream</dt>
+
+  <dt>adv_upstream</dt>
 <dd><p>Unit: kb, only used when rule is <code>basalPlusExt</code>.</p></dd>
-<dt>adv_downstream</dt>
+
+  <dt>adv_downstream</dt>
 <dd><p>Unit: kb, only used when rule is <code>basalPlusExt</code>.</p></dd>
-<dt>adv_span</dt>
+
+  <dt>adv_span</dt>
 <dd><p>Unit: kb, only used when rule is <code>basalPlusExt</code>.</p></dd>
-<dt>adv_twoDistance</dt>
+
+  <dt>adv_twoDistance</dt>
 <dd><p>Unit: kb, only used when rule is <code>twoClosest</code>.</p></dd>
-<dt>adv_oneDistance</dt>
+
+  <dt>adv_oneDistance</dt>
 <dd><p>Unit: kb, only used when rule is <code>oneClosest</code>.</p></dd>
-<dt>request_interval</dt>
+
+  <dt>request_interval</dt>
 <dd><p>Time interval for two requests. Default is 300 seconds.</p></dd>
-<dt>max_tries</dt>
+
+  <dt>max_tries</dt>
 <dd><p>Maximal times for aotumatically reconnecting GREAT web server.</p></dd>
-<dt>version</dt>
+
+  <dt>version</dt>
 <dd><p>Version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "4" or "4.0" is same as "4.0.4".</p></dd>
-<dt>base_url</dt>
+
+  <dt>base_url</dt>
 <dd><p>the url of <code>cgi-bin</code> path, only used when it is explicitly specified.</p></dd>
-<dt>help</dt>
+
+  <dt>help</dt>
 <dd><p>Whether to print help messages.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -153,7 +173,12 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="GreatJob-class.html">GreatJob-class</a></code> object which can be used to get results from GREAT server. The following methods can be applied on it:</p><ul><li><p><code><a href="getEnrichmentTables-GreatObject-method.html">getEnrichmentTables,GreatObject-method</a></code> to retreive the result tables.</p></li>
+    
+
+<p>A <code><a href="GreatJob-class.html">GreatJob-class</a></code> object which can be used to get results from GREAT server. The following methods can be applied on it:</p>
+
+
+<ul><li><p><code><a href="getEnrichmentTables-GreatObject-method.html">getEnrichmentTables,GreatObject-method</a></code> to retreive the result tables.</p></li>
 <li><p><code><a href="getRegionGeneAssociations-GreatObject-method.html">getRegionGeneAssociations,GreatObject-method</a></code> to get the associations between input regions and genes.</p></li>
 <li><p><code><a href="plotRegionGeneAssociations-GreatObject-method.html">plotRegionGeneAssociations,GreatObject-method</a></code> to plot the associations bewteen input regions and genes.</p></li>
 <li><p><code><a href="shinyReport-GreatObject-method.html">shinyReport,GreatObject-method</a></code> to view the results by a shiny application.</p></li>
@@ -169,17 +194,17 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="randomRegions.html">randomRegions</a></span><span class="op">(</span>nr <span class="op">=</span> <span class="fl">1000</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Note: On Aug 19 2019 GREAT released version 4 which supports hg38</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> genome and removes some ontologies such pathways. submitGreatJob()</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> still takes hg19 as default. hg38 can be specified by argument `species</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> = "hg38"`. To use the older versions such as 3.0.0, specify as</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> submitGreatJob(..., version = "3"). Set argument `help` to `FALSE` to</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> turn off this message.</span>
-<span class="r-in"><span class="va">job</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-06-05 21:49:42 </span>
+<span class="r-in"><span><span class="va">job</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Submit time: 2022-09-24 21:31:34 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Note the results may only be avaiable on GREAT server for 24 hours.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Version: 4.0.4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Species: hg19 </span>
@@ -192,15 +217,15 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Enrichment tables for following ontologies have been downloaded:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   None</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># more parameters can be set for the job</span></span>
-<span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># suppress running it when building the package</span></span>
-<span class="r-in">    <span class="co"># current GREAT version is 4.0.4</span></span>
-<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
-<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, adv_upstream <span class="op">=</span> <span class="fl">10</span>, adv_downstream <span class="op">=</span> <span class="fl">2</span>, adv_span <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
-<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"twoClosest"</span>, adv_twoDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
-<span class="r-in">    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"oneClosest"</span>, adv_oneDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># more parameters can be set for the job</span></span></span>
+<span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># suppress running it when building the package</span></span></span>
+<span class="r-in"><span>    <span class="co"># current GREAT version is 4.0.4</span></span></span>
+<span class="r-in"><span>    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, adv_upstream <span class="op">=</span> <span class="fl">10</span>, adv_downstream <span class="op">=</span> <span class="fl">2</span>, adv_span <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"twoClosest"</span>, adv_twoDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">job</span> <span class="op">=</span> <span class="fu">submitGreatJob</span><span class="op">(</span><span class="va">gr</span>, rule <span class="op">=</span> <span class="st">"oneClosest"</span>, adv_oneDistance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -215,7 +240,7 @@ consider to use local GREAT by <code><a href="great.html">great</a></code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

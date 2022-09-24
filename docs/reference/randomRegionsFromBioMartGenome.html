@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,17 +69,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">randomRegionsFromBioMartGenome</span><span class="op">(</span><span class="va">biomart_dataset</span>, nr <span class="op">=</span> <span class="fl">1000</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">randomRegionsFromBioMartGenome</span><span class="op">(</span><span class="va">biomart_dataset</span>, nr <span class="op">=</span> <span class="fl">1000</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>biomart_dataset</dt>
-<dd><p>A BioMart dataset.</p></dd>
-<dt>nr</dt>
+<dd><p>A BioMart dataset. Values should be in <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">supportedOrganisms</a></code>.</p></dd>
+
+  <dt>nr</dt>
 <dd><p>Number of regions.</p></dd>
-<dt>...</dt>
+
+  <dt>...</dt>
 <dd><p>Pass to <code><a href="randomRegions.html">randomRegions</a></code>.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -85,8 +92,10 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># Giant panda</span></span>
-<span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegionsFromBioMartGenome</span><span class="op">(</span><span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="co"># Giant panda</span></span></span>
+<span class="r-in"><span>    <span class="va">gr</span> <span class="op">=</span> <span class="fu">randomRegionsFromBioMartGenome</span><span class="op">(</span><span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -101,7 +110,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

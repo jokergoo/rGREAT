@@ -11,14 +11,14 @@ great(gr, gene_sets, tss_source, biomart_dataset = NULL,
     min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000,
     basal_downstream = 1000, extension = 1000000,
     extended_tss = NULL, background = NULL, exclude = "gap",
-    verbose = great_opt$verbose)
+    cores = 1, verbose = great_opt$verbose)
 }
 \arguments{
 
   \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object. This is the input regions. It is important to keep consistent for the chromosome names of the input regions and the internal TSS regions. Use \code{\link{getTSS}} to see the format of internal TSS regions.}
   \item{gene_sets}{A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.}
   \item{tss_source}{Source of TSS. See "TSS" section.}
-  \item{biomart_dataset}{The value should be in \code{rGREAT:::BIOMART[, 1]}. Or you can find it on \url{https://jokergoo.github.io/rGREAT_genesets/.} }
+  \item{biomart_dataset}{The value should be in \code{\link[BioMartGOGeneSets]{supportedOrganisms}}. }
   \item{min_gene_set_size}{Minimal size of gene sets.}
   \item{mode}{The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See \code{\link{extendTSS}} for details.}
   \item{basal_upstream}{In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.}
@@ -27,6 +27,7 @@ great(gr, gene_sets, tss_source, biomart_dataset = NULL,
   \item{extended_tss}{If your organism is not defaultly supported, you can first prepare one by \code{\link{extendTSSFromDataFrame}} or \code{\link{extendTSS}}, and set the object to this argument. Please see more examples in the vignette.}
   \item{background}{Background regions. The value can also be a vector of chromosome names.}
   \item{exclude}{Regions that are excluded from analysis such as gap regions (which can be get by \code{\link{getGapFromUCSC}}). The value can also be a vector of chromosome names. It also allows a special character value \code{"gap"} so that gap regions for corresponding organism will be removed from the analysis.}
+  \item{cores}{Number of cores to use.}
   \item{verbose}{Whether to print messages.}
 
 }
@@ -93,7 +94,7 @@ If the defaultly supported TxDb is used, Entrez gene ID is always used as the ma
 \code{gene_sets} or \code{extended_tss}, you need to make sure they two have the same gene ID types.}
 \section{Biomart}{
 rGREAT supports a large number of organisms of which the information is retrieved from Ensembl BioMart. The name of a BioMart dataset
-can be assigned to argument \code{biomart_dataset}. All supported organisms can be found from \url{https://jokergoo.github.io/rGREAT_genesets} .}
+can be assigned to argument \code{biomart_dataset}. All supported organisms can be found with \code{\link[BioMartGOGeneSets]{supportedOrganisms}}.}
 \value{
 A \code{\link{GreatObject-class}} object. The following methods can be applied on it:
 
@@ -112,5 +113,6 @@ res = great(gr, "MSigDB:H", "TxDb.Hsapiens.UCSC.hg19.knownGene")
 res = great(gr, "MSigDB:H", "RefSeq:hg19")
 res = great(gr, "MSigDB:H", "GREAT:hg19")
 res = great(gr, "MSigDB:H", "Gencode_v19")
+res = great(gr, "GO:BP", "hsapiens_gene_ensembl")
 }
 }

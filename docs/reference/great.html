@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.7</span>
       </span>
     </div>
 
@@ -26,7 +26,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -39,6 +39,9 @@
     </li>
     <li>
       <a href="../articles/other-docs.html">Other documents</a>
+    </li>
+    <li>
+      <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
@@ -66,41 +69,58 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="va">gene_sets</span>, <span class="va">tss_source</span>, biomart_dataset <span class="op">=</span> <span class="cn">NULL</span>,
-    min_gene_set_size <span class="op">=</span> <span class="fl">5</span>, mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>,
-    basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,
-    extended_tss <span class="op">=</span> <span class="cn">NULL</span>, background <span class="op">=</span> <span class="cn">NULL</span>, exclude <span class="op">=</span> <span class="st">"gap"</span>,
-    verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="va">gene_sets</span>, <span class="va">tss_source</span>, biomart_dataset <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    min_gene_set_size <span class="op">=</span> <span class="fl">5</span>, mode <span class="op">=</span> <span class="st">"basalPlusExt"</span>, basal_upstream <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>    basal_downstream <span class="op">=</span> <span class="fl">1000</span>, extension <span class="op">=</span> <span class="fl">1000000</span>,</span>
+<span>    extended_tss <span class="op">=</span> <span class="cn">NULL</span>, background <span class="op">=</span> <span class="cn">NULL</span>, exclude <span class="op">=</span> <span class="st">"gap"</span>,</span>
+<span>    cores <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="va">great_opt</span><span class="op">$</span><span class="va">verbose</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>gr</dt>
 <dd><p>A <code><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></code> object. This is the input regions. It is important to keep consistent for the chromosome names of the input regions and the internal TSS regions. Use <code><a href="getTSS.html">getTSS</a></code> to see the format of internal TSS regions.</p></dd>
-<dt>gene_sets</dt>
+
+  <dt>gene_sets</dt>
 <dd><p>A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.</p></dd>
-<dt>tss_source</dt>
+
+  <dt>tss_source</dt>
 <dd><p>Source of TSS. See "TSS" section.</p></dd>
-<dt>biomart_dataset</dt>
-<dd><p>The value should be in <code>rGREAT:::BIOMART[, 1]</code>. Or you can find it on <a href="https://jokergoo.github.io/rGREAT_genesets/." class="external-link">https://jokergoo.github.io/rGREAT_genesets/.</a></p></dd>
-<dt>min_gene_set_size</dt>
+
+  <dt>biomart_dataset</dt>
+<dd><p>The value should be in <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">supportedOrganisms</a></code>.</p></dd>
+
+  <dt>min_gene_set_size</dt>
 <dd><p>Minimal size of gene sets.</p></dd>
-<dt>mode</dt>
+
+  <dt>mode</dt>
 <dd><p>The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See <code><a href="extendTSS.html">extendTSS</a></code> for details.</p></dd>
-<dt>basal_upstream</dt>
+
+  <dt>basal_upstream</dt>
 <dd><p>In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.</p></dd>
-<dt>basal_downstream</dt>
+
+  <dt>basal_downstream</dt>
 <dd><p>In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.</p></dd>
-<dt>extension</dt>
+
+  <dt>extension</dt>
 <dd><p>Extensions from the basal domains.</p></dd>
-<dt>extended_tss</dt>
+
+  <dt>extended_tss</dt>
 <dd><p>If your organism is not defaultly supported, you can first prepare one by <code><a href="extendTSSFromDataFrame.html">extendTSSFromDataFrame</a></code> or <code><a href="extendTSS.html">extendTSS</a></code>, and set the object to this argument. Please see more examples in the vignette.</p></dd>
-<dt>background</dt>
+
+  <dt>background</dt>
 <dd><p>Background regions. The value can also be a vector of chromosome names.</p></dd>
-<dt>exclude</dt>
+
+  <dt>exclude</dt>
 <dd><p>Regions that are excluded from analysis such as gap regions (which can be get by <code><a href="getGapFromUCSC.html">getGapFromUCSC</a></code>). The value can also be a vector of chromosome names. It also allows a special character value <code>"gap"</code> so that gap regions for corresponding organism will be removed from the analysis.</p></dd>
-<dt>verbose</dt>
+
+  <dt>cores</dt>
+<dd><p>Number of cores to use.</p></dd>
+
+  <dt>verbose</dt>
 <dd><p>Whether to print messages.</p></dd>
+
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -223,11 +243,16 @@ this is different from the original GREAT method which uses Fisher's exact test 
     <div id="biomart">
     <h2>Biomart</h2>
     <p>rGREAT supports a large number of organisms of which the information is retrieved from Ensembl BioMart. The name of a BioMart dataset
-can be assigned to argument <code>biomart_dataset</code>. All supported organisms can be found from <a href="https://jokergoo.github.io/rGREAT_genesets" class="external-link">https://jokergoo.github.io/rGREAT_genesets</a> .</p>
+can be assigned to argument <code>biomart_dataset</code>. All supported organisms can be found with <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">supportedOrganisms</a></code>.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code><a href="GreatObject-class.html">GreatObject-class</a></code> object. The following methods can be applied on it:</p><ul><li><p><code><a href="getEnrichmentTable-GreatObject-method.html">getEnrichmentTable,GreatObject-method</a></code> to retrieve the result table.</p></li>
+    
+
+<p>A <code><a href="GreatObject-class.html">GreatObject-class</a></code> object. The following methods can be applied on it:</p>
+
+
+<ul><li><p><code><a href="getEnrichmentTable-GreatObject-method.html">getEnrichmentTable,GreatObject-method</a></code> to retrieve the result table.</p></li>
 <li><p><code><a href="getRegionGeneAssociations-GreatObject-method.html">getRegionGeneAssociations,GreatObject-method</a></code> to get the associations between input regions and genes.</p></li>
 <li><p><code><a href="plotRegionGeneAssociations-GreatObject-method.html">plotRegionGeneAssociations,GreatObject-method</a></code> to plot the associations bewteen input regions and genes.</p></li>
 <li><p><code><a href="shinyReport-GreatObject-method.html">shinyReport,GreatObject-method</a></code> to view the results by a shiny application.</p></li>
@@ -235,14 +260,15 @@ can be assigned to argument <code>biomart_dataset</code>. All supported organism
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="randomRegions.html">randomRegions</a></span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"txdb:hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"RefSeq:hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"GREAT:hg19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"Gencode_v19"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="randomRegions.html">randomRegions</a></span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"txdb:hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"RefSeq:hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"GREAT:hg19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"MSigDB:H"</span>, <span class="st">"Gencode_v19"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">great</span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, <span class="st">"hsapiens_gene_ensembl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -257,7 +283,7 @@ can be assigned to argument <code>biomart_dataset</code>. All supported organism
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
