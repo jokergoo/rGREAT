@@ -200,6 +200,7 @@ to turn off this message.')
                                        end = df[[3]]))
     }
     mcols(gr) = NULL
+    seqlevelsStyle(gr) = "UCSC"
 
     bgChoice = ifelse(is.null(bg), "wholeGenome", "file")
 
@@ -227,6 +228,7 @@ to turn off this message.')
             }
         }
         mcols(bg) = NULL
+        seqlevelsStyle(bg) = "UCSC"
     }
 
     # check seqnames should have 'chr' prefix
