@@ -76,7 +76,7 @@ head(pn)
 Please go the the documentation of **KEGGREST** or the main website of KEGG API (https://rest.kegg.jp/) to find out
 commands for retrieving various datasets there.
 
-<p style="color:red;">Please note, [KEGG pathways are only free to use for academic users, https://www.pathway.jp/en/licensing.html.</p>
+<p style="color:red;">Please note, KEGG pathways are only free for academic users, https://www.pathway.jp/en/licensing.html.</p>
 
 
 ## Reactome pathways
