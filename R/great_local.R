@@ -347,7 +347,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			param$genome = tss_source$genome
 		}
 
-		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)
+		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)[1]
 
 		# check genomic end coordinate and chr length
 		sl = seqlengths(extended_tss)
@@ -372,7 +372,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		}
 		param$tss_source = "self-provided"
 
-		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)
+		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)[1]
 	}
 
 	param$orgdb = get_orgdb_from_genome_version(param$genome)

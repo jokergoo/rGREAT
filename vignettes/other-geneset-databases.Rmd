@@ -1,0 +1,126 @@
+---
+title: "Work with other geneset databases"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_collapsed: false
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{4. Work with other geneset databases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+
+**rGREAT** has integrated Gene Ontology gene sets for all supported organisms and MSigDB gene sets for human. 
+It is very easy to apply GREAT analysis on other geneset databases such as KEGG. THe basical use has been
+explained in [the section "**Manually set gene sets**" in the vignette "**Analyze with local GREAT**"](local-GREAT.html#manually-set-gene-sets).
+In this vignette, we will just show you several examples.
+
+
+## KEGG pathways
+
+[KEGG pathway database](https://www.genome.jp/kegg/pathway.html) is widely used for gene set enrichment analysis. To apply
+GREAT anlaysis with KEGG pathways, we need to construct the corresponding gene sets.
+
+KEGG provides its data via a REST API (https://rest.kegg.jp/). There are several commands that can be used to retrieve specific types of data.
+Here we use the package [**KEGGREST**](https://bioconductor.org/packages/KEGGREST/) to obtain data directly from KEGG.
+To get a list of genes involved in pathways, we use the "link" command which is implemented in the function `keggLink()`. 
+
+```{r}
+library(KEGGREST)
+pathway2gene = keggLink("pathway", "hsa")
+head(pathway2gene)
+```
+
+The returned object `pathway2gene` is a named vector, where the names are gene
+Entrez IDs (with an additional `"hsa:"` prefix) and values are pathway IDs
+(with an additional `"path:"` prefix). You can try to execute `keggLink("hsa","pathway")` 
+to compare the results. The named vectors are not common for
+downstream gene set analysis. Let's convert it to a list of genes, also remove the prefix.
+
+
+```{r}
+kegg_pathways = split(gsub("hsa:", "", names(pathway2gene)),
+	                  gsub("path:", "", pathway2gene))
+```
+
+Now simply send `kegg_pathways` to `great()` to perform GREAT analysis.
+
+```{r}
+library(rGREAT)
+gr = randomRegions(genome = "hg19")
+great(gr, kegg_pathways, "hg19")
+```
+
+Here we only include the KEGG pathway IDs. The full name of pathways can be obtained by the following command:
+
+```{r}
+pn = keggList("pathway/hsa")
+head(pn)
+```
+
+Please go the the documentation of **KEGGREST** or the main website of KEGG API (https://rest.kegg.jp/) to find out
+commands for retrieving various datasets there.
+
+<p style="color:red;">Please note, [KEGG pathways are only free to use for academic users, https://www.pathway.jp/en/licensing.html.</p>
+
+
+## Reactome pathways
+
+[Reactome](https://reactome.org/) is another popular pathway database for gene set enrichment analysis. 
+In Bioconductor, there is a package [**reactome.db**](https://bioconductor.org/packages/reactome.db/) that
+contains genes associated to every pathway in Reactome.
+
+To get the Reactome pathway gene sets, simply use the object `reactomePATHID2EXTID`.
+
+```{r}
+library(reactome.db)
+gs = as.list(reactomePATHID2EXTID)
+great(gr, gs, "hg19")
+```
+
+The full pathway names are in the object `reactomePATHID2NAME`. You can convert the object to a normal list by `as.list(reactomePATHID2NAME)`.
+
+## UniProt keywords gene sets
+
+UniProt database provides a list of controlled vocabulary represented as keywords for genes or proteins (https://www.uniprot.org/keywords/). 
+This is useful for summarizing gene functions in a compact way. The [**UniProtKeywords**](https://bioconductor.org/packages/UniProtKeywords/) package contains
+gene sets associated to keywords.
+
+**UniProtKeywords** support several organisms. Here we use human as an example.
+In the function `load_keyword_genesets()`, you need to specify the taxon ID for the organism.
+
+```{r}
+library(UniProtKeywords)
+gs = load_keyword_genesets(9606)
+great(gr, gs, "hg19")
+```
+
+
+## Specific gene sets in .gmt format
+
+Please refer to [the section "**Manually set gene sets**" in the vignette "**Analyze with local GREAT**"](local-GREAT.html#manually-set-gene-sets). 
+There introduces a function `read_gmt()` which can import a `.gmt` file into a list of genes.
+
+The tool [**Enrichr**](https://maayanlab.cloud/Enrichr/) provides a great resource of gene sets in `.gmt` format. See https://maayanlab.cloud/Enrichr/#libraries.
+
+
+## Session info
+
+```{r}
+sessionInfo()
+```
