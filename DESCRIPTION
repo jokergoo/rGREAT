@@ -11,8 +11,8 @@ Imports: graphics, rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats, GlobalOpti
     AnnotationDbi, TxDb.Hsapiens.UCSC.hg19.knownGene, TxDb.Hsapiens.UCSC.hg38.knownGene,
     org.Hs.eg.db, RColorBrewer, S4Vectors, GenomeInfoDb, foreach, doParallel, Rcpp
 Suggests: testthat (>= 0.3), knitr, rmarkdown, BiocManager, org.Mm.eg.db, msigdbr,
-    UniProtKeywords, KEGGREST, reactome.db
-Enhances: BioMartGOGeneSets
+    KEGGREST, reactome.db
+Enhances: BioMartGOGeneSets, UniProtKeywords
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,
     GenomeAnnotation, Coverage
