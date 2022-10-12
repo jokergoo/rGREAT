@@ -213,6 +213,13 @@ great(gr, gene_sets = gs, extended_tss = et)
 **rGREAT** also supports GO gene sets for a huge number of organisms retrieved from [Ensembl BioMart](https://www.ensembl.org/info/data/biomart/index.html).
 A specific organism can be set with the `biomart_dataset` argument:
 
+
+```{r, echo = FALSE}
+if(!requireNamespace(BioMartGOGeneSets, quietly = TRUE)) {
+    suppressMessages(BiocManager::install("jokergoo/BioMartGOGeneSets", update = FALSE))
+}
+```
+
 ```{r}
 # Giant panda
 gr_panda = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
