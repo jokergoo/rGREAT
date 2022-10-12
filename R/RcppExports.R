@@ -12,7 +12,7 @@
 # Only internally used.
 #
 # == value
-# Total width of the reduced regions.
+# Sum of total widths of the reduced regions.
 reduce_by_start_and_end <- function(s, e) {
     .Call('_rGREAT_reduce_by_start_and_end', PACKAGE = 'rGREAT', s, e)
 }

@@ -19,7 +19,7 @@ reduce_by_start_and_end(s, e)
 Only internally used.
 }
 \value{
-Total width of the reduced regions.
+Sum of total widths of the reduced regions.
 }
 \examples{
 # There is no example

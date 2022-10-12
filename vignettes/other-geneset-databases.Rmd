@@ -106,7 +106,7 @@ In the function `load_keyword_genesets()`, you need to specify the taxon ID for 
 
 
 ```{r, echo = FALSE}
-if(!requireNamespace(UniProtKeywords, quietly = TRUE)) {
+if(!requireNamespace("UniProtKeywords", quietly = TRUE)) {
     suppressMessages(BiocManager::install("jokergoo/UniProtKeywords", update = FALSE))
 }
 ```

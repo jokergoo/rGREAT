@@ -215,7 +215,7 @@ A specific organism can be set with the `biomart_dataset` argument:
 
 
 ```{r, echo = FALSE}
-if(!requireNamespace(BioMartGOGeneSets, quietly = TRUE)) {
+if(!requireNamespace("BioMartGOGeneSets", quietly = TRUE)) {
     suppressMessages(BiocManager::install("jokergoo/BioMartGOGeneSets", update = FALSE))
 }
 ```
