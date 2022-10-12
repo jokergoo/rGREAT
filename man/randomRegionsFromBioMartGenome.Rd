@@ -11,7 +11,7 @@ randomRegionsFromBioMartGenome(biomart_dataset, nr = 1000, ...)
 }
 \arguments{
 
-  \item{biomart_dataset}{A BioMart dataset. Values should be in \code{\link[BioMartGOGeneSets]{supportedOrganisms}}.}
+  \item{biomart_dataset}{A BioMart dataset. Values should be in \code{BioMartGOGeneSets::supportedOrganisms}.}
   \item{nr}{Number of regions.}
   \item{...}{Pass to \code{\link{randomRegions}}.}
 

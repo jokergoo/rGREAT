@@ -1,8 +1,8 @@
 Package: rGREAT
 Type: Package
 Title: GREAT Analysis - Functional Enrichment on Genomic Regions
-Version: 1.99.9
-Date: 2022-10-04
+Version: 1.99.10
+Date: 2022-10-12
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 3.6.0), GenomicRanges, IRanges, methods
@@ -11,7 +11,8 @@ Imports: graphics, rjson, GetoptLong (>= 0.0.9), RCurl, utils, stats, GlobalOpti
     AnnotationDbi, TxDb.Hsapiens.UCSC.hg19.knownGene, TxDb.Hsapiens.UCSC.hg38.knownGene,
     org.Hs.eg.db, RColorBrewer, S4Vectors, GenomeInfoDb, foreach, doParallel, Rcpp
 Suggests: testthat (>= 0.3), knitr, rmarkdown, BiocManager, org.Mm.eg.db, msigdbr,
-    BioMartGOGeneSets, UniProtKeywords, KEGGREST, reactome.db
+    UniProtKeywords, KEGGREST, reactome.db
+Enhances: BioMartGOGeneSets
 VignetteBuilder: knitr
 biocViews: GeneSetEnrichment, GO, Pathways, Software, Sequencing, WholeGenome,
     GenomeAnnotation, Coverage

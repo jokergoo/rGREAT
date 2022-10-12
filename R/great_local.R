@@ -53,7 +53,7 @@ GreatObject = function(...) {
 #     of the input regions and the internal TSS regions. Use `getTSS` to see the format of internal TSS regions.
 # -gene_sets A single string of defautly supported gene sets collections (see the full list in "Genesets" section), or a named list of vectors where each vector correspond to a gene set.
 # -tss_source Source of TSS. See "TSS" section.
-# -biomart_dataset The value should be in `BioMartGOGeneSets::supportedOrganisms`. 
+# -biomart_dataset The value should be in ``BioMartGOGeneSets::supportedOrganisms``. 
 # -min_gene_set_size Minimal size of gene sets.
 # -mode The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See `extendTSS` for details.
 # -basal_upstream In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.
@@ -128,7 +128,7 @@ GreatObject = function(...) {
 # == BioMart
 #
 # rGREAT supports a large number of organisms of which the information is retrieved from Ensembl BioMart. The name of a BioMart dataset
-# can be assigned to argument ``biomart_dataset``. All supported organisms can be found with `BioMartGOGeneSets::supportedOrganisms`.
+# can be assigned to argument ``biomart_dataset``. All supported organisms can be found with ``BioMartGOGeneSets::supportedOrganisms``.
 #
 # == value
 # A `GreatObject-class` object. The following methods can be applied on it:
@@ -160,7 +160,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		if(!is.null(biomart_dataset)) {
 			
 			if(is.null(rGREAT_env$BIOMART)) {
-				check_pkg("BioMartGOGeneSets", bioc = TRUE)
+				check_pkg("BioMartGOGeneSets", bioc = TRUE, github = "jokergoo")
 				rGREAT_env$BIOMART = BioMartGOGeneSets::supportedOrganisms(html = FALSE)
 			}
 			if(is.null(rGREAT_env$BIOMART$genome)) {

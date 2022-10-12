@@ -16,7 +16,7 @@ getGeneSetsFromBioMart(dataset, ontology = "bp")
 
 }
 \details{
-GO gene sets are from \code{\link[BioMartGOGeneSets]{getBioMartGOGeneSets}}.
+GO gene sets are from \code{BioMartGOGeneSets::getBioMartGOGeneSets}.
 }
 \value{
 A list of vectors where each vector contains Ensembl IDs annotated to a GO term.

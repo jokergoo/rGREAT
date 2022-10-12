@@ -1,4 +1,6 @@
-check_pkg = function(pkg, bioc = FALSE) {
+
+
+check_pkg = function(pkg, bioc = FALSE, github = NULL) {
 	if(requireNamespace(pkg, quietly = TRUE)) {
 		return(NULL)
 	} else {
@@ -22,13 +24,38 @@ check_pkg = function(pkg, bioc = FALSE) {
 				if(!requireNamespace("BiocManager", quietly = TRUE)) {
 					install.packages("BiocManager")
 				}
-				BiocManager::install(pkg)
+				suppressWarnings(BiocManager::install(pkg, update = FALSE))
+
+				if(!requireNamespace(pkg, quietly = TRUE)) {
+					if(is.null(github)) {
+						stop_wrap(qq("Cannot find '@{pkg}' from Bioconductor."))
+					} else {
+						answer = readline(qq("Not on Bioconductor. Install '@{pkg}' from GitHub: '@{github}/@{pkg}'? [y|n] "))
+						if(tolower(answer) %in% c("y", "yes")) {
+							BiocManager::install(paste0(github, "/", pkg), update = FALSE)
+						} else {
+							stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
+						}
+					}
+				}
 			} else {
 				stop_wrap(qq("You need to manually install package '@{pkg}' from Bioconductor."))
 			}
 		} else {
 			if(tolower(answer) %in% c("y", "yes")) {
-				install.packages(pkg)
+				suppressWarnings(install.packages(pkg))
+				if(!requireNamespace(pkg, quietly = TRUE)) {
+					if(is.null(github)) {
+						stop_wrap(qq("Cannot find '@{pkg}' from CRAN"))
+					} else {
+						answer = readline(qq("Not on CRAN. Install '@{pkg}' from GitHub: '@{github}/@{pkg}'? [y|n] "))
+						if(tolower(answer) %in% c("y", "yes")) {
+							BiocManager::install(paste0(github, "/", pkg), update = FALSE)
+						} else {
+							stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
+						}
+					}
+				}
 			} else {
 				stop_wrap(qq("You need to manually install package '@{pkg}' from CRAN."))
 			}
@@ -124,7 +151,7 @@ randomRegions = function (genome = NULL, nr = 1000, seqlengths = NULL,
 # Generate random regions from a BioMart genome
 #
 # == param
-# -biomart_dataset A BioMart dataset. Values should be in `BioMartGOGeneSets::supportedOrganisms`.
+# -biomart_dataset A BioMart dataset. Values should be in ``BioMartGOGeneSets::supportedOrganisms``.
 # -nr Number of regions.
 # -... Pass to `randomRegions`.
 #

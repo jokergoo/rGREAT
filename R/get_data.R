@@ -438,7 +438,7 @@ getTSSFromTxDb = function(txdb_pkg) {
 
 
 getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
-	check_pkg("BioMartGOGeneSets", bioc = TRUE)
+	check_pkg("BioMartGOGeneSets", bioc = TRUE, github = "jokergoo")
 	g = BioMartGOGeneSets::getBioMartGenes(dataset)
 	colnames(mcols(g))[1] = "gene_id"
 	if(filter) {
@@ -460,12 +460,12 @@ getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
 # -ontology Value should be bp, mf or cc.
 #
 # == details
-# GO gene sets are from `BioMartGOGeneSets::getBioMartGOGeneSets`.
+# GO gene sets are from ``BioMartGOGeneSets::getBioMartGOGeneSets``.
 #
 # == value
 # A list of vectors where each vector contains Ensembl IDs annotated to a GO term.
 getGeneSetsFromBioMart = function(dataset, ontology = "bp") {
-	check_pkg("BioMartGOGeneSets", bioc = TRUE)
+	check_pkg("BioMartGOGeneSets", bioc = TRUE, github = "jokergoo")
 
 	ontology = tolower(ontology)
 	BioMartGOGeneSets::getBioMartGOGeneSets(dataset, ontology)
