@@ -71,6 +71,8 @@ jobs:
           setRepositories(ind = 1:5)
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_github("jokergoo/UniProtKeywords")
+          remotes::install_github("jokergoo/BioMartGOGeneSets")
         shell: Rscript {0}
 
       - name: Check
