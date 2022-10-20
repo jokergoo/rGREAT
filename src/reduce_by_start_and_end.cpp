@@ -27,7 +27,7 @@ long reduce_by_start_and_end(IntegerVector s, IntegerVector e) {
 			updated = 0;
 		}
 
-		if(i == n - 1 & updated) {
+		if( (i == n - 1) && updated) {
 			w += prev_e - prev_s + 1;
 		}
 	}
