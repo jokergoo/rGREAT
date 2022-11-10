@@ -1,7 +1,5 @@
 *~
 ^.
-*.gz
 *.Rcheck
-*.md
 cache
 .DS_Store
