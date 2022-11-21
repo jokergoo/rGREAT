@@ -1,0 +1,17 @@
+citHeader("The methods within the code package can be cited as:")
+
+citEntry(
+   entry="article",
+   title = "rGREAT: an R/Bioconductor package for functional enrichment on genomic regions",
+   author = personList(as.person("Zuguang Gu"),
+                       as.person("Daniel Huebschmann")),
+   journal = "Bioinformatics",
+   year = 2022,
+   doi = "10.1093/bioinformatics/btac745",
+   textVersion = "Gu, Z. (2022) rGREAT: an R/Bioconductor package for functional enrichment on genomic regions. Bioinformatics."
+)
+
+citFooter("This free open-source software implements academic
+research by the authors and co-workers. If you use it,
+please support the project by citing the appropriate
+journal articles.")
