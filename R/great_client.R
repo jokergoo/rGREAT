@@ -715,7 +715,8 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
     response[[1]] = gsub("^#", "", response[1])
     response = response[!grepl("^#", response)]
     response = paste(response, collapse = "\n")
-    error = try(tb <- read.table(textConnection(response), sep = "\t", quote = "", header = TRUE, stringsAsFactors = FALSE))
+
+    error = try(tb <- read.table(textConnection(response), sep = "\t", quote = "", header = TRUE, stringsAsFactors = FALSE, comment.char = ""))
     if(inherits(error, "try-error")) {
         stop("downloading enrichment table failed.")
     }
