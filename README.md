@@ -30,6 +30,12 @@ library(devtools)
 install_github("jokergoo/rGREAT")
 ```
 
+## Citation
+
+rGREAT: an R/Bioconductor package for functional enrichment on genomic regions 
+Zuguang Gu, Daniel Hübschmann
+Bioinformatics, btac745, https://doi.org/10.1093/bioinformatics/btac745
+
 ## Online GREAT analysis
 
 With online GREAT analysis, the input regions will be directly submitted to GREAT server, and the results
