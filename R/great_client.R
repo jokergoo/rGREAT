@@ -72,6 +72,7 @@ GreatJob = function(...) {
 # -version Version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers
 #          can also be used, such as using "4" or "4.0" is same as "4.0.4".
 # -base_url the url of ``cgi-bin`` path, only used when it is explicitly specified.
+# -use_name_column If the input is a data frame, whether to use the fourth column as the "names" of regions?
 # -help Whether to print help messages.
 #
 # == details
@@ -159,6 +160,7 @@ submitGreatJob = function(gr, bg = NULL,
     max_tries = 10,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin",
+    use_name_column = FALSE,
     help = TRUE
     ) {
         
@@ -193,11 +195,19 @@ to turn off this message.')
         gr = GRanges(seqnames = gr[[1]],
                      ranges = IRanges(start = gr[[2]],
                                        end = gr[[3]]))
+        if(ncol(df) > 3 && use_name_column) {
+            nm = df[, 4]; nm[is.na(nm)] = ""
+            names(gr) = nm
+        }
     } else if(inherits(gr, "character")) {
         df = read.table(gr, stringsAsFactors = FALSE)
         gr = GRanges(seqnames = df[[1]],
                      ranges = IRanges(start = df[[2]],
                                        end = df[[3]]))
+        if(ncol(df) > 3 && use_name_column) {
+            nm = df[, 4]; nm[is.na(nm)] = ""
+            names(gr) = nm
+        }
     }
     mcols(gr) = NULL
     seqlevelsStyle(gr) = "UCSC"
@@ -280,7 +290,11 @@ to turn off this message.')
     }
 
     # save file into temporary files
-    bed = cbind(bed[, 1:3], name = paste(bed[[1]], ":", bed[[2]], "-", bed[[3]], sep = ""))
+    nm = names(gr)
+    if(is.null(nm)) {
+        nm = ""
+    }
+    bed = cbind(bed[, 1:3], name = paste(nm, "/", bed[[1]], ":", bed[[2]], "-", bed[[3]], sep = ""))
     f_bed = tempfile(fileext = ".gz")
     con = gzcon(file(f_bed, "wb"))
     write.table(bed, con, sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
@@ -902,7 +916,6 @@ parseRegionGeneAssociationFile = function(f1) {
     if(inherits(error, "try-error")) {
         stop("Downloading seems interrupted. Please re-run your command.\n")
     }
-    
     region = NULL
     gene = NULL
     distance = NULL
@@ -922,6 +935,8 @@ parseRegionGeneAssociationFile = function(f1) {
         }
     }
 
+    name = gsub("/.*$", "", region)
+    region = gsub("^.*/", "", region)
     da = strsplit(region, "[-:]")
     chr = sapply(da, function(x) x[1])
     start = as.integer(sapply(da, function(x) x[2]))
@@ -931,6 +946,7 @@ parseRegionGeneAssociationFile = function(f1) {
                     end = end,
                     gene = gene,
                     distTSS = as.numeric(distance),
+                    name = name,
                     stringsAsFactors = FALSE)
     rownames(df) = NULL
     return(df)    
@@ -1112,7 +1128,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
         axis(side = 2)
         text(colMeans(pos), -0.02, rownames(v), srt = 45, adj = c(1, 0.5))
         par(xpd = op)
-        x1 = 0.9
+        x1 = pos[[1]]
         y = max(p)*1.2
         arrows(x1, 0, x1, y, angle = 15, length = 0.1, code = 2)
         text(x1, y+0.01, "TSS", adj = c(0, 0), cex = 0.8)
@@ -1284,6 +1300,10 @@ setMethod(f = "getRegionGeneAssociations",
 
     gr$annotated_genes = CharacterList(gr$annotated_genes)
     gr$dist_to_TSS = IntegerList(gr$dist_to_TSS)
+
+    if(!all(df$name == "")) {
+        names(gr) = tapply(df$name, fa, unique)
+    }
 
     seqlevels(gr) = sort_chr(unique(df[[1]]))
     gr = sort(gr)

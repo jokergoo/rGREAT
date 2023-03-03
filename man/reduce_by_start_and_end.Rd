@@ -24,4 +24,5 @@ Sum of total widths of the reduced regions.
 \examples{
 # There is no example
 NULL
+
 }

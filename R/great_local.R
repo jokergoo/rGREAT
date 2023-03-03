@@ -805,6 +805,7 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 				message(qq("* use GO:CC ontology with @{length(gene_sets)} gene sets (source: @{orgdb})."))
 			}
 		}
+		gene_sets = lapply(gene_sets, unique)
 
 		if(great_opt$test) {
 			gene_sets = gene_sets[order(-sapply(gene_sets, length))[1:10]]

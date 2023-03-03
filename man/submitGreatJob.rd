@@ -21,6 +21,7 @@ submitGreatJob(gr, bg = NULL,
     max_tries = 10,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin",
+    use_name_column = FALSE,
     help = TRUE)
 }
 \arguments{
@@ -40,6 +41,7 @@ submitGreatJob(gr, bg = NULL,
   \item{max_tries}{Maximal times for aotumatically reconnecting GREAT web server.}
   \item{version}{Version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "4" or "4.0" is same as "4.0.4".}
   \item{base_url}{the url of \code{cgi-bin} path, only used when it is explicitly specified.}
+  \item{use_name_column}{If the input is a data frame, whether to use the fourth column as the "names" of regions?}
   \item{help}{Whether to print help messages.}
 
 }
