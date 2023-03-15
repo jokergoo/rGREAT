@@ -434,7 +434,8 @@ to turn off this message.')
             "n_region"              = nrow(bed),
             "version"               = version,
             "f_bed"                 = f_bed,
-            "f_bed_bg"              = f_bed_bg)
+            "f_bed_bg"              = f_bed_bg,
+            "gr_is_zero_based"      = gr_is_zero_based)
     job@parameters$n_bg = nrow(bed_bg)
     
     job@job_env$id = jobid
@@ -569,7 +570,11 @@ setMethod(f = "param",
 #            `availableCategories`
 # -request_interval Time interval for two requests. Default is 300 seconds.
 # -max_tries Maximal times for automatically reconnecting GREAT web server.
-# -download_by Internally used.
+# -download_by Internally used. The complete enrichment table is provided as json data on the website, but there is no information
+#       of gene-region association. By setting ``download_by = 'tsv'``, another URL from GREAT will be envoked which also contains
+#       detailed information of which genes are associated with each input region, but due to the size of the output, only top 500 terms
+#       will be returned. So if you do not really want the gene-region association column, take the default value of this argument。
+#       The columns that contain statistics are identical.
 # -verbose Whether to print messages.
 #
 # == value
@@ -630,11 +635,12 @@ setMethod(f = "getEnrichmentTables",
     download_by = match.arg(download_by)[1]
 
     if(download_by == "json" && verbose) {
-        message_wrap("The default enrichment tables contain no associated genes for the input regions.",
+        message_wrap("The default enrichment table does not contain informatin of associated genes for each input region.",
             "You can set `download_by = 'tsv'` to download the complete table,",
             "but note only the top 500 regions can be retreived. See the following link:\n\n",
             "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n\n",
-            "or you can try the local GREAT analysis with the function `great()`.")
+            "Except the additional gene-region association column in the tsv output, all other columns are the same if you choose 'json' as the source.\n",
+            "Or you can try the local GREAT analysis with the function `great()`.")
     }
 
     res = lapply(ontology, function(onto) {
@@ -1288,6 +1294,10 @@ setMethod(f = "getRegionGeneAssociations",
         df = df_term
     } else {
         df = df_all
+    }
+
+    if(!param(job, "gr_is_zero_based")) {
+        df[, 2] = df[, 2] + 1
     }
 
     fa = paste0(df[, 1], df[, 2], df[, 3], sep = "-")
