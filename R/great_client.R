@@ -635,11 +635,11 @@ setMethod(f = "getEnrichmentTables",
     download_by = match.arg(download_by)[1]
 
     if(download_by == "json" && verbose) {
-        message_wrap("The default enrichment table does not contain informatin of associated genes for each input region.",
-            "You can set `download_by = 'tsv'` to download the complete table,",
+        message_wrap("The default enrichment table does not contain informatin of associated genes for each input region. ",
+            "You can set `download_by = 'tsv'` to download the complete table, ",
             "but note only the top 500 regions can be retreived. See the following link:\n\n",
             "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n\n",
-            "Except the additional gene-region association column in the tsv output, all other columns are the same if you choose 'json' as the source.\n",
+            "Except the additional gene-region association column if taking 'tsv' as the source of result, all other columns are the same if you choose 'json' as the source.\n",
             "Or you can try the local GREAT analysis with the function `great()`.")
     }
 
