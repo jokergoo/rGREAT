@@ -573,7 +573,7 @@ setMethod(f = "param",
 # -download_by Internally used. The complete enrichment table is provided as json data on the website, but there is no information
 #       of gene-region association. By setting ``download_by = 'tsv'``, another URL from GREAT will be envoked which also contains
 #       detailed information of which genes are associated with each input region, but due to the size of the output, only top 500 terms
-#       will be returned. So if you do not really want the gene-region association column, take the default value of this argument。
+#       will be returned. So if you do not really want the gene-region association column, take the default value of this argument.
 #       The columns that contain statistics are identical.
 # -verbose Whether to print messages.
 #

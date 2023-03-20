@@ -18,7 +18,7 @@ Get enrichment tables from GREAT web server
   \item{category}{Pre-defined ontology categories. One category can contain more than one ontologies. Valid values are in  \code{\link{availableCategories}}}
   \item{request_interval}{Time interval for two requests. Default is 300 seconds.}
   \item{max_tries}{Maximal times for automatically reconnecting GREAT web server.}
-  \item{download_by}{Internally used. The complete enrichment table is provided as json data on the website, but there is no information of gene-region association. By setting \code{download_by = 'tsv'}, another URL from GREAT will be envoked which also contains detailed information of which genes are associated with each input region, but due to the size of the output, only top 500 terms will be returned. So if you do not really want the gene-region association column, take the default value of this argument。 The columns that contain statistics are identical.}
+  \item{download_by}{Internally used. The complete enrichment table is provided as json data on the website, but there is no information of gene-region association. By setting \code{download_by = 'tsv'}, another URL from GREAT will be envoked which also contains detailed information of which genes are associated with each input region, but due to the size of the output, only top 500 terms will be returned. So if you do not really want the gene-region association column, take the default value of this argument. The columns that contain statistics are identical.}
   \item{verbose}{Whether to print messages.}
 
 }
