@@ -16,5 +16,6 @@ There are following documents:
 - [Compare GO annotations from online and local GREAT](https://jokergoo.github.io/rGREAT_suppl/compare_GO.html)
 - [Compare online and local GREAT](https://jokergoo.github.io/rGREAT_suppl/compare_online_and_local.html)
 - [Compare different TSS sources](https://jokergoo.github.io/rGREAT_suppl/compare_tss.html)
+- [Compare different genome versions](https://jokergoo.github.io/rGREAT_suppl/compare_genome_versions.html)
 
-The four documents as well as related datasets are hosted on https://github.com/jokergoo/rGREAT_suppl.
+The five documents as well as related datasets are hosted on https://github.com/jokergoo/rGREAT_suppl.

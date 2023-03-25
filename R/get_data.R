@@ -528,3 +528,32 @@ getTSS = function(tss_source, biomart_dataset = NULL) {
 	}
 	tss
 }
+
+
+keggGeneSets = function(organism) {
+	df = read.table(url(paste0("https://rest.kegg.jp/link/", organism, "/pathway")))
+	df[, 1] = gsub("path:", "", df[, 1])
+	df[, 2] = gsub("hsa:", "", df[, 2])
+
+	split(df[, 2], df[, 1])
+}
+
+keggTSS = function(organism) {
+	df = read.table(url(paste0("https://rest.kegg.jp/list/", organism)), sep = "\t")
+	df[, 1] = gsub("hsa:", "", df[, 1])
+	df = df[grep(":", df[, 3]), ]
+	
+	chr = gsub(":.*$", "", df[, 3])
+	rev = grepl("complement", df[, 3])
+	s = gsub("^.*\\D(\\d+)\\.\\.(\\d+).*$", "\\1", df[, 3])
+	e = gsub("^.*\\D(\\d+)\\.\\.(\\d+).*$", "\\2", df[, 3])
+	s = as.integer(s)
+	e = as.integer(e)
+
+	GRanges(seqnames = chr, ranges = IRanges(ifelse(rev, e, s)), gene_id = df[, 1])
+}
+
+keggExtendedTSS = function(organism, ...) {
+	tss = keggTSS(organism)
+	extendTSS(tss, ...)
+}
