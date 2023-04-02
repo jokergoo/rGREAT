@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.1.8
+
+- add `getGenomeDateFromNCBI()`
+
+-------------------------------------------
+
 CHANGES in VERSION 2.1.4
 
 * online great: the names of input regions are kept.

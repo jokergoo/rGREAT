@@ -22,7 +22,7 @@ submitGreatJob(gr, bg = NULL,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin",
     use_name_column = FALSE,
-    help = TRUE)
+    verbose = help, help = great_opt$verbose)
 }
 \arguments{
 
@@ -42,7 +42,8 @@ submitGreatJob(gr, bg = NULL,
   \item{version}{Version of GREAT. The value should be "4.0.4", "3.0.0", "2.0.2". Shorten version numbers can also be used, such as using "4" or "4.0" is same as "4.0.4".}
   \item{base_url}{the url of \code{cgi-bin} path, only used when it is explicitly specified.}
   \item{use_name_column}{If the input is a data frame, whether to use the fourth column as the "names" of regions?}
-  \item{help}{Whether to print help messages.}
+  \item{verbose}{Whether to print help messages.}
+  \item{help}{Whether to print help messages. This argument will be replaced by \code{verbose} in future versions.}
 
 }
 \details{

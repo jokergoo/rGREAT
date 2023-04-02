@@ -167,6 +167,7 @@ randomRegionsFromBioMartGenome = function(biomart_dataset, nr = 1000, ...) {
 	genes = getGenesFromBioMart(biomart_dataset)
 	sl = tapply(end(genes), seqnames(genes), max)
 	sl = structure(as.vector(sl), names = names(sl))
+	sl = sl[!is.na(sl)]
 	randomRegions(nr = nr, seqlengths = sl, ...)
 }
 

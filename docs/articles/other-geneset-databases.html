@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@
       <h1 data-toc-skip>Work with other geneset databases</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2022-10-04</h4>
+            <h4 data-toc-skip class="date">2023-04-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/other-geneset-databases.Rmd" class="external-link"><code>vignettes/other-geneset-databases.Rmd</code></a></small>
       <div class="hidden name"><code>other-geneset-databases.Rmd</code></div>
@@ -122,7 +122,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/rGREAT" class="external-link">rGREAT</a></span><span class="op">)</span></span>
 <span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="../reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">kegg_pathways</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 928 regions are associated to 1398 genes' extended TSSs.</span></span>
+<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
 <span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
 <span><span class="co">##   Genome: hg19</span></span>
 <span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
@@ -135,18 +135,18 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pn</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/KEGGREST/man/keggList.html" class="external-link">keggList</a></span><span class="op">(</span><span class="st">"pathway/hsa"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">pn</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                                                     path:hsa00010 </span></span>
-<span><span class="co">##             "Glycolysis / Gluconeogenesis - Homo sapiens (human)" </span></span>
-<span><span class="co">##                                                     path:hsa00020 </span></span>
-<span><span class="co">##                "Citrate cycle (TCA cycle) - Homo sapiens (human)" </span></span>
-<span><span class="co">##                                                     path:hsa00030 </span></span>
-<span><span class="co">##                "Pentose phosphate pathway - Homo sapiens (human)" </span></span>
-<span><span class="co">##                                                     path:hsa00040 </span></span>
-<span><span class="co">## "Pentose and glucuronate interconversions - Homo sapiens (human)" </span></span>
-<span><span class="co">##                                                     path:hsa00051 </span></span>
-<span><span class="co">##          "Fructose and mannose metabolism - Homo sapiens (human)" </span></span>
-<span><span class="co">##                                                     path:hsa00052 </span></span>
-<span><span class="co">##                     "Galactose metabolism - Homo sapiens (human)"</span></span></code></pre>
+<pre><code><span><span class="co">##                                                 hsa01100 </span></span>
+<span><span class="co">##              "Metabolic pathways - Homo sapiens (human)" </span></span>
+<span><span class="co">##                                                 hsa01200 </span></span>
+<span><span class="co">##               "Carbon metabolism - Homo sapiens (human)" </span></span>
+<span><span class="co">##                                                 hsa01210 </span></span>
+<span><span class="co">## "2-Oxocarboxylic acid metabolism - Homo sapiens (human)" </span></span>
+<span><span class="co">##                                                 hsa01212 </span></span>
+<span><span class="co">##           "Fatty acid metabolism - Homo sapiens (human)" </span></span>
+<span><span class="co">##                                                 hsa01230 </span></span>
+<span><span class="co">##     "Biosynthesis of amino acids - Homo sapiens (human)" </span></span>
+<span><span class="co">##                                                 hsa01232 </span></span>
+<span><span class="co">##           "Nucleotide metabolism - Homo sapiens (human)"</span></span></code></pre>
 <p>Please go the the documentation of <strong>KEGGREST</strong> or the main website of KEGG API (<a href="https://rest.kegg.jp/" class="external-link uri">https://rest.kegg.jp/</a>) to find out commands for retrieving various datasets there.</p>
 <p style="color:red;">
 Please note, KEGG pathways are only free for academic users, <a href="https://www.pathway.jp/en/licensing.html" class="external-link uri">https://www.pathway.jp/en/licensing.html</a>.
@@ -161,7 +161,7 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reactome.db</span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">reactomePATHID2EXTID</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">gs</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 928 regions are associated to 1398 genes' extended TSSs.</span></span>
+<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
 <span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
 <span><span class="co">##   Genome: hg19</span></span>
 <span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
@@ -181,7 +181,7 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/UniProtKeywords" class="external-link">UniProtKeywords</a></span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/UniProtKeywords/man/load_keyword_genesets.html" class="external-link">load_keyword_genesets</a></span><span class="op">(</span><span class="fl">9606</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">gs</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 928 regions are associated to 1398 genes' extended TSSs.</span></span>
+<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
 <span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
 <span><span class="co">##   Genome: hg19</span></span>
 <span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
@@ -218,118 +218,118 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] UniProtKeywords_0.99.3 reactome.db_1.81.0     AnnotationDbi_1.58.0  </span></span>
-<span><span class="co">##  [4] Biobase_2.56.0         rGREAT_1.99.9          GenomicRanges_1.48.0  </span></span>
-<span><span class="co">##  [7] GenomeInfoDb_1.32.2    IRanges_2.30.0         S4Vectors_0.34.0      </span></span>
-<span><span class="co">## [10] BiocGenerics_0.42.0    KEGGREST_1.36.3        knitr_1.39            </span></span>
+<span><span class="co">##  [1] UniProtKeywords_0.99.4 reactome.db_1.82.0     AnnotationDbi_1.60.0  </span></span>
+<span><span class="co">##  [4] Biobase_2.58.0         rGREAT_2.1.8           GenomicRanges_1.50.2  </span></span>
+<span><span class="co">##  [7] GenomeInfoDb_1.34.9    IRanges_2.32.0         S4Vectors_0.36.1      </span></span>
+<span><span class="co">## [10] BiocGenerics_0.44.0    KEGGREST_1.38.0        knitr_1.42            </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] colorspace_2.0-3                        </span></span>
+<span><span class="co">##   [1] colorspace_2.1-0                        </span></span>
 <span><span class="co">##   [2] rjson_0.2.21                            </span></span>
 <span><span class="co">##   [3] ellipsis_0.3.2                          </span></span>
 <span><span class="co">##   [4] rprojroot_2.0.3                         </span></span>
 <span><span class="co">##   [5] circlize_0.4.16                         </span></span>
-<span><span class="co">##   [6] XVector_0.36.0                          </span></span>
+<span><span class="co">##   [6] XVector_0.38.0                          </span></span>
 <span><span class="co">##   [7] GlobalOptions_0.1.2                     </span></span>
-<span><span class="co">##   [8] fs_1.5.2                                </span></span>
-<span><span class="co">##   [9] DT_0.23                                 </span></span>
+<span><span class="co">##   [8] fs_1.6.1                                </span></span>
+<span><span class="co">##   [9] DT_0.27                                 </span></span>
 <span><span class="co">##  [10] bit64_4.0.5                             </span></span>
-<span><span class="co">##  [11] fansi_1.0.3                             </span></span>
+<span><span class="co">##  [11] fansi_1.0.4                             </span></span>
 <span><span class="co">##  [12] xml2_1.3.3                              </span></span>
-<span><span class="co">##  [13] codetools_0.2-18                        </span></span>
+<span><span class="co">##  [13] codetools_0.2-19                        </span></span>
 <span><span class="co">##  [14] doParallel_1.0.17                       </span></span>
 <span><span class="co">##  [15] cachem_1.0.6                            </span></span>
-<span><span class="co">##  [16] jsonlite_1.8.0                          </span></span>
-<span><span class="co">##  [17] Rsamtools_2.12.0                        </span></span>
-<span><span class="co">##  [18] GO.db_3.15.0                            </span></span>
-<span><span class="co">##  [19] dbplyr_2.2.1                            </span></span>
-<span><span class="co">##  [20] png_0.1-7                               </span></span>
-<span><span class="co">##  [21] shiny_1.7.2                             </span></span>
+<span><span class="co">##  [16] jsonlite_1.8.4                          </span></span>
+<span><span class="co">##  [17] Rsamtools_2.14.0                        </span></span>
+<span><span class="co">##  [18] GO.db_3.16.0                            </span></span>
+<span><span class="co">##  [19] dbplyr_2.3.0                            </span></span>
+<span><span class="co">##  [20] png_0.1-8                               </span></span>
+<span><span class="co">##  [21] shiny_1.7.4                             </span></span>
 <span><span class="co">##  [22] compiler_4.2.0                          </span></span>
-<span><span class="co">##  [23] httr_1.4.3                              </span></span>
+<span><span class="co">##  [23] httr_1.4.4                              </span></span>
 <span><span class="co">##  [24] assertthat_0.2.1                        </span></span>
-<span><span class="co">##  [25] Matrix_1.4-1                            </span></span>
+<span><span class="co">##  [25] Matrix_1.5-3                            </span></span>
 <span><span class="co">##  [26] fastmap_1.1.0                           </span></span>
 <span><span class="co">##  [27] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2 </span></span>
-<span><span class="co">##  [28] cli_3.3.0                               </span></span>
+<span><span class="co">##  [28] cli_3.6.0                               </span></span>
 <span><span class="co">##  [29] later_1.3.0                             </span></span>
-<span><span class="co">##  [30] htmltools_0.5.3                         </span></span>
+<span><span class="co">##  [30] htmltools_0.5.4                         </span></span>
 <span><span class="co">##  [31] prettyunits_1.1.1                       </span></span>
 <span><span class="co">##  [32] tools_4.2.0                             </span></span>
 <span><span class="co">##  [33] glue_1.6.2                              </span></span>
-<span><span class="co">##  [34] GenomeInfoDbData_1.2.8                  </span></span>
-<span><span class="co">##  [35] dplyr_1.0.9                             </span></span>
+<span><span class="co">##  [34] GenomeInfoDbData_1.2.9                  </span></span>
+<span><span class="co">##  [35] dplyr_1.1.0                             </span></span>
 <span><span class="co">##  [36] rappdirs_0.3.3                          </span></span>
-<span><span class="co">##  [37] Rcpp_1.0.9                              </span></span>
-<span><span class="co">##  [38] TxDb.Hsapiens.UCSC.hg38.knownGene_3.15.0</span></span>
+<span><span class="co">##  [37] Rcpp_1.0.10                             </span></span>
+<span><span class="co">##  [38] TxDb.Hsapiens.UCSC.hg38.knownGene_3.16.0</span></span>
 <span><span class="co">##  [39] jquerylib_0.1.4                         </span></span>
-<span><span class="co">##  [40] pkgdown_2.0.6                           </span></span>
-<span><span class="co">##  [41] vctrs_0.4.1                             </span></span>
-<span><span class="co">##  [42] Biostrings_2.64.0                       </span></span>
-<span><span class="co">##  [43] rtracklayer_1.56.1                      </span></span>
+<span><span class="co">##  [40] pkgdown_2.0.7                           </span></span>
+<span><span class="co">##  [41] vctrs_0.5.2                             </span></span>
+<span><span class="co">##  [42] Biostrings_2.66.0                       </span></span>
+<span><span class="co">##  [43] rtracklayer_1.58.0                      </span></span>
 <span><span class="co">##  [44] iterators_1.0.14                        </span></span>
-<span><span class="co">##  [45] xfun_0.31                               </span></span>
-<span><span class="co">##  [46] stringr_1.4.0                           </span></span>
+<span><span class="co">##  [45] xfun_0.37                               </span></span>
+<span><span class="co">##  [46] stringr_1.5.0                           </span></span>
 <span><span class="co">##  [47] mime_0.12                               </span></span>
-<span><span class="co">##  [48] lifecycle_1.0.1                         </span></span>
+<span><span class="co">##  [48] lifecycle_1.0.3                         </span></span>
 <span><span class="co">##  [49] restfulr_0.0.15                         </span></span>
-<span><span class="co">##  [50] XML_3.99-0.10                           </span></span>
-<span><span class="co">##  [51] org.Hs.eg.db_3.15.0                     </span></span>
-<span><span class="co">##  [52] zlibbioc_1.42.0                         </span></span>
-<span><span class="co">##  [53] ragg_1.2.2                              </span></span>
-<span><span class="co">##  [54] hms_1.1.1                               </span></span>
+<span><span class="co">##  [50] XML_3.99-0.13                           </span></span>
+<span><span class="co">##  [51] org.Hs.eg.db_3.16.0                     </span></span>
+<span><span class="co">##  [52] zlibbioc_1.44.0                         </span></span>
+<span><span class="co">##  [53] ragg_1.2.5                              </span></span>
+<span><span class="co">##  [54] hms_1.1.2                               </span></span>
 <span><span class="co">##  [55] promises_1.2.0.1                        </span></span>
-<span><span class="co">##  [56] MatrixGenerics_1.8.1                    </span></span>
+<span><span class="co">##  [56] MatrixGenerics_1.10.0                   </span></span>
 <span><span class="co">##  [57] parallel_4.2.0                          </span></span>
-<span><span class="co">##  [58] SummarizedExperiment_1.26.1             </span></span>
+<span><span class="co">##  [58] SummarizedExperiment_1.28.0             </span></span>
 <span><span class="co">##  [59] RColorBrewer_1.1-3                      </span></span>
-<span><span class="co">##  [60] yaml_2.3.5                              </span></span>
-<span><span class="co">##  [61] curl_4.3.2                              </span></span>
+<span><span class="co">##  [60] yaml_2.3.7                              </span></span>
+<span><span class="co">##  [61] curl_5.0.0                              </span></span>
 <span><span class="co">##  [62] memoise_2.0.1                           </span></span>
-<span><span class="co">##  [63] sass_0.4.2                              </span></span>
-<span><span class="co">##  [64] biomaRt_2.52.0                          </span></span>
-<span><span class="co">##  [65] stringi_1.7.8                           </span></span>
-<span><span class="co">##  [66] RSQLite_2.2.15                          </span></span>
-<span><span class="co">##  [67] BiocIO_1.6.0                            </span></span>
-<span><span class="co">##  [68] desc_1.4.1                              </span></span>
+<span><span class="co">##  [63] sass_0.4.5                              </span></span>
+<span><span class="co">##  [64] biomaRt_2.54.0                          </span></span>
+<span><span class="co">##  [65] stringi_1.7.12                          </span></span>
+<span><span class="co">##  [66] RSQLite_2.2.20                          </span></span>
+<span><span class="co">##  [67] BiocIO_1.8.0                            </span></span>
+<span><span class="co">##  [68] desc_1.4.2                              </span></span>
 <span><span class="co">##  [69] foreach_1.5.2                           </span></span>
-<span><span class="co">##  [70] GenomicFeatures_1.48.3                  </span></span>
+<span><span class="co">##  [70] GenomicFeatures_1.50.4                  </span></span>
 <span><span class="co">##  [71] filelock_1.0.2                          </span></span>
-<span><span class="co">##  [72] BiocParallel_1.30.3                     </span></span>
+<span><span class="co">##  [72] BiocParallel_1.32.5                     </span></span>
 <span><span class="co">##  [73] shape_1.4.6                             </span></span>
-<span><span class="co">##  [74] rlang_1.0.4                             </span></span>
+<span><span class="co">##  [74] rlang_1.0.6                             </span></span>
 <span><span class="co">##  [75] pkgconfig_2.0.3                         </span></span>
 <span><span class="co">##  [76] systemfonts_1.0.4                       </span></span>
-<span><span class="co">##  [77] bitops_1.0-7                            </span></span>
-<span><span class="co">##  [78] matrixStats_0.62.0                      </span></span>
-<span><span class="co">##  [79] evaluate_0.15                           </span></span>
+<span><span class="co">##  [77] matrixStats_0.63.0                      </span></span>
+<span><span class="co">##  [78] bitops_1.0-7                            </span></span>
+<span><span class="co">##  [79] evaluate_0.20                           </span></span>
 <span><span class="co">##  [80] lattice_0.20-45                         </span></span>
-<span><span class="co">##  [81] purrr_0.3.4                             </span></span>
-<span><span class="co">##  [82] GenomicAlignments_1.32.1                </span></span>
-<span><span class="co">##  [83] htmlwidgets_1.5.4                       </span></span>
-<span><span class="co">##  [84] bit_4.0.4                               </span></span>
-<span><span class="co">##  [85] tidyselect_1.1.2                        </span></span>
+<span><span class="co">##  [81] purrr_1.0.1                             </span></span>
+<span><span class="co">##  [82] GenomicAlignments_1.34.0                </span></span>
+<span><span class="co">##  [83] htmlwidgets_1.6.1                       </span></span>
+<span><span class="co">##  [84] bit_4.0.5                               </span></span>
+<span><span class="co">##  [85] tidyselect_1.2.0                        </span></span>
 <span><span class="co">##  [86] magrittr_2.0.3                          </span></span>
 <span><span class="co">##  [87] R6_2.5.1                                </span></span>
 <span><span class="co">##  [88] generics_0.1.3                          </span></span>
-<span><span class="co">##  [89] DelayedArray_0.22.0                     </span></span>
+<span><span class="co">##  [89] DelayedArray_0.24.0                     </span></span>
 <span><span class="co">##  [90] DBI_1.1.3                               </span></span>
-<span><span class="co">##  [91] pillar_1.8.0                            </span></span>
-<span><span class="co">##  [92] RCurl_1.98-1.8                          </span></span>
+<span><span class="co">##  [91] pillar_1.8.1                            </span></span>
+<span><span class="co">##  [92] RCurl_1.98-1.10                         </span></span>
 <span><span class="co">##  [93] tibble_3.1.8                            </span></span>
-<span><span class="co">##  [94] crayon_1.5.1                            </span></span>
-<span><span class="co">##  [95] utf8_1.2.2                              </span></span>
-<span><span class="co">##  [96] BiocFileCache_2.4.0                     </span></span>
-<span><span class="co">##  [97] rmarkdown_2.14                          </span></span>
+<span><span class="co">##  [94] crayon_1.5.2                            </span></span>
+<span><span class="co">##  [95] utf8_1.2.3                              </span></span>
+<span><span class="co">##  [96] BiocFileCache_2.6.0                     </span></span>
+<span><span class="co">##  [97] rmarkdown_2.20                          </span></span>
 <span><span class="co">##  [98] GetoptLong_1.1.0                        </span></span>
 <span><span class="co">##  [99] progress_1.2.2                          </span></span>
 <span><span class="co">## [100] grid_4.2.0                              </span></span>
 <span><span class="co">## [101] blob_1.2.3                              </span></span>
-<span><span class="co">## [102] digest_0.6.29                           </span></span>
+<span><span class="co">## [102] digest_0.6.31                           </span></span>
 <span><span class="co">## [103] xtable_1.8-4                            </span></span>
-<span><span class="co">## [104] httpuv_1.6.5                            </span></span>
+<span><span class="co">## [104] httpuv_1.6.8                            </span></span>
 <span><span class="co">## [105] textshaping_0.3.6                       </span></span>
-<span><span class="co">## [106] bslib_0.4.0</span></span></code></pre>
+<span><span class="co">## [106] bslib_0.4.2</span></span></code></pre>
 </div>
   </div>
 
@@ -350,7 +350,7 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

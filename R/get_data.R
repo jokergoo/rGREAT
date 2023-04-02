@@ -440,6 +440,7 @@ getTSSFromTxDb = function(txdb_pkg) {
 getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
 	check_pkg("BioMartGOGeneSets", bioc = TRUE, github = "jokergoo")
 	g = BioMartGOGeneSets::getBioMartGenes(dataset)
+	g = g[g$gene_biotype == "protein_coding"]
 	colnames(mcols(g))[1] = "gene_id"
 	if(filter) {
 		sl = tapply(end(g), seqnames(g), max)

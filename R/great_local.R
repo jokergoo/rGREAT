@@ -156,6 +156,17 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 
 	param = list()
 	gene_sets_name = ""
+
+	if(!missing(tss_source)) {
+		if(inherits(tss_source, "GRanges")) {
+			if(!any(c("+", "-") %in% seqnames(tss_source))) {
+				stop_wrap("If `tss_source` is provided as a GRanges object, its strand should be '+'/'-'.")
+			}
+			extended_tss = extendTSS(tss_source, mode = mode, basal_upstream = basal_upstream,
+					basal_downstream = basal_downstream, extension = extension)
+		}
+	}
+
 	if(is.null(extended_tss)) {
 		if(!is.null(biomart_dataset)) {
 			

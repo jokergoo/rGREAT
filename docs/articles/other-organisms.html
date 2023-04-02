@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
       </span>
     </div>
 
@@ -90,7 +90,7 @@
       <h1 data-toc-skip>Work with other organisms</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2022-10-04</h4>
+            <h4 data-toc-skip class="date">2023-04-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/other-organisms.Rmd" class="external-link"><code>vignettes/other-organisms.Rmd</code></a></small>
       <div class="hidden name"><code>other-organisms.Rmd</code></div>
@@ -161,7 +161,10 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Giant panda</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span></code></pre></div>
-<p>A full list of supported BioMart datasets (organisms) can be found with the function <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">BioMartGOGeneSets::supportedOrganisms()</a></code>.</p>
+<p style="color:red">
+Make sure the genome version to be fit with your data.
+</p>
+<p>A full list of supported BioMart datasets (organisms) as well as the genomo versions can be found with the function <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">BioMartGOGeneSets::supportedOrganisms()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="use-msigdb-gene-sets">Use MSigDB gene sets<a class="anchor" aria-label="anchor" href="#use-msigdb-gene-sets"></a>
@@ -210,8 +213,7 @@
 <span><span class="co">## <span style="color: #949494;">#   gs_exact_source &lt;chr&gt;, gs_url &lt;chr&gt;, gs_description &lt;chr&gt;, taxon_id &lt;int&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   ortholog_sources &lt;chr&gt;, num_ortholog_sources &lt;dbl&gt;, and abbreviated</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   variable names ¹​gene_symbol, ²​entrez_gene, ³​ensembl_gene,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁴​human_gene_symbol, ⁵​human_entrez_gene, ⁶​human_ensembl_gene</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ Use `colnames()` to see all variable names</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ⁴​human_gene_symbol, ⁵​human_entrez_gene, ⁶​human_ensembl_gene</span></span></span></code></pre>
 <p>If the organism you selected has a corresponding TxDb package available which provides TSS information, you need to make sure the gene sets use Entrez gene ID as the identifier (Most TxDb packages use Entrez ID as primary ID, you can check the variable <code>rGREAT:::BIOC_ANNO_PKGS</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># convert to a list of gene sets</span></span>
@@ -283,15 +285,116 @@
 <span><span class="co">## [151] "100322885" "469743"    "455026"    "740704"    "740477"    "450512"   </span></span>
 <span><span class="co">## [157] "453993"    "456276"    "743176"    "748032"    "457607"    "462249"   </span></span>
 <span><span class="co">## [163] "464277"    "737451"    "746600"    "737526"    "456065"    "461536"   </span></span>
-<span><span class="co">## [169] "107966305" "107966305" "746721"    "737070"    "459209"    "451169"   </span></span>
-<span><span class="co">## [175] "450503"    "461971"    "461023"    "459834"    "100610925" "471978"   </span></span>
-<span><span class="co">## [181] "746399"    "746814"    "456060"    "457742"    "451611"    "107971092"</span></span>
-<span><span class="co">## [187] "461167"    "471325"    "471374"    "471167"    "494186"    "748737"   </span></span>
-<span><span class="co">## [193] "464876"    "741922"    "745141"    "452125"    "453161"    "743187"   </span></span>
-<span><span class="co">## [199] "459427"</span></span></code></pre>
+<span><span class="co">## [169] "107966305" "746721"    "737070"    "459209"    "451169"    "450503"   </span></span>
+<span><span class="co">## [175] "461971"    "461023"    "459834"    "100610925" "471978"    "746399"   </span></span>
+<span><span class="co">## [181] "746814"    "456060"    "457742"    "451611"    "107971092" "461167"   </span></span>
+<span><span class="co">## [187] "471325"    "471374"    "471167"    "494186"    "748737"    "464876"   </span></span>
+<span><span class="co">## [193] "741922"    "745141"    "452125"    "453161"    "743187"    "459427"</span></span></code></pre>
 <p>Now we can perform the local GREAT analysis.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">h_gene_sets</span>, <span class="st">"panTro6"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="use-ncbi-genomes">Use NCBI genomes<a class="anchor" aria-label="anchor" href="#use-ncbi-genomes"></a>
+</h2>
+<p>NCBI provides genome data for a huge number of organisms. It is quite easy to obtain the GO gene sets for a specific organism with the <strong>AnnotationHub</strong> package where NCBI is also the data source. Users please go to the documentation of <strong>AnnotationHub</strong> to find out how to get GO gene sets with it.</p>
+<p>It is relatively more difficult to obtain gene coordinates for a specific organism. Here the function <code><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI()</a></code> accepts a RefSeq accession number for a given genome assembly and returns information of the genome as well as the genes.</p>
+<p>The RefSeq accession number can be obtained from <a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/" class="external-link uri">https://www.ncbi.nlm.nih.gov/data-hub/genome/</a>. Here we take dolphin as an example. Its accession number is “GCF_011762595.1” and its genome page is at <a href="https://www.ncbi.nlm.nih.gov/data-hub/genome/GCF_011762595.1/" class="external-link uri">https://www.ncbi.nlm.nih.gov/data-hub/genome/GCF_011762595.1/</a>. We can get its genes with the command:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">genes</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI</a></span><span class="op">(</span><span class="st">"GCF_011762595.1"</span>, return_granges <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">genes</span></span></code></pre></div>
+<pre><code><span><span class="co">## GRanges object with 19081 ranges and 1 metadata column:</span></span>
+<span><span class="co">##           seqnames        ranges strand |     gene_id</span></span>
+<span><span class="co">##              &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span></span>
+<span><span class="co">##       [1]        1 234018-239154      + |   101335869</span></span>
+<span><span class="co">##       [2]        1 241768-255021      + |   101336161</span></span>
+<span><span class="co">##       [3]        1 259970-287776      + |   101336448</span></span>
+<span><span class="co">##       [4]        1 288745-298452      + |   101336738</span></span>
+<span><span class="co">##       [5]        1 325391-327082      - |   101321052</span></span>
+<span><span class="co">##       ...      ...           ...    ... .         ...</span></span>
+<span><span class="co">##   [19077]       MT    9921-10217      + |     7412053</span></span>
+<span><span class="co">##   [19078]       MT   10211-11588      + |     7412054</span></span>
+<span><span class="co">##   [19079]       MT   11790-13610      + |     7412055</span></span>
+<span><span class="co">##   [19080]       MT   13594-14121      - |     7412056</span></span>
+<span><span class="co">##   [19081]       MT   14195-15334      + |     7412057</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome</span></span></code></pre>
+<p>The chromosome length information is also included in <code>genes</code>:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">seqlengths</span><span class="op">(</span><span class="va">genes</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##         1         2         3         4         5         6         7         8 </span></span>
+<span><span class="co">## 183742880 176472748 171421769 144183200 137487549 115599616 114015307 108430135 </span></span>
+<span><span class="co">##         9        10        11        12        13        14        15        16 </span></span>
+<span><span class="co">## 105335178 102812509 102167733  89330967  88485069  88483154  86293990  83508544 </span></span>
+<span><span class="co">##        17        18        19        20        21         X        MT </span></span>
+<span><span class="co">##  78442772  78151963  58636127  58467291  35682248 128693445     16388</span></span></code></pre>
+<p>Now you can send <code>genes</code> to <code><a href="../reference/great.html">great()</a></code> to perform the enrichment analysis.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">your_go_gene_sets</span>, tss_source <span class="op">=</span> <span class="va">genes</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<p>The <code>GRanges</code> object can only be constructd if the genome is assembled on the “chromosome-level”. If it is not, e.g. on the scaffold or on the contig level. <code><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI()</a></code> returns the raw output which includes two data frames, one for the genome, and one for the genes. Let’s still take “GCF_011762595.1” as an example, but set <code>return_granges</code> to <code>FALSE</code> (which is the default value in the function):</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lt</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI</a></span><span class="op">(</span><span class="st">"GCF_011762595.1"</span>, return_granges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">lt</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "genome" "gene"</span></span></code></pre>
+<p>The first several rows in the two data frames.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lt</span><span class="op">$</span><span class="va">genome</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   genbankAccession refseqAccession chrName ucscStyleName    length</span></span>
+<span><span class="co">## 1       CM022274.1     NC_047034.1       1          &lt;NA&gt; 183742880</span></span>
+<span><span class="co">## 2       CM022275.1     NC_047035.1       2          &lt;NA&gt; 176472748</span></span>
+<span><span class="co">## 3       CM022276.1     NC_047036.1       3          &lt;NA&gt; 171421769</span></span>
+<span><span class="co">## 4       CM022277.1     NC_047037.1       4          &lt;NA&gt; 144183200</span></span>
+<span><span class="co">## 5       CM022278.1     NC_047038.1       5          &lt;NA&gt; 137487549</span></span>
+<span><span class="co">## 6       CM022279.1     NC_047039.1       6          &lt;NA&gt; 115599616</span></span></code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lt</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##   RefSeq Contig Accession  Start    End Strand EntreZ ID</span></span>
+<span><span class="co">## 1             NC_047034.1 234018 239154      + 101335869</span></span>
+<span><span class="co">## 2             NC_047034.1 241768 255021      + 101336161</span></span>
+<span><span class="co">## 3             NC_047034.1 259970 287776      + 101336448</span></span>
+<span><span class="co">## 4             NC_047034.1 288745 298452      + 101336738</span></span>
+<span><span class="co">## 5             NC_047034.1 325391 327082      - 101321052</span></span>
+<span><span class="co">## 6             NC_047034.1 337571 414483      + 101327235</span></span></code></pre>
+<p>In the original data from NCBI, genes are associated to contigs, and that is why the first column in <code>lt$gene</code> contains RefSeq contig IDs. When the genome is assembled on the chromosome level, the contigs are chromosomes. For some organisms, there is no official chromosome name, then a specific contig ID from <code>lt$genome</code> can be used to map to the contig names.</p>
+<p>In the following code, we assume in users’ input regions, the Genbank accession IDs are used for contigs, then we need to construct a gene <code>GRanges</code> object which also takes Genback accession IDs. This can be easily done as follows:</p>
+<p>First we construct a mapping vector between Genbank IDs and RefSeq IDs:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">map</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="va">lt</span><span class="op">$</span><span class="va">genome</span><span class="op">$</span><span class="va">genbankAccession</span>, names <span class="op">=</span> <span class="va">lt</span><span class="op">$</span><span class="va">genome</span><span class="op">$</span><span class="va">refseqAccession</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">map</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  NC_047034.1  NC_047035.1  NC_047036.1  NC_047037.1  NC_047038.1  NC_047039.1 </span></span>
+<span><span class="co">## "CM022274.1" "CM022275.1" "CM022276.1" "CM022277.1" "CM022278.1" "CM022279.1"</span></span></code></pre>
+<p>Next apply <code>map</code> on the first column of <code>lt$gene</code> and then convert it into a <code>GRanges</code> object. Just make sure in the ID convertion, <code>NA</code> may be procudes and need to be removed.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">genes</span> <span class="op">=</span> <span class="va">lt</span><span class="op">$</span><span class="va">gene</span></span>
+<span><span class="va">genes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">=</span> <span class="va">map</span><span class="op">[</span> <span class="va">genes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">]</span></span>
+<span><span class="va">genes</span> <span class="op">=</span> <span class="va">genes</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">genes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">genes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html" class="external-link">GRanges</a></span><span class="op">(</span>seqnames <span class="op">=</span> <span class="va">genes</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, ranges <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html" class="external-link">IRanges</a></span><span class="op">(</span><span class="va">genes</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="va">genes</span><span class="op">[</span>, <span class="fl">3</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>                strand <span class="op">=</span> <span class="va">genes</span><span class="op">[</span>, <span class="fl">4</span><span class="op">]</span>, gene_id <span class="op">=</span> <span class="va">genes</span><span class="op">[</span>, <span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>In <code>lt$genome</code> there is also contig length information. Simply construct it and set it to the <code>seqlengths</code> of <code>genes</code>.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html" class="external-link">structure</a></span><span class="op">(</span><span class="va">lt</span><span class="op">$</span><span class="va">genome</span><span class="op">$</span><span class="va">length</span>, names <span class="op">=</span> <span class="va">lt</span><span class="op">$</span><span class="va">genome</span><span class="op">$</span><span class="va">genbankAccession</span><span class="op">)</span></span>
+<span><span class="va">sl</span> <span class="op">=</span> <span class="va">sl</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sl</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu">seqlengths</span><span class="op">(</span><span class="va">genes</span><span class="op">)</span> <span class="op">=</span> <span class="va">sl</span></span>
+<span><span class="va">genes</span></span></code></pre></div>
+<pre><code><span><span class="co">## GRanges object with 19068 ranges and 1 metadata column:</span></span>
+<span><span class="co">##             seqnames              ranges strand |     gene_id</span></span>
+<span><span class="co">##                &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span></span>
+<span><span class="co">##       [1] CM022274.1       234018-239154      + |   101335869</span></span>
+<span><span class="co">##       [2] CM022274.1       241768-255021      + |   101336161</span></span>
+<span><span class="co">##       [3] CM022274.1       259970-287776      + |   101336448</span></span>
+<span><span class="co">##       [4] CM022274.1       288745-298452      + |   101336738</span></span>
+<span><span class="co">##       [5] CM022274.1       325391-327082      - |   101321052</span></span>
+<span><span class="co">##       ...        ...                 ...    ... .         ...</span></span>
+<span><span class="co">##   [19064] CM022295.1 127947078-127950172      + |   117310419</span></span>
+<span><span class="co">##   [19065] CM022295.1 127949692-127981307      - |   117310418</span></span>
+<span><span class="co">##   [19066] CM022295.1 127993720-128016426      - |   101335459</span></span>
+<span><span class="co">##   [19067] CM022295.1 128036576-128056592      + |   117310242</span></span>
+<span><span class="co">##   [19068] CM022295.1 128438626-128448418      - |   101333861</span></span>
+<span><span class="co">##   -------</span></span>
+<span><span class="co">##   seqinfo: 22 sequences from an unspecified genome</span></span></code></pre>
+<p>And similarly, <code>genes</code> can be directly sent to enrichment analysis.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">your_go_gene_sets</span>, tss_source <span class="op">=</span> <span class="va">genes</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="self-define-tss-and-gene-sets">Self-define TSS and gene sets<a class="anchor" aria-label="anchor" href="#self-define-tss-and-gene-sets"></a>
@@ -317,7 +420,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

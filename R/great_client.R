@@ -73,7 +73,8 @@ GreatJob = function(...) {
 #          can also be used, such as using "4" or "4.0" is same as "4.0.4".
 # -base_url the url of ``cgi-bin`` path, only used when it is explicitly specified.
 # -use_name_column If the input is a data frame, whether to use the fourth column as the "names" of regions?
-# -help Whether to print help messages.
+# -verbose Whether to print help messages.
+# -help Whether to print help messages. This argument will be replaced by ``verbose`` in future versions.
 #
 # == details
 # Note: On Aug 19 2019 GREAT released version 4(https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History ) where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
@@ -161,7 +162,7 @@ submitGreatJob = function(gr, bg = NULL,
     version = DEFAULT_VERSION,
     base_url = "http://great.stanford.edu/public/cgi-bin",
     use_name_column = FALSE,
-    help = TRUE
+    verbose = help, help = great_opt$verbose
     ) {
         
     version = version[1]
@@ -174,7 +175,7 @@ submitGreatJob = function(gr, bg = NULL,
     }
     rule = match.arg(rule)[1]
 
-    if(help) {
+    if(verbose) {
         cl = as.list(match.call())
         if(version == "4.0.4" && (!"species" %in% names(cl))) {
             message_wrap('Note: On Aug 19 2019 GREAT released version 4 which supports hg38 genome and removes some ontologies such
@@ -209,34 +210,26 @@ to turn off this message.')
             names(gr) = nm
         }
     }
+    strand(gr) = "*"
     mcols(gr) = NULL
     seqlevelsStyle(gr) = "UCSC"
 
     bgChoice = ifelse(is.null(bg), "wholeGenome", "file")
 
     if(!is.null(bg)) {
-
-        warning_wrap("From rGREAT 1.99.0, `bg` will not be supported any more because GREAT requires a special format for `gr` and `bg` if both are set, and it uses a completely different method for the enrichment analysis. Please see the documentation of `submitGreatJob()` for more explanations.")
         
         if(inherits(bg, "data.frame")) {
             df_bg = bg
             bg = GRanges(seqnames = bg[[1]],
                          ranges = IRanges(start = bg[[2]],
                                            end = bg[[3]]))
-            i_strand = sapply(df_bg, function(x) all(x %in% c("+", "-", "*")))
-            if(any(i_strand)) {
-                strand(df_bg) = df_bg[, i_strand]
-            }
         } else if(inherits(bg, "character")) {
             df_bg = read.table(bg, stringsAsFactors = FALSE)
             bg = GRanges(seqnames = df_bg[[1]],
                          ranges = IRanges(start = df_bg[[2]],
                                            end = df_bg[[3]]))
-            i_strand = sapply(df_bg, function(x) all(x %in% c("+", "-", "*")))
-            if(any(i_strand)) {
-                strand(df_bg) = df_bg[, i_strand]
-            }
         }
+        strand(bg) = "*"
         mcols(bg) = NULL
         seqlevelsStyle(bg) = "UCSC"
     }
@@ -259,6 +252,13 @@ to turn off this message.')
             if(!all(grepl("^(chr|Zv9)", seqnames(bg)))) {
                 stop("Chromosome names (in `bg`) should have 'chr/Zv9' prefix.\n")
             }
+        }
+    }
+
+    ## check bg and gr
+    if(!is.null(bg)) {
+        if(length(setdiff(gr, bg))) {
+            stop_wrap("GREAT applies the hypergeometric test when background regions are provided. If background regions are a set of regions { [x_i, y_i] | i in A } where A is the index set {1..n}, the input regions should be a subset of the background regions { [x_i, y_i] | i in B } where B is a subset of A. In other words, setdiff(gr, bg) should be empty.")
         }
     }
 
@@ -409,9 +409,9 @@ to turn off this message.')
     jobid = as.vector(jobid)
       
     job = GreatJob()
-    job@job_env = new.env()
-    job@enrichment_tables = new.env()
-    job@association_tables = new.env()
+    job@job_env = new.env(parent = emptyenv())
+    job@enrichment_tables = new.env(parent = emptyenv())
+    job@association_tables = new.env(parent = emptyenv())
 
     if(version == "default") version = DEFAULT_VERSION
     
@@ -639,7 +639,7 @@ setMethod(f = "getEnrichmentTables",
             "You can set `download_by = 'tsv'` to download the complete table, ",
             "but note only the top 500 regions can be retreived. See the following link:\n\n",
             "https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655401/Export#Export-GlobalExport\n\n",
-            "Except the additional gene-region association column if taking 'tsv' as the source of result, all other columns are the same if you choose 'json' as the source.\n",
+            "Except the additional gene-region association column if taking 'tsv' as the source of result, all other columns are the same if you choose 'json' (the default) as the source.\n",
             "Or you can try the local GREAT analysis with the function `great()`.")
     }
 
@@ -825,7 +825,6 @@ download = function(url, file, request_interval = 10, max_tries = 100) {
     op = qq.options(READ.ONLY = FALSE)
     on.exit(qq.options(op))
     qq.options(code.pattern = "@\\{CODE\\}")
-
 
     #message(qq("try to download from @{url}"))
     i_try = 0
@@ -1247,11 +1246,12 @@ setMethod(f = "getRegionGeneAssociations",
         f_term = gsub('[\\/:*?"<>|]', "_", f_term)
         f_term = qq("@{TEMP_DIR}/@{f_term}")
         
+        if(verbose) message_wrap("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n Note the web page might be deleted from GREAT web server because it is only for temporary use.")
+
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
-            if(verbose) qqcat("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n")
-
+            
             if (param(job, "bgChoice") != "data") {
               url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             } else {

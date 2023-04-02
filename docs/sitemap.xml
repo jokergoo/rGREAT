@@ -97,6 +97,9 @@
     <loc>/reference/getGenesFromGencode.html</loc>
   </url>
   <url>
+    <loc>/reference/getGenomeDataFromNCBI.html</loc>
+  </url>
+  <url>
     <loc>/reference/getRefSeqGenesFromUCSC.html</loc>
   </url>
   <url>
@@ -149,6 +152,9 @@
   </url>
   <url>
     <loc>/reference/read_gmt.html</loc>
+  </url>
+  <url>
+    <loc>/reference/reduce_by_start_and_end.html</loc>
   </url>
   <url>
     <loc>/reference/shinyReport-GreatJob-method.html</loc>

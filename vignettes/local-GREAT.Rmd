@@ -166,8 +166,18 @@ et = extendTSS(tss, genome = "hg19", gene_id_type = "SYMBOL")
 great(gr, "msigdb:h", extended_tss = et)
 ```
 
+
 If gene ID type in `tss` is one of Ensembl/RefSeq/Entrez ID, `gene_id_type` argument can be omitted because the ID type can be automatically
 inferred from the format of the gene IDs, but it is always a good idea to explicitly specify it if the data is self-provided.
+
+
+The tss or gene object can be directly sent to `tss_source` argument. In this case, make sure
+it has a `gene_id` column and internally it is sent to `extendTSS()`
+to construct the extended tss.
+
+```{r, eval = FALSE}
+great(gr, gs, tss)  # tss has a `gene_id` meta column
+```
 
 ### Manually set gene sets and TSS annotations
 

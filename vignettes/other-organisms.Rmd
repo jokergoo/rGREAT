@@ -58,7 +58,9 @@ You can specify a BioMart dataset (which corresponds to a specific organism), e.
 great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 ```
 
-A full list of supported BioMart datasets (organisms) can be found with the function `BioMartGOGeneSets::supportedOrganisms()`.
+<p style="color:red">Make sure the genome version to be fit with your data.</p>
+
+A full list of supported BioMart datasets (organisms) as well as the genomo versions can be found with the function `BioMartGOGeneSets::supportedOrganisms()`.
 
 ## Use MSigDB gene sets
 
@@ -93,6 +95,104 @@ Now we can perform the local GREAT analysis.
 
 ```{r, eval = FALSE}
 great(gr, h_gene_sets, "panTro6")
+```
+
+## Use NCBI genomes
+
+NCBI provides genome data for a huge number of organisms. It is quite easy to
+obtain the GO gene sets for a specific organism with the **AnnotationHub**
+package where NCBI is also the data source. Users please go to the
+documentation of **AnnotationHub** to find out how to get GO gene sets with it.
+
+It is relatively more difficult to obtain gene coordinates for a specific organism. 
+Here the function `getGenomeDataFromNCBI()` accepts a
+RefSeq accession number for a given genome assembly and returns information of the
+genome as well as the genes.
+
+The RefSeq accession number can be obtained from
+https://www.ncbi.nlm.nih.gov/data-hub/genome/. Here we take dolphin as an
+example. Its accession number is "GCF_011762595.1" and its genome page is at
+https://www.ncbi.nlm.nih.gov/data-hub/genome/GCF_011762595.1/. We can get its genes with the command:
+
+```{r}
+genes = getGenomeDataFromNCBI("GCF_011762595.1", return_granges = TRUE)
+genes
+```
+
+The chromosome length information is also included in `genes`:
+
+```{r}
+seqlengths(genes)
+```
+
+Now you can send `genes` to `great()` to perform the enrichment analysis.
+
+```{r, eval = FALSE}
+great(gr, your_go_gene_sets, tss_source = genes, ...)
+```
+
+
+The `GRanges` object can only be constructd if the genome is assembled on the
+"chromosome-level". If it is not, e.g. on the scaffold or on the contig level.
+`getGenomeDataFromNCBI()` returns the raw output which includes two data frames,
+one for the genome, and one for the genes. Let's still take "GCF_011762595.1"
+as an example, but set `return_granges` to `FALSE` (which is the default value in the function):
+
+```{r}
+lt = getGenomeDataFromNCBI("GCF_011762595.1", return_granges = FALSE)
+names(lt)
+```
+
+The first several rows in the two data frames.
+
+```{r}
+head(lt$genome)
+head(lt$gene)
+```
+
+In the original data from NCBI, genes are associated to contigs, and that is why
+the first column in `lt$gene` contains RefSeq contig IDs. When the genome is
+assembled on the chromosome level, the contigs are chromosomes. For some organisms,
+there is no official chromosome name, then a specific contig ID from `lt$genome`
+can be used to map to the contig names.
+
+In the following code, we assume in users' input regions, the Genbank accession IDs
+are used for contigs, then we need to construct a gene `GRanges` object which also takes
+Genback accession IDs. This can be easily done as follows:
+
+First we construct a mapping vector between Genbank IDs and RefSeq IDs:
+
+```{r}
+map = structure(lt$genome$genbankAccession, names = lt$genome$refseqAccession)
+head(map)
+```
+
+Next apply `map` on the first column of `lt$gene` and then convert it into a `GRanges` object.
+Just make sure in the ID convertion, `NA` may be procudes and need to be removed.
+
+```{r}
+genes = lt$gene
+genes[, 1] = map[ genes[, 1] ]
+genes = genes[!is.na(genes[, 1]), ]
+genes = GRanges(seqnames = genes[, 1], ranges = IRanges(genes[, 2], genes[, 3]),
+                strand = genes[, 4], gene_id = genes[, 5])
+```
+
+In `lt$genome` there is also contig length information. Simply construct it and set it to 
+the `seqlengths` of `genes`.
+
+
+```{r}
+sl = structure(lt$genome$length, names = lt$genome$genbankAccession)
+sl = sl[!is.na(names(sl))]
+seqlengths(genes) = sl
+genes
+```
+
+And similarly, `genes` can be directly sent to enrichment analysis.
+
+```{r, eval = FALSE}
+great(gr, your_go_gene_sets, tss_source = genes, ...)
 ```
 
 ## Self-define TSS and gene sets

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.99.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
       </span>
     </div>
 
@@ -122,35 +122,22 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="getRegionGeneAssociations-dispatch.html">getRegionGeneAssociations</a></span><span class="op">(</span><span class="va">job</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gr</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 3734 ranges and 2 metadata columns:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          seqnames              ranges strand |        annotated_genes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; |        &lt;CharacterList&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]     chr1     1310672-1311002      * |               AURKAIP1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]     chr1     1342595-1342925      * |                 MRPL20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]     chr1     1509773-1510103      * |                  SSU72</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]     chr1     1711637-1711967      * |                   NADK</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]     chr1     2323001-2323331      * |                   RER1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ...      ...                 ...    ... .                    ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3730]     chrX 130912591-130912921      * | ENSG00000134602,OR13H1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3731]     chrX 130947194-130947524      * | ENSG00000134602,OR13H1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3732]     chrX 134449748-134450078      * |            CT55,ZNF75D</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3733]     chrX 138877458-138877788      * |            MCF2,ATP11C</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3734]     chrX 147691650-147691980      * |               AFF2,IDS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             dist_to_TSS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           &lt;IntegerList&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]           -300</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]            -67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]            311</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]          -1893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]           -106</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ...            ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3730] -244537,234806</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3731] -209934,269409</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3732]  -144591,28099</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3733]   -87237,36824</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3734]  109676,895062</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 885 ranges and 2 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         seqnames            ranges strand | annotated_genes    dist_to_TSS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; | &lt;CharacterList&gt;  &lt;IntegerList&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [1]     chr1   9204434-9208784      * |     H6PD,GPR157  -88225,-17380</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [2]     chr1   9853594-9859363      * |   CLSTN1,PIK3CD   28106,144675</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [3]     chr1 10862809-10871681      * |    TARDBP,CASZ1 -205454,-10540</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [4]     chr1 12716970-12723206      * | AADACL3,AADACL4   -56058,15522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [5]     chr1 13814692-13823250      * | LRRC38,PRAMEF20    21572,82064</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ...      ...               ...    ... .             ...            ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [881]     chrY 16384799-16389852      * |    NLGN4Y,VCY1B -248301,219228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [882]     chrY 16842593-16846893      * |          NLGN4Y         209117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [883]     chrY 16998750-17003225      * |          NLGN4Y         365361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [884]     chrY 24401612-24406252      * |   RBMY1J,RBMY1F -145685,-74837</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [885]     chrY 26206997-26215445      * |     BPY2B,CDY1B -552930,-17105</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 23 sequences from an unspecified genome; no seqlengths</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 24 sequences from an unspecified genome; no seqlengths</span>
 </code></pre></div>
     </div>
   </div>
@@ -165,7 +152,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

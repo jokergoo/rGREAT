@@ -22,7 +22,9 @@ Only internally used.
 Sum of total widths of the reduced regions.
 }
 \examples{
-# There is no example
-NULL
+if(FALSE) {
+getGenomeDateFromNCBI("GCF_000001405.40", return_granges = TRUE)
+getGenomeDateFromNCBI("GCF_000001405.40")
+}
 
 }
