@@ -25,6 +25,9 @@ setMethod(f = "plotVolcano",
 	y_values = match.arg(y_values)[1]
 
 	n = param(object, "n_region")
+	if(is.null(main)) {
+		main = paste0("Volcano plot for ", n, " regions, ontology: ", ontology)
+	}
 	plot_volcano(
 		observed_region_hits = tb$Binom_Observed_Region_Hits,
 		genome_fraction = tb$Binom_Genome_Fraction,
@@ -64,6 +67,9 @@ setMethod(f = "plotVolcano",
 
 	tb = object@table
 	n = length(object@gr)
+	if(is.null(main)) {
+		main = paste0("Volcano plot for ", n, " regions")
+	}
 	plot_volcano(
 		observed_region_hits = tb$observed_region_hits,
 		genome_fraction = tb$genome_fraction,

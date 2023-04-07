@@ -530,31 +530,33 @@ getTSS = function(tss_source, biomart_dataset = NULL) {
 	tss
 }
 
+rGREAT_env$KEGGGenomeDownloaded = list()
 
-keggGeneSets = function(organism) {
-	df = read.table(url(paste0("https://rest.kegg.jp/link/", organism, "/pathway")))
-	df[, 1] = gsub("path:", "", df[, 1])
-	df[, 2] = gsub("hsa:", "", df[, 2])
+# == title
+# Get the corresponding assembly id for a kegg organism
+#
+# == param
+# -organism The organism code on KEGG
+#
+# == value
+# The Refseq access ID for the genome.
+getKEGGGenome = function(organism) {
+	link = paste0("https://rest.kegg.jp/get/gn:", organism)
+		
+	if(is.null(rGREAT_env$KEGGGenomeDownloaded[[link]])) {
+		con = url(link)
+		ln = readLines(con)
+		close(con)
 
-	split(df[, 2], df[, 1])
-}
+		rGREAT_env$KEGGGenomeDownloaded[[link]] = ln
+	} else {
+		ln = rGREAT_env$KEGGGenomeDownloaded[[link]]
+	}
 
-keggTSS = function(organism) {
-	df = read.table(url(paste0("https://rest.kegg.jp/list/", organism)), sep = "\t")
-	df[, 1] = gsub("hsa:", "", df[, 1])
-	df = df[grep(":", df[, 3]), ]
-	
-	chr = gsub(":.*$", "", df[, 3])
-	rev = grepl("complement", df[, 3])
-	s = gsub("^.*\\D(\\d+)\\.\\.(\\d+).*$", "\\1", df[, 3])
-	e = gsub("^.*\\D(\\d+)\\.\\.(\\d+).*$", "\\2", df[, 3])
-	s = as.integer(s)
-	e = as.integer(e)
+	ln = grep("Assembly:GCF_\\d+", ln, value = TRUE)
+	if(length(ln) == 0) {
+		return(NA)
+	}
 
-	GRanges(seqnames = chr, ranges = IRanges(ifelse(rev, e, s)), gene_id = df[, 1])
-}
-
-keggExtendedTSS = function(organism, ...) {
-	tss = keggTSS(organism)
-	extendTSS(tss, ...)
+	gsub("^.*(GCF_\\d+\\.\\d+).*$", "\\1", ln) 
 }

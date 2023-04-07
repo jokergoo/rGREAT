@@ -157,6 +157,10 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	param = list()
 	gene_sets_name = ""
 
+	if(is.data.frame(gene_sets)) {
+		gene_sets = gs_dataframe2list(gene_sets)
+	}
+
 	if(!missing(tss_source)) {
 		if(inherits(tss_source, "GRanges")) {
 			if(!any(c("+", "-") %in% seqnames(tss_source))) {

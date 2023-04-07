@@ -266,6 +266,18 @@ get_url = function(url) {
 	f
 }
 
+
+
+gs_dataframe2list = function(df) {
+    n1 = length(unique(df[, 1]))
+    n2 = length(unique(df[, 2]))
+    if(n1 < n2) {
+        split(df[, 2], df[, 1])
+    } else {
+        split(df[, 1], df[, 2])
+    }
+}
+
 # chr_len_db = tapply(BIOC_ANNO_PKGS$txdb, BIOC_ANNO_PKGS$genome_version_in_txdb, function(x) {
 # 	x = x[1]
 # 	check_pkg(x, bioc = TRUE)
