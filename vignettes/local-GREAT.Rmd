@@ -224,13 +224,7 @@ great(gr, gene_sets = gs, extended_tss = et)
 A specific organism can be set with the `biomart_dataset` argument:
 
 
-```{r, echo = FALSE}
-if(!requireNamespace("BioMartGOGeneSets", quietly = TRUE)) {
-    suppressMessages(BiocManager::install("jokergoo/BioMartGOGeneSets", update = FALSE))
-}
-```
-
-```{r}
+```r
 # Giant panda
 gr_panda = randomRegionsFromBioMartGenome("amelanoleuca_gene_ensembl")
 great(gr_panda, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")

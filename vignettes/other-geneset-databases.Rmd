@@ -113,13 +113,7 @@ gene sets associated to keywords.
 In the function `load_keyword_genesets()`, you need to specify the taxon ID for the organism.
 
 
-```{r, echo = FALSE}
-if(!requireNamespace("UniProtKeywords", quietly = TRUE)) {
-    suppressMessages(BiocManager::install("jokergoo/UniProtKeywords", update = FALSE))
-}
-```
-
-```{r}
+```r
 library(UniProtKeywords)
 gs = load_keyword_genesets(9606)
 great(gr, gs, "hg19")
