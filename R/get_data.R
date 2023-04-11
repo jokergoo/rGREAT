@@ -536,7 +536,7 @@ rGREAT_env$KEGGGenomeDownloaded = list()
 # Get the corresponding assembly id for a kegg organism
 #
 # == param
-# -organism The organism code on KEGG
+# -organism The organism code on KEGG.
 #
 # == value
 # The Refseq access ID for the genome.
@@ -559,4 +559,46 @@ getKEGGGenome = function(organism) {
 	}
 
 	gsub("^.*(GCF_\\d+\\.\\d+).*$", "\\1", ln) 
+}
+
+# == title
+# Get KEGG pathway gene sets
+#
+# == param
+# -organism The organism code on KEGG.
+# -as_table Whether to return the gene sets as a two-column table.
+#
+# == value
+# A list of a data frame, depends on the value of ``as_table``.
+#
+getKEGGPathways = function(organism, as_table = FALSE) {
+	link = paste0("https://rest.kegg.jp/link/pathway/", organism)
+
+	if(is.null(rGREAT_env$KEGGGenomeDownloaded[[link]])) {
+		df = read.table(url(link), sep = "\t")
+		rGREAT_env$KEGGGenomeDownloaded[[link]] = df
+	} else {
+		df = rGREAT_env$KEGGGenomeDownloaded[[link]]
+	}
+
+	df[, 1] = gsub("^.*:", "", df[, 1])
+	df[, 2] = gsub("^.*:", "", df[, 2])
+
+	link2 = paste0("https://rest.kegg.jp/list/pathway/", organism)
+	if(is.null(rGREAT_env$KEGGGenomeDownloaded[[link2]])) {
+		df2 = read.table(url(link2), sep = "\t")
+		rGREAT_env$KEGGGenomeDownloaded[[link2]] = df2
+	} else {
+		df2 = rGREAT_env$KEGGGenomeDownloaded[[link2]]
+	}
+
+	df2[, 2] = gsub(" - [^-]*$", "", df2[, 2])
+	map = structure(df2[, 2], names = df2[, 1])
+	df[, 2] = paste0(df[, 2], ": ", map[df[, 2]])
+
+	if(as_table) {
+		return(df[, 2:1])
+	} else {
+		split(df[, 1], df[, 2])
+	}
 }

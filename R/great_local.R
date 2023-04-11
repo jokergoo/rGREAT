@@ -952,14 +952,26 @@ setMethod(f = "show",
 		if(object@param$mode == "basalPlusExt") {
 			qqcat("Mode: Basal plus extension\n")
 			qqcat("  Proximal: @{object@param$basal_upstream} bp upstream, @{object@param$basal_downstream} bp downstream,\n")
-			qqcat("  plus Distal: up to @{object@param$extension} bp\n")
+			if(object@param$extension[1] == object@param$extension[2]) {
+				qqcat("  plus Distal: up to @{object@param$extension[1]} bp\n")
+			} else {
+				qqcat("  plus Distal: up to @{object@param$extension[1]} bp upstream, @{object@param$extension[2]} bp downstream\n")
+			}
 
 		} else if(object@param$mode == "twoClosest") {
 			qqcat("Mode: Two nearest genes\n")
-        	qqcat("  within @{object@param$extension} bp\n")
+			if(object@param$extension[1] == object@param$extension[2]) {
+        		qqcat("  within @{object@param$extension[1]} bp\n")
+        	} else {
+        		qqcat("  within @{object@param$extension[1]} bp upstream, @{object@param$extension[2]} bp downstream\n")
+        	}
 		} else if(object@param$mode == "oneClosest") {
 			qqcat("Mode: Single nearest genes\n")
-        	qqcat("  within @{object@param$extension} bp\n")
+        	if(object@param$extension[1] == object@param$extension[2]) {
+        		qqcat("  within @{object@param$extension[1]} bp\n")
+        	} else {
+        		qqcat("  within @{object@param$extension[1]} bp upstream, @{object@param$extension[2]} bp downstream\n")
+        	}
 		}
 	}
 })

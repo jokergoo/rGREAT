@@ -11,7 +11,7 @@ getKEGGGenome(organism)
 }
 \arguments{
 
-  \item{organism}{The organism code on KEGG}
+  \item{organism}{The organism code on KEGG.}
 
 }
 \value{

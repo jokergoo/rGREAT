@@ -476,7 +476,7 @@ extendTSSFromDataFrame = function(df, seqlengths, genome = NULL,
 # -mode The mode to extend TSS. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See "Details" section.
 # -basal_upstream In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.
 # -basal_downstream In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.
-# -extension Extensions from the basal domains.
+# -extension Extensions from the basal domains. The value can also be a vector of length two which corresponds to extension to upstream and downstream respectively.
 # -verbose Whether to print messages.
 # -.attr Only used internally.
 #
@@ -609,15 +609,19 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL,
 
 	basal_tss = as(gr_tb, "GRanges")
 
+	if(length(extension) == 1) {
+		extension = rep(extension, 2)
+	}
+
 	if(verbose) {
-		message(qq("* extend to both sides until reaching the neighbour genes or to the maximal extension (@{as.integer(extension)}bp)."))
+		message(qq("* extend to both sides until reaching the neighbour genes or to the maximal extension."))
 	}
 	extended_tss = basal_tss[, "gene_id"]
 
-	extend_to_left = pmin(basal_tss$dist_to_left, extension)
+	extend_to_left = pmin(basal_tss$dist_to_left, ifelse(strand(tss) == "+", extension[1], extension[2]))
 	start(extended_tss) = start(basal_tss) - extend_to_left
 
-	extend_to_right = pmin(basal_tss$dist_to_right, extension)
+	extend_to_right = pmin(basal_tss$dist_to_right, ifelse(strand(tss) == "+", extension[2], extension[1]))
 	end(extended_tss) = end(basal_tss) + extend_to_right
 
 	names(extended_tss) = extended_tss$gene_id

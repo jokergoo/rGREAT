@@ -76,6 +76,14 @@ head(pn)
 Please go the the documentation of **KEGGREST** or the main website of KEGG API (https://rest.kegg.jp/) to find out
 commands for retrieving various datasets there.
 
+To make it easier to use, there is already a helper function `getKEGGPathways()` function which 
+directly downloads data from kEGG and format it as a list or a data frame.
+
+```{r}
+lt = getKEGGPathways("hsa")
+lt[1:2]
+```
+
 <p style="color:red;">Please note, KEGG pathways are only free for academic users, https://www.pathway.jp/en/licensing.html.</p>
 
 

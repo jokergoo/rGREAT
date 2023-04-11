@@ -261,7 +261,7 @@ to turn off this message.')
             stop_wrap("GREAT applies the hypergeometric test when background regions are provided. If background regions are a set of regions { [x_i, y_i] | i in A } where A is the index set {1..n}, the input regions should be a subset of the background regions { [x_i, y_i] | i in B } where B is a subset of A. In other words, setdiff(gr, bg) should be empty.")
         }
     }
-browser()
+
     # transform GRanges to data frame
     bed = as.data.frame(gr)
     if(!gr_is_zero_based) {

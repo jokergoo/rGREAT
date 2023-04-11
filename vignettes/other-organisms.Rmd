@@ -114,14 +114,14 @@ https://www.ncbi.nlm.nih.gov/data-hub/genome/. Here we take dolphin as an
 example. Its accession number is "GCF_011762595.1" and its genome page is at
 https://www.ncbi.nlm.nih.gov/data-hub/genome/GCF_011762595.1/. We can get its genes with the command:
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 genes = getGenomeDataFromNCBI("GCF_011762595.1", return_granges = TRUE)
 genes
 ```
 
 The chromosome length information is also included in `genes`:
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 seqlengths(genes)
 ```
 
@@ -138,14 +138,14 @@ The `GRanges` object can only be constructd if the genome is assembled on the
 one for the genome, and one for the genes. Let's still take "GCF_011762595.1"
 as an example, but set `return_granges` to `FALSE` (which is the default value in the function):
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 lt = getGenomeDataFromNCBI("GCF_011762595.1", return_granges = FALSE)
 names(lt)
 ```
 
 The first several rows in the two data frames.
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 head(lt$genome)
 head(lt$gene)
 ```
@@ -162,7 +162,7 @@ Genback accession IDs. This can be easily done as follows:
 
 First we construct a mapping vector between Genbank IDs and RefSeq IDs:
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 map = structure(lt$genome$genbankAccession, names = lt$genome$refseqAccession)
 head(map)
 ```
@@ -170,7 +170,7 @@ head(map)
 Next apply `map` on the first column of `lt$gene` and then convert it into a `GRanges` object.
 Just make sure in the ID convertion, `NA` may be procudes and need to be removed.
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 genes = lt$gene
 genes[, 1] = map[ genes[, 1] ]
 genes = genes[!is.na(genes[, 1]), ]
@@ -182,7 +182,7 @@ In `lt$genome` there is also contig length information. Simply construct it and 
 the `seqlengths` of `genes`.
 
 
-```{r}
+```{r, eval = .Platform$OS.type == "unix"}
 sl = structure(lt$genome$length, names = lt$genome$genbankAccession)
 sl = sl[!is.na(names(sl))]
 seqlengths(genes) = sl
@@ -193,6 +193,34 @@ And similarly, `genes` can be directly sent to enrichment analysis.
 
 ```{r, eval = FALSE}
 great(gr, your_go_gene_sets, tss_source = genes, ...)
+```
+
+## Use KEGG gene sets
+
+KEGG supports a huge number of organisms. How to obtain the pathway gene sets
+for an organism has been introduced in the vignette ["Work with other geneset
+databases"](other-geneset-databases.html#kegg-pathways). Now the task is
+to obtain the gene/TSS definitions of that organism. On the KEGG database, each
+organism has a RefSeq accession ID associated and this ID can be found on the
+webpage of the organism. For example, the web page of turkey is
+https://www.genome.jp/kegg-bin/show_organism?org=mgp where the
+RefSeq assembly access ID is "GCF_000146605.3". This ID can be used later
+with `getGenomeDataFromNCBI()` to get the gene coordinates of that genome assembly.
+
+**rGREAT** has a function `getKEGGGenome()` which automatically extracts the RefSeq
+accession ID for an organism:
+
+```{r}
+getKEGGGenome("mgp")
+```
+
+Then, the following code performs GREAT analysis for any organism supported on KEGG, e.g. turkey:
+
+```r
+genes = getGenomeDataFromNCBI(getKEGGGenome("mgp"))
+gene_sets = getKEGGPathways("mgp")
+
+great(..., gene_sets, genes)
 ```
 
 ## Self-define TSS and gene sets

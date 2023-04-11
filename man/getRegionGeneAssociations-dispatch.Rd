@@ -10,8 +10,8 @@ Method dispatch page for \code{getRegionGeneAssociations}.
 \code{getRegionGeneAssociations} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{getRegionGeneAssociations,GreatJob-method}}, \code{\link{GreatJob-class}} class method
 \item \code{\link{getRegionGeneAssociations,GreatObject-method}}, \code{\link{GreatObject-class}} class method
+\item \code{\link{getRegionGeneAssociations,GreatJob-method}}, \code{\link{GreatJob-class}} class method
 }
 }
 \examples{
