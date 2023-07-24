@@ -524,6 +524,7 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL,
 		}
 	}
 	sl = seqlengths
+	sl = sl[!is.na(sl)]
 
 	if(is.null(gene_id_type)) {
 		mt = attributes(metadata(gene))

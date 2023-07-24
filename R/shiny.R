@@ -327,7 +327,7 @@ setMethod(f = "shinyReport",
 		if("description" %in% colnames(tb)) {
 			offset = 1
 			tb = tb[, c("id", "description", "mean_tss_dist", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "p_value_hyper", "p_adjust_hyper", "fold_enrichment_hyper", "observed_gene_hits", "gene_set_size")]
-			colnames(tb) = c("Term Name", "Mean Abs Dist to TSS (bp)", "Term Description", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Hyper Raw P-value", "Hyper Adjusted P-value", "Hyper Fold Enrichment", "Observed Gene Hits", "Total Genes in Gene Set")
+			colnames(tb) = c("Term Name", "Term Description", "Mean Abs Dist to TSS (bp)", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction", "Hyper Raw P-value", "Hyper Adjusted P-value", "Hyper Fold Enrichment", "Observed Gene Hits", "Total Genes in Gene Set")
 		} else {
 			offset = 0
 			tb = tb[, c("id", "mean_tss_dist", "p_value", "p_adjust", "fold_enrichment", "observed_region_hits", "genome_fraction", "p_value_hyper", "p_adjust_hyper", "fold_enrichment_hyper", "observed_gene_hits", "gene_set_size")]

@@ -1250,7 +1250,7 @@ setMethod(f = "getRegionGeneAssociations",
         f_term = gsub('[\\/:*?"<>|]', "_", f_term)
         f_term = qq("@{TEMP_DIR}/@{f_term}")
         
-        if(verbose) message_wrap("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n Note the web page might be deleted from GREAT web server because it is only for temporary use.")
+        if(verbose) message(qq("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n Note the web page might be deleted from GREAT web server because it is only for temporary use."))
 
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
