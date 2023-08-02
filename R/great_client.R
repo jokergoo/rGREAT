@@ -1036,7 +1036,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
     # make plots
     if(1 %in% which_plot) {
         if(using_term) {
-            tb = table(table(unlist(gr_term$annotated_genes)))
+            tb = table(sapply(gr_term$annotated_genes, length))
             vt = numeric(10)
             vt[as.numeric(names(tb))] = tb
             vt[is.na(vt)] = 0
@@ -1047,7 +1047,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
             pos = barplot(p, col = "black", xlab = "Number of associated regions per gene", ylab = "This term's genes", ylim = c(0, max(p)*1.5), main = qq("Number of associated regions per gene\nTerm: @{term_id}"))
             text(pos[, 1], p + 0.01, v, adj = c(0.5, 0), cex = 0.8)
         } else {
-            tb = table(table(unlist(gr_all$annotated_genes)))
+            tb = table(sapply(gr_all$annotated_genes, length))
             v = c(gr_full_len - length(gr_all), tb["1"], tb["2"], sum(tb[as.numeric(names(tb)) > 2]))
             names(v) = c("0", "1", "2", "> 3")
             v[is.na(v)] = 0
