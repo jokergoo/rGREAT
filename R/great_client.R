@@ -1036,7 +1036,7 @@ plot_great = function(gr_all, gr_term = NULL, which_plot = 1:3, gr_full_len, ter
     # make plots
     if(1 %in% which_plot) {
         if(using_term) {
-            tb = table(sapply(gr_term$annotated_genes, length))
+            tb = table(table(unlist(gr_term$annotated_genes)))
             vt = numeric(10)
             vt[as.numeric(names(tb))] = tb
             vt[is.na(vt)] = 0
