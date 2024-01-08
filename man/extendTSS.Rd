@@ -7,10 +7,9 @@ Extend TSS
 Extend TSS
 }
 \usage{
-extendTSS(gene, extend_from = c("TSS", "gene"),
-    seqlengths = NULL, genome = NULL,
-    gene_id_type = NULL, mode = "basalPlusExt", basal_upstream = 5000,
-    basal_downstream = 1000, extension = 1000000,
+extendTSS(gene, seqlengths = NULL, genome = NULL,
+    gene_id_type = NULL, mode = "basalPlusExt", extend_from = c("TSS", "gene"),
+    basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
     verbose = great_opt$verbose, .attr = list())
 }
 \arguments{
