@@ -169,7 +169,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				stop_wrap("If `tss_source` is provided as a GRanges object, its strand should be '+'/'-'.")
 			}
 			extended_tss = extendTSS(tss_source, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 		}
 	}
 
@@ -268,7 +268,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			}
 
 			extended_tss = extendTSS(genes, seqlengths = sl, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 
 			param$genome = BIOMART[i, "description"]
 			if(genome != "") {
@@ -310,14 +310,14 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 					message("* TSS source: TxDb.")
 				}
 				extended_tss = extendTSSFromTxDb(tss_source$source, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = tss_source$source 
 			} else if(tss_source$category == "OrgDb") {
 				if(verbose) {
 					message("* TSS source: OrgDb")
 				}
 				extended_tss = extendTSSFromOrgDb(tss_source$source, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = tss_source$source 
 			} else if(tss_source$category == "Gencode") {
 				if(verbose) {
@@ -325,7 +325,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				}
 				tss = getGenesFromGencode(tss_source$source)
 				extended_tss = extendTSS(tss, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = paste0("Gencode_", tss_source$source)
 			} else if(tss_source$category == "RefSeq") {
 				if(verbose) {
@@ -333,7 +333,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				}
 				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqSelect")
 				extended_tss = extendTSS(tss, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = "RefSeq"
 			} else if(tss_source$category == "RefSeqCurated") {
 				if(verbose) {
@@ -341,7 +341,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				}
 				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqCurated")
 				extended_tss = extendTSS(tss, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = "RefSeqCurated"
 			} else if(tss_source$category == "RefSeqSelect") {
 				if(verbose) {
@@ -349,7 +349,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				}
 				tss = getRefSeqGenesFromUCSC(tss_source$genome, subset = "RefSeqSelect")
 				extended_tss = extendTSS(tss, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = "RefSeqSelect"
 			} else if(tss_source$category == "GREAT") {
 				if(verbose) {
@@ -357,7 +357,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 				}
 				tss = getGREATDefaultTSS(tss_source$genome)
 				extended_tss = extendTSS(tss, mode = mode, extend_from = extend_from, basal_upstream = basal_upstream,
-					basal_downstream = basal_downstream, extension = extension)
+					basal_downstream = basal_downstream, extension = extension, verbose = verbose)
 				param$tss_source = "GREAT"
 			} else {
 				stop_wrap("Wrong `tss_source`.")
