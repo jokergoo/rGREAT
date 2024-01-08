@@ -337,3 +337,16 @@ BIOMART_GENOME = c(vpacos_gene_ensembl = "vicPac1", bbbison_gene_ensembl = "bisB
 	csabaeus_gene_ensembl = "chlSab2", neugenii_gene_ensembl = "macEug2",
 	tguttata_gene_ensembl = "taeGut1", drerio_gene_ensembl = "danRer11"
 )
+
+
+# https://bioinformatics.stackexchange.com/questions/4390/expand-granges-object-different-amounts-upstream-vs-downstream
+expandRange = function(x, upstream=2000, downstream=1000) {
+  strand_is_minus = strand(x) == "-"
+  on_plus = which(!strand_is_minus)
+  on_minus = which(strand_is_minus)
+  start(x)[on_plus] = start(x)[on_plus] - upstream
+  start(x)[on_minus] = start(x)[on_minus] - downstream
+  end(x)[on_plus] = end(x)[on_plus] + downstream
+  end(x)[on_minus] = end(x)[on_minus] + upstream
+  x
+}

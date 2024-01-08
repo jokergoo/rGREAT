@@ -8,8 +8,8 @@ Perform GREAT analysis
 }
 \usage{
 great(gr, gene_sets, tss_source, biomart_dataset = NULL,
-    min_gene_set_size = 5, mode = "basalPlusExt", basal_upstream = 5000,
-    basal_downstream = 1000, extension = 1000000,
+    min_gene_set_size = 5, mode = "basalPlusExt", extend_from = c("TSS", "gene"),
+    basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
     extended_tss = NULL, background = NULL, exclude = "gap",
     cores = 1, verbose = great_opt$verbose)
 }
@@ -21,6 +21,7 @@ great(gr, gene_sets, tss_source, biomart_dataset = NULL,
   \item{biomart_dataset}{The value should be in \code{BioMartGOGeneSets::supportedOrganisms}. }
   \item{min_gene_set_size}{Minimal size of gene sets.}
   \item{mode}{The mode to extend genes. Value should be one of 'basalPlusExt', 'twoClosest' and 'oneClosest'. See \code{\link{extendTSS}} for details.}
+  \item{extend_from}{Should the gene be extended only from its TSS or the complete gene?}
   \item{basal_upstream}{In 'basalPlusExt' mode, number of base pairs extending to the upstream of TSS to form the basal domains.}
   \item{basal_downstream}{In 'basalPlusExt' mode, number of base pairs extending to the downstream of TSS to form the basal domains.}
   \item{extension}{Extensions from the basal domains.}

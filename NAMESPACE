@@ -71,5 +71,6 @@ importFrom("utils", read.table)
 importFrom("utils", setTxtProgressBar)
 importFrom("utils", txtProgressBar)
 importFrom("utils", write.table)
+importFrom("utils", "packageDescription")
 useDynLib(rGREAT, .fixes = "rGREAT_", .registration=TRUE)
 

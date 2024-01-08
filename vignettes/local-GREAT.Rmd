@@ -298,6 +298,15 @@ great(gr, "GO:BP", background = paste0("chr", 1:22))
 great(gr, "GO:BP", exclude = c("chrX", "chrY"))
 ```
 
+## Extend from genes
+
+The original GREAT algorithm extends only from the TSS. In `great()` as well as in `extendTSS*()` functions, 
+there is an argument `extend_from` which can be set to `"gene"` to extend the whole gene (which will include upstream, gene body and downstream of the gene).
+
+```{r, eval = FALSE}
+great(gr, ..., extend_from = "gene")
+```
+
 ## Get enrichment table
 
 Simply use `getEnrichmentTable()` function. 

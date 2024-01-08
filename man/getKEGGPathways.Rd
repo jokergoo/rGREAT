@@ -21,4 +21,5 @@ A list of a data frame, depends on the value of \code{as_table}.
 \examples{
 # There is no example
 NULL
+
 }

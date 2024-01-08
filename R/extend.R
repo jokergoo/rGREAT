@@ -469,6 +469,7 @@ extendTSSFromDataFrame = function(df, seqlengths, genome = NULL,
 #
 # == param
 # -gene A `GenomicRanges::GRanges` object of gene (or TSS) coordinates.
+# -extend_from Should the gene be extended only from its TSS or the complete gene?
 # -seqlengths A named vector of chromosome lengths. If it is not provided, it is taken by ``seqlengths(gene)``.
 # -genome UCSC genome can be set here, then ``seqlengths`` will be automatically retrieved from UCSC server.
 # -gene_id_type Gene ID types in ``gene``. You need to set this argument if you use built-in gene sets in `great` so that genes can be correctly mapped.
@@ -494,9 +495,11 @@ extendTSSFromDataFrame = function(df, seqlengths, genome = NULL,
 # A `GenomicRanges::GRanges` object with one meta column 'gene_id'.
 #
 extendTSS = function(gene, seqlengths = NULL, genome = NULL, 
-	gene_id_type = NULL, mode = "basalPlusExt", basal_upstream = 5000, 
-	basal_downstream = 1000, extension = 1000000,
+	gene_id_type = NULL, mode = "basalPlusExt", extend_from = c("TSS", "gene"),
+	basal_upstream = 5000, basal_downstream = 1000, extension = 1000000,
 	verbose = great_opt$verbose, .attr = list()) {
+
+	extend_from = match.arg(extend_from)[1]
 
 	if(is.null(seqlengths)) {
 		if(is.null(genome)) {
@@ -540,7 +543,14 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL,
 
 	gene = gene[seqnames(gene) %in% names(sl)]
 
-	tss = promoters(gene, upstream = 0, downstream = 1)
+	if(extend_from == "TSS") {
+		tss = promoters(gene, upstream = 0, downstream = 1)
+	} else {
+		tss = gene
+		if(verbose) {
+			message(qq("* extend from the complete gene instead of TSS."))
+		}
+	}
 
 	if(verbose) {
 		message(qq("* TSS extension mode is '@{mode}'."))
@@ -551,7 +561,11 @@ extendTSS = function(gene, seqlengths = NULL, genome = NULL,
 		if(verbose) {
 			message(qq("* construct the basal domains by extending @{basal_upstream}bp to upstream and @{basal_downstream}bp to downsteram of TSS."))
 		}
-		suppressWarnings(basal_tss <- promoters(tss, upstream = basal_upstream, downstream = basal_downstream))
+		if(extend_from == "TSS") {
+			suppressWarnings(basal_tss <- promoters(tss, upstream = basal_upstream, downstream = basal_downstream))
+		} else {
+			suppressWarnings(basal_tss <- expandRange(tss, upstream = basal_upstream, downstream = basal_downstream))
+		}
 		basal_tss = trim(basal_tss)
 	} else if(mode == "twoClosest") {
 		basal_tss = tss

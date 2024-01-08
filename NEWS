@@ -1,3 +1,9 @@
+CHANGES in VERSION 2.5.1
+
+- support extending from the whole genes
+
+------------------------------------------
+
 CHANGES in VERSION 2.1.9
 
 - add `getKEGGGenome()`
