@@ -454,7 +454,7 @@ getGenesFromBioMart = function(dataset, filter = FALSE, max_seq = 500) {
 
 
 # == title
-# Get gene sets from BioMart
+# Get GO gene sets from BioMart
 #
 # == param
 # -dataset Name of the dataset.
@@ -601,4 +601,21 @@ getKEGGPathways = function(organism, as_table = FALSE) {
 	} else {
 		split(df[, 1], df[, 2])
 	}
+}
+
+
+# == title
+# Get GO gene sets from OrgDb object
+#
+# == param
+# -orgdb An ``OrgDb`` object.
+# -ontology Value should be bp, mf or cc.
+#
+# == value
+# A list of vectors where each vector contains Entrez IDs annotated to a GO term.
+getGeneSetsFromOrgDb = function(orgdb, ontology = "BP") {
+	ontology = toupper(ontology)
+	tb = select(orgdb, keys = keys(orgdb, "ENTREZID"), columns = c("GOALL", "ONTOLOGYALL"), keytype = "ENTREZID")
+	tb = tb[tb$ONTOLOGYALL %in% ontology, ]
+	split(tb$ENTREZID, tb$GOALL)
 }

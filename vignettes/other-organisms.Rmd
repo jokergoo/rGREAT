@@ -97,7 +97,7 @@ Now we can perform the local GREAT analysis.
 great(gr, h_gene_sets, "panTro6")
 ```
 
-## Use NCBI genomes
+## Use NCBI genomes and gene sets
 
 NCBI provides genome data for a huge number of organisms. It is quite easy to
 obtain the GO gene sets for a specific organism with the **AnnotationHub**
@@ -193,6 +193,41 @@ And similarly, `genes` can be directly sent to enrichment analysis.
 
 ```{r, eval = FALSE}
 great(gr, your_go_gene_sets, tss_source = genes, ...)
+```
+
+Let's demonstrate how to obtain GO gene sets for a less-studied organism from
+the `OrgDb` object. Still taking dolphin as an example, we can get its gene
+coordinates with the `getGenomeDataFromNCBI()` function by specifying its
+GenBank accession number. The `OrgDb` object for dolphin can be obtained with
+the **AnnotationHub** package. First construct an `AnnotationHub` object:
+
+```{r, eval = FALSE}
+library(AnnotationHub)
+ah = AnnotationHub()
+```
+
+Next we need to search dolphin on Annotation hub. It is sometimes not easy to
+find the dataset from AnnotationHub as you want. In this example, we use query
+words of "truncatus" and "OrgDb" (unfortunately, the word "dolphin" can not
+find the correct file).
+
+```{r, eval = FALSE}
+query(ah, c("truncatus", "OrgDb"))
+```
+
+The returned message shows the ID of the OrgDb database for dolphin is
+"AH112418". Then we can directly obtain the `OrgDb` object by:
+
+```{r, eval = FALSE}
+orgdb = ah[["AH112418"]]
+```
+
+With another helper function `getGeneSetsFromOrgDb()`, we can obtain the GO
+gene sets for dolphin:
+
+```{r, eval = FALSE}
+go_gs = getGeneSetsFromOrgDb(orgdb)
+great(gr, go_gs, tss_source = genes, ...)
 ```
 
 ## Use KEGG gene sets

@@ -1,10 +1,10 @@
 \name{getGeneSetsFromBioMart}
 \alias{getGeneSetsFromBioMart}
 \title{
-Get gene sets from BioMart
+Get GO gene sets from BioMart
 }
 \description{
-Get gene sets from BioMart
+Get GO gene sets from BioMart
 }
 \usage{
 getGeneSetsFromBioMart(dataset, ontology = "bp")
