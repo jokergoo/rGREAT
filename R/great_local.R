@@ -1071,7 +1071,11 @@ setMethod(f = "getRegionGeneAssociations",
 		if(is.numeric(term_id)) {
 			stop_wrap("Do not use numeric index for `term_id`, use the character index.")
 		}
-		extended_tss = extended_tss[ extended_tss$gene_id %in% object@gene_sets[[term_id]] ]
+		term_id = intersect(names(object@gene_sets), term_id)
+		if(length(term_id) == 0) {
+			stop("Cannot find any term.")
+		}
+		extended_tss = extended_tss[ extended_tss$gene_id %in% unlist(object@gene_sets[term_id]) ]
 	}
 
 	all_genes = names(extended_tss)

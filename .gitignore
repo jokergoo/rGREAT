@@ -3,3 +3,5 @@
 *.Rcheck
 cache
 .DS_Store
+.*.o
+.*.so

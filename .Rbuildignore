@@ -11,3 +11,5 @@ check.bat
 build_pkg_site.R
 ^\.github$
 tests/test-no-run.R
+.*\.o
+.*\.so
