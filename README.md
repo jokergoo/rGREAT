@@ -32,9 +32,8 @@ install_github("jokergoo/rGREAT")
 
 ## Citation
 
-rGREAT: an R/Bioconductor package for functional enrichment on genomic regions 
-Zuguang Gu, Daniel Hübschmann
-Bioinformatics, btac745, https://doi.org/10.1093/bioinformatics/btac745
+Zuguang Gu, et al., rGREAT: an R/Bioconductor package for functional enrichment on genomic regions. 
+Bioinformatics, https://doi.org/10.1093/bioinformatics/btac745
 
 ## Online GREAT analysis
 
@@ -66,8 +65,6 @@ To apply `great()` on other organisms, set the `biomart_dataset` argument:
 # giant panda
 great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 ```
-
-For more details, please go to [the package vignettes](https://jokergoo.github.io/rGREAT/).
 
 ## License
 

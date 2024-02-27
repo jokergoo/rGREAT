@@ -33,15 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
@@ -49,14 +46,15 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/local-GREAT.html">Analyze with local GREAT</a>
-    </li>
+<li class="dropdown-header">Online GREAT</li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
     </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Local GREAT</li>
     <li>
-      <a href="../articles/other-docs.html">Other documents</a>
+      <a href="../articles/local-GREAT.html">Analyze with local GREAT</a>
     </li>
     <li>
       <a href="../articles/other-geneset-databases.html">Work with other geneset databases</a>
@@ -64,7 +62,31 @@
     <li>
       <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
+    <li>
+      <a href="../articles/group_associations.html">Get gene-region associations for a group of GO terms</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Supplementaries in the rGREAT paper</li>
+    <li>
+      <a href="../articles/suppl_use_background.html">Suppl 1. Use background regions</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_GO.html">Suppl 2. Compare GO annotations from online and local GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_online_and_local.html">Suppl 3. Compare online and local GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_tss.html">Suppl 4. Compare different TSS sources</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_genome_version.html">Suppl 5. Compare different genome versions</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -90,7 +112,7 @@
       <h1 data-toc-skip>Work with other organisms</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-04-02</h4>
+            <h4 data-toc-skip class="date">2024-02-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/other-organisms.Rmd" class="external-link"><code>vignettes/other-organisms.Rmd</code></a></small>
       <div class="hidden name"><code>other-organisms.Rmd</code></div>
@@ -162,7 +184,7 @@
 <code class="sourceCode R"><span><span class="co"># Giant panda</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span></code></pre></div>
 <p style="color:red">
-Make sure the genome version to be fit with your data.
+Make sure the genome version fit your data.
 </p>
 <p>A full list of supported BioMart datasets (organisms) as well as the genomo versions can be found with the function <code><a href="https://rdrr.io/pkg/BioMartGOGeneSets/man/supportedOrganisms.html" class="external-link">BioMartGOGeneSets::supportedOrganisms()</a></code>.</p>
 </div>
@@ -201,24 +223,23 @@ Make sure the genome version to be fit with your data.
 <code class="sourceCode R"><span><span class="va">h_gene_sets</span> <span class="op">=</span> <span class="fu"><a href="https://igordot.github.io/msigdbr/reference/msigdbr.html" class="external-link">msigdbr</a></span><span class="op">(</span>species <span class="op">=</span> <span class="st">"chimpanzee"</span>, category <span class="op">=</span> <span class="st">"H"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">h_gene_sets</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 18</span></span></span>
-<span><span class="co">##   gs_cat gs_subcat gs_name gene_…¹ entre…² ensem…³ human…⁴ human…⁵ human…⁶ gs_id</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> H      <span style="color: #949494;">""</span>        HALLMA… ABCA1    <span style="text-decoration: underline;">464</span>630 ENSPTR… ABCA1        19 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> H      <span style="color: #949494;">""</span>        HALLMA… ABCB8    <span style="text-decoration: underline;">463</span>892 ENSPTR… ABCB8     <span style="text-decoration: underline;">11</span>194 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> H      <span style="color: #949494;">""</span>        HALLMA… ACAA2    <span style="text-decoration: underline;">455</span>414 ENSPTR… ACAA2     <span style="text-decoration: underline;">10</span>449 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> H      <span style="color: #949494;">""</span>        HALLMA… ACADL    <span style="text-decoration: underline;">459</span>914 ENSPTR… ACADL        33 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> H      <span style="color: #949494;">""</span>        HALLMA… ACADM    <span style="text-decoration: underline;">469</span>356 ENSPTR… ACADM        34 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> H      <span style="color: #949494;">""</span>        HALLMA… ACADS    <span style="text-decoration: underline;">742</span>921 ENSPTR… ACADS        35 ENSG00… M5905</span></span>
-<span><span class="co">## <span style="color: #949494;"># … with 8 more variables: gs_pmid &lt;chr&gt;, gs_geoid &lt;chr&gt;,</span></span></span>
+<span><span class="co">##   gs_cat gs_subcat gs_name               gene_symbol entrez_gene ensembl_gene   </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ABCA1            <span style="text-decoration: underline;">464</span>630 ENSPTRG0000002…</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ABCB8            <span style="text-decoration: underline;">463</span>892 ENSPTRG0000001…</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ACAA2            <span style="text-decoration: underline;">455</span>414 ENSPTRG0000001…</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ACADL            <span style="text-decoration: underline;">459</span>914 ENSPTRG0000001…</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ACADM            <span style="text-decoration: underline;">469</span>356 ENSPTRG0000000…</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> H      <span style="color: #949494;">""</span>        HALLMARK_ADIPOGENESIS ACADS            <span style="text-decoration: underline;">742</span>921 ENSPTRG0000000…</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 12 more variables: human_gene_symbol &lt;chr&gt;, human_entrez_gene &lt;int&gt;,</span></span></span>
+<span><span class="co">## <span style="color: #949494;">#   human_ensembl_gene &lt;chr&gt;, gs_id &lt;chr&gt;, gs_pmid &lt;chr&gt;, gs_geoid &lt;chr&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   gs_exact_source &lt;chr&gt;, gs_url &lt;chr&gt;, gs_description &lt;chr&gt;, taxon_id &lt;int&gt;,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ortholog_sources &lt;chr&gt;, num_ortholog_sources &lt;dbl&gt;, and abbreviated</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   variable names ¹​gene_symbol, ²​entrez_gene, ³​ensembl_gene,</span></span></span>
-<span><span class="co">## <span style="color: #949494;">#   ⁴​human_gene_symbol, ⁵​human_entrez_gene, ⁶​human_ensembl_gene</span></span></span></code></pre>
+<span><span class="co">## <span style="color: #949494;">#   ortholog_sources &lt;chr&gt;, num_ortholog_sources &lt;dbl&gt;</span></span></span></code></pre>
 <p>If the organism you selected has a corresponding TxDb package available which provides TSS information, you need to make sure the gene sets use Entrez gene ID as the identifier (Most TxDb packages use Entrez ID as primary ID, you can check the variable <code>rGREAT:::BIOC_ANNO_PKGS</code>).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># convert to a list of gene sets</span></span>
 <span><span class="va">h_gene_sets</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">h_gene_sets</span><span class="op">$</span><span class="va">entrez_gene</span>, <span class="va">h_gene_sets</span><span class="op">$</span><span class="va">gs_name</span><span class="op">)</span></span>
-<span><span class="va">h_gene_sets</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">h_gene_sets</span>, <span class="va">as.character</span><span class="op">)</span>  <span class="co"># just to make sure gene IDs are all in character.</span></span>
+<span><span class="va">h_gene_sets</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">h_gene_sets</span>, <span class="va">as.character</span><span class="op">)</span>  <span class="co"># just to make sure gene IDs are all in character.</span></span>
 <span><span class="va">h_gene_sets</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
 <pre><code><span><span class="co">## $HALLMARK_ADIPOGENESIS</span></span>
 <span><span class="co">##   [1] "464630"    "463892"    "455414"    "459914"    "469356"    "742921"   </span></span>
@@ -295,7 +316,7 @@ Make sure the genome version to be fit with your data.
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">h_gene_sets</span>, <span class="st">"panTro6"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="use-ncbi-genomes">Use NCBI genomes<a class="anchor" aria-label="anchor" href="#use-ncbi-genomes"></a>
+<h2 id="use-ncbi-genomes-and-gene-sets">Use NCBI genomes and gene sets<a class="anchor" aria-label="anchor" href="#use-ncbi-genomes-and-gene-sets"></a>
 </h2>
 <p>NCBI provides genome data for a huge number of organisms. It is quite easy to obtain the GO gene sets for a specific organism with the <strong>AnnotationHub</strong> package where NCBI is also the data source. Users please go to the documentation of <strong>AnnotationHub</strong> to find out how to get GO gene sets with it.</p>
 <p>It is relatively more difficult to obtain gene coordinates for a specific organism. Here the function <code><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI()</a></code> accepts a RefSeq accession number for a given genome assembly and returns information of the genome as well as the genes.</p>
@@ -376,25 +397,54 @@ Make sure the genome version to be fit with your data.
 <span><span class="va">sl</span> <span class="op">=</span> <span class="va">sl</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sl</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu">seqlengths</span><span class="op">(</span><span class="va">genes</span><span class="op">)</span> <span class="op">=</span> <span class="va">sl</span></span>
 <span><span class="va">genes</span></span></code></pre></div>
-<pre><code><span><span class="co">## GRanges object with 19068 ranges and 1 metadata column:</span></span>
-<span><span class="co">##             seqnames              ranges strand |     gene_id</span></span>
-<span><span class="co">##                &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span></span>
-<span><span class="co">##       [1] CM022274.1       234018-239154      + |   101335869</span></span>
-<span><span class="co">##       [2] CM022274.1       241768-255021      + |   101336161</span></span>
-<span><span class="co">##       [3] CM022274.1       259970-287776      + |   101336448</span></span>
-<span><span class="co">##       [4] CM022274.1       288745-298452      + |   101336738</span></span>
-<span><span class="co">##       [5] CM022274.1       325391-327082      - |   101321052</span></span>
-<span><span class="co">##       ...        ...                 ...    ... .         ...</span></span>
-<span><span class="co">##   [19064] CM022295.1 127947078-127950172      + |   117310419</span></span>
-<span><span class="co">##   [19065] CM022295.1 127949692-127981307      - |   117310418</span></span>
-<span><span class="co">##   [19066] CM022295.1 127993720-128016426      - |   101335459</span></span>
-<span><span class="co">##   [19067] CM022295.1 128036576-128056592      + |   117310242</span></span>
-<span><span class="co">##   [19068] CM022295.1 128438626-128448418      - |   101333861</span></span>
+<pre><code><span><span class="co">## GRanges object with 19081 ranges and 1 metadata column:</span></span>
+<span><span class="co">##             seqnames        ranges strand |     gene_id</span></span>
+<span><span class="co">##                &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt; | &lt;character&gt;</span></span>
+<span><span class="co">##       [1] CM022274.1 234018-239154      + |   101335869</span></span>
+<span><span class="co">##       [2] CM022274.1 241768-255021      + |   101336161</span></span>
+<span><span class="co">##       [3] CM022274.1 259970-287776      + |   101336448</span></span>
+<span><span class="co">##       [4] CM022274.1 288745-298452      + |   101336738</span></span>
+<span><span class="co">##       [5] CM022274.1 325391-327082      - |   101321052</span></span>
+<span><span class="co">##       ...        ...           ...    ... .         ...</span></span>
+<span><span class="co">##   [19077] EU557093.1    9921-10217      + |     7412053</span></span>
+<span><span class="co">##   [19078] EU557093.1   10211-11588      + |     7412054</span></span>
+<span><span class="co">##   [19079] EU557093.1   11790-13610      + |     7412055</span></span>
+<span><span class="co">##   [19080] EU557093.1   13594-14121      - |     7412056</span></span>
+<span><span class="co">##   [19081] EU557093.1   14195-15334      + |     7412057</span></span>
 <span><span class="co">##   -------</span></span>
-<span><span class="co">##   seqinfo: 22 sequences from an unspecified genome</span></span></code></pre>
+<span><span class="co">##   seqinfo: 23 sequences from an unspecified genome</span></span></code></pre>
 <p>And similarly, <code>genes</code> can be directly sent to enrichment analysis.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">your_go_gene_sets</span>, tss_source <span class="op">=</span> <span class="va">genes</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<p>Let’s demonstrate how to obtain GO gene sets for a less-studied organism from the <code>OrgDb</code> object. Still taking dolphin as an example, we can get its gene coordinates with the <code><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI()</a></code> function by specifying its GenBank accession number. The <code>OrgDb</code> object for dolphin can be obtained with the <strong>AnnotationHub</strong> package. First construct an <code>AnnotationHub</code> object:</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">AnnotationHub</span><span class="op">)</span></span>
+<span><span class="va">ah</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Next we need to search dolphin on Annotation hub. It is sometimes not easy to find the dataset from AnnotationHub as you want. In this example, we use query words of “truncatus” and “OrgDb” (unfortunately, the word “dolphin” can not find the correct file).</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"truncatus"</span>, <span class="st">"OrgDb"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The returned message shows the ID of the OrgDb database for dolphin is “AH112418”. Then we can directly obtain the <code>OrgDb</code> object by:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">orgdb</span> <span class="op">=</span> <span class="va">ah</span><span class="op">[[</span><span class="st">"AH112418"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>With another helper function <code><a href="../reference/getGeneSetsFromOrgDb.html">getGeneSetsFromOrgDb()</a></code>, we can obtain the GO gene sets for dolphin:</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">go_gs</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGeneSetsFromOrgDb.html">getGeneSetsFromOrgDb</a></span><span class="op">(</span><span class="va">orgdb</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">go_gs</span>, tss_source <span class="op">=</span> <span class="va">genes</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="use-kegg-gene-sets">Use KEGG gene sets<a class="anchor" aria-label="anchor" href="#use-kegg-gene-sets"></a>
+</h2>
+<p>KEGG supports a huge number of organisms. How to obtain the pathway gene sets for an organism has been introduced in the vignette <a href="other-geneset-databases.html#kegg-pathways">“Work with other geneset databases”</a>. Now the task is to obtain the gene/TSS definitions of that organism. On the KEGG database, each organism has a RefSeq accession ID associated and this ID can be found on the webpage of the organism. For example, the web page of turkey is <a href="https://www.genome.jp/kegg-bin/show_organism?org=mgp" class="external-link uri">https://www.genome.jp/kegg-bin/show_organism?org=mgp</a> where the RefSeq assembly access ID is “GCF_000146605.3”. This ID can be used later with <code><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI()</a></code> to get the gene coordinates of that genome assembly.</p>
+<p><strong>rGREAT</strong> has a function <code><a href="../reference/getKEGGGenome.html">getKEGGGenome()</a></code> which automatically extracts the RefSeq accession ID for an organism:</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/getKEGGGenome.html">getKEGGGenome</a></span><span class="op">(</span><span class="st">"mgp"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "GCF_000146605.3"</span></span></code></pre>
+<p>Then, the following code performs GREAT analysis for any organism supported on KEGG, e.g. turkey:</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">genes</span> <span class="op">=</span> <span class="fu"><a href="../reference/getGenomeDataFromNCBI.html">getGenomeDataFromNCBI</a></span><span class="op">(</span><span class="fu"><a href="../reference/getKEGGGenome.html">getKEGGGenome</a></span><span class="op">(</span><span class="st">"mgp"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">gene_sets</span> <span class="op">=</span> <span class="fu"><a href="../reference/getKEGGPathways.html">getKEGGPathways</a></span><span class="op">(</span><span class="st">"mgp"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">...</span>, <span class="va">gene_sets</span>, <span class="va">genes</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="self-define-tss-and-gene-sets">Self-define TSS and gene sets<a class="anchor" aria-label="anchor" href="#self-define-tss-and-gene-sets"></a>
@@ -429,7 +479,6 @@ Make sure the genome version to be fit with your data.
   
 
 
-  
-
-  </body>
+  <style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>
+</body>
 </html>

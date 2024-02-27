@@ -1,0 +1,13 @@
+---
+title: "The rGREAT package"
+author: "Zuguang Gu (z.gu@dkfz.de)"
+date: '`r Sys.Date()`'
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The rGREAT package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+Please go to the package's website: https://jokergoo.github.io/rGREAT.

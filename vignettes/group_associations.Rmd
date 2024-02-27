@@ -1,0 +1,68 @@
+---
+title: "Get gene-region associations for a group of GO terms"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+
+```{r, echo = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.width = 5,
+    fig.height = 5,
+    fig.align = "center"
+)
+options("width" = 100)
+```
+
+Let's first do a combination analysis with **rGREAT** and **simplifyEnrichment**. Let's say, you have
+a list of genomic regions of interest (in the following example, we use a list of transcription factor
+binding sites). You do a GO enrichment analysis with **rGREAT** and visualize the enrichment results
+with **simplifyEnrichment**.
+
+
+```{r, fig.width = 9, fig.height = 6}
+library(rGREAT)
+df = read.table(url("https://raw.githubusercontent.com/jokergoo/rGREAT_suppl/master/data/tb_encTfChipPkENCFF708LCH_A549_JUN_hg19.bed"))
+# convert to a GRanges object
+gr = GRanges(seqnames = df[, 1], ranges = IRanges(df[, 2], df[, 3]))
+res = great(gr, "BP", "hg19")
+tb = getEnrichmentTable(res)
+head(tb)
+
+library(simplifyEnrichment)
+sig_go_ids = tb$id[tb$p_adjust < 0.001]
+cl = simplifyGO(sig_go_ids)
+head(cl)
+table(cl$cluster)
+```
+
+The plot looks not bad. Next you may want to get the gene-region associations for significant GO terms. 
+For example, the association for the first GO term:
+
+```{r}
+getRegionGeneAssociations(res, cl$id[1])
+```
+
+There are more than 600 significant GO terms, and perhaps you don't want to obtain such gene-region associations
+for every one of them.
+
+As **simplifyEnrichment** already clusters significant GO terms into a smaller number of groups, you may switch your
+need of obtaining the associations from single GO terms to a group of GO terms where they show similar biological concept. In the new version of **rGREAT** (only available on GitHub currently), the second argument can be set as a vector of GO IDs. So, for example, to get the gene-region association for GO terms in the first cluster:
+
+```{r}
+getRegionGeneAssociations(res, cl$id[cl$cluster == 1])
+```
+
+
+## SessionInfo
+
+```{r}
+sessionInfo()
+```
+

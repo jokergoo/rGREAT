@@ -7,6 +7,21 @@
     <loc>/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>/articles/1.online-GREAT.html</loc>
+  </url>
+  <url>
+    <loc>/articles/2.local-GREAT.html</loc>
+  </url>
+  <url>
+    <loc>/articles/3.other-geneset-databases.html</loc>
+  </url>
+  <url>
+    <loc>/articles/4.other-organisms.html</loc>
+  </url>
+  <url>
+    <loc>/articles/group_associations.html</loc>
+  </url>
+  <url>
     <loc>/articles/index.html</loc>
   </url>
   <url>
@@ -26,6 +41,21 @@
   </url>
   <url>
     <loc>/articles/rGREAT.html</loc>
+  </url>
+  <url>
+    <loc>/articles/suppl_compare_GO.html</loc>
+  </url>
+  <url>
+    <loc>/articles/suppl_compare_genome_versions.html</loc>
+  </url>
+  <url>
+    <loc>/articles/suppl_compare_online_and_local.html</loc>
+  </url>
+  <url>
+    <loc>/articles/suppl_compare_tss.html</loc>
+  </url>
+  <url>
+    <loc>/articles/suppl_use_background.html</loc>
   </url>
   <url>
     <loc>/authors.html</loc>
@@ -94,10 +124,19 @@
     <loc>/reference/getGeneSetsFromBioMart.html</loc>
   </url>
   <url>
+    <loc>/reference/getGeneSetsFromOrgDb.html</loc>
+  </url>
+  <url>
     <loc>/reference/getGenesFromGencode.html</loc>
   </url>
   <url>
     <loc>/reference/getGenomeDataFromNCBI.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getKEGGGenome.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getKEGGPathways.html</loc>
   </url>
   <url>
     <loc>/reference/getRefSeqGenesFromUCSC.html</loc>

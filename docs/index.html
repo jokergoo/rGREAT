@@ -40,15 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
@@ -56,14 +53,15 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/local-GREAT.html">Analyze with local GREAT</a>
-    </li>
+<li class="dropdown-header">Online GREAT</li>
     <li>
       <a href="articles/online-GREAT.html">Analyze with online GREAT</a>
     </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Local GREAT</li>
     <li>
-      <a href="articles/other-docs.html">Other documents</a>
+      <a href="articles/local-GREAT.html">Analyze with local GREAT</a>
     </li>
     <li>
       <a href="articles/other-geneset-databases.html">Work with other geneset databases</a>
@@ -71,7 +69,31 @@
     <li>
       <a href="articles/other-organisms.html">Work with other organisms</a>
     </li>
+    <li>
+      <a href="articles/group_associations.html">Get gene-region associations for a group of GO terms</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Supplementaries in the rGREAT paper</li>
+    <li>
+      <a href="articles/suppl_use_background.html">Suppl 1. Use background regions</a>
+    </li>
+    <li>
+      <a href="articles/suppl_compare_GO.html">Suppl 2. Compare GO annotations from online and local GREAT</a>
+    </li>
+    <li>
+      <a href="articles/suppl_compare_online_and_local.html">Suppl 3. Compare online and local GREAT</a>
+    </li>
+    <li>
+      <a href="articles/suppl_compare_tss.html">Suppl 4. Compare different TSS sources</a>
+    </li>
+    <li>
+      <a href="articles/suppl_compare_genome_version.html">Suppl 5. Compare different genome versions</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -106,7 +128,7 @@
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"rGREAT"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"rGREAT"</span><span class="op">)</span></span></code></pre></div>
 <p>If you want the latest version, install it directly from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span>
@@ -115,7 +137,7 @@
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<p>rGREAT: an R/Bioconductor package for functional enrichment on genomic regions Zuguang Gu, Daniel Hübschmann Bioinformatics, btac745, <a href="https://doi.org/10.1093/bioinformatics/btac745" class="external-link uri">https://doi.org/10.1093/bioinformatics/btac745</a></p>
+<p>Zuguang Gu, et al., rGREAT: an R/Bioconductor package for functional enrichment on genomic regions. Bioinformatics, <a href="https://doi.org/10.1093/bioinformatics/btac745" class="external-link uri">https://doi.org/10.1093/bioinformatics/btac745</a></p>
 </div>
 <div class="section level2">
 <h2 id="online-great-analysis">Online GREAT analysis<a class="anchor" aria-label="anchor" href="#online-great-analysis"></a>
@@ -139,7 +161,6 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># giant panda</span></span>
 <span><span class="fu"><a href="reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="st">"GO:BP"</span>, biomart_dataset <span class="op">=</span> <span class="st">"amelanoleuca_gene_ensembl"</span><span class="op">)</span></span></code></pre></div>
-<p>For more details, please go to <a href="https://jokergoo.github.io/rGREAT/" class="external-link">the package vignettes</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
@@ -204,7 +225,6 @@
   
 
 
-  
-
-  </body>
+  <style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>
+</body>
 </html>

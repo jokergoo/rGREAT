@@ -9,14 +9,14 @@ BASE_URL_LIST["3.0"] = BASE_URL_LIST["3"] = BASE_URL_LIST["3.0.0"]
 BASE_URL_LIST["2.0"] = BASE_URL_LIST["2"] = BASE_URL_LIST["2.0.2"]
 BASE_URL_LIST["4.0"] = BASE_URL_LIST["4"] = BASE_URL_LIST["4.0.4"]
 
-SPECIES = list("4.0.4" = c("hg38", "hg19", "mm9", "mm10"),
+GENOME = list("4.0.4" = c("hg38", "hg19", "mm9", "mm10"),
 	           "3.0.0" = c("hg19", "mm9", "mm10", "danRer7"),
 	           "2.0.2" = c("hg19", "hg18", "mm9", "danRer7"))
-SPECIES$default = SPECIES[[DEFAULT_VERSION]]
+GENOME$default = GENOME[[DEFAULT_VERSION]]
 
-SPECIES["4.0"] = SPECIES["4"] = SPECIES["4.0.4"]
-SPECIES["3.0"] = SPECIES["3"] = SPECIES["3.0.0"]
-SPECIES["2.0"] = SPECIES["2"] = SPECIES["2.0.2"]
+GENOME["4.0"] = GENOME["4"] = GENOME["4.0.4"]
+GENOME["3.0"] = GENOME["3"] = GENOME["3.0.0"]
+GENOME["2.0"] = GENOME["2"] = GENOME["2.0.2"]
 
 rGREAT_env = new.env()
 rGREAT_env$LAST_REQUEST_TIME = 0

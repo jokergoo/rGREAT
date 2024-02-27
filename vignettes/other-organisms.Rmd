@@ -2,16 +2,7 @@
 title: "Work with other organisms"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output:
-  html_document:
-    toc: true
-    toc_depth: 3
-    toc_collapsed: false
-    toc_float: true
-vignette: >
-  %\VignetteIndexEntry{3. Work with other organisms}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_document
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -58,7 +49,7 @@ You can specify a BioMart dataset (which corresponds to a specific organism), e.
 great(gr, "GO:BP", biomart_dataset = "amelanoleuca_gene_ensembl")
 ```
 
-<p style="color:red">Make sure the genome version to be fit with your data.</p>
+<p style="color:red">Make sure the genome version fit your data.</p>
 
 A full list of supported BioMart datasets (organisms) as well as the genomo versions can be found with the function `BioMartGOGeneSets::supportedOrganisms()`.
 

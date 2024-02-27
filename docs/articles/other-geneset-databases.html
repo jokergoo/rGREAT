@@ -33,15 +33,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">rGREAT</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.5.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
@@ -49,14 +46,15 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/local-GREAT.html">Analyze with local GREAT</a>
-    </li>
+<li class="dropdown-header">Online GREAT</li>
     <li>
       <a href="../articles/online-GREAT.html">Analyze with online GREAT</a>
     </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Local GREAT</li>
     <li>
-      <a href="../articles/other-docs.html">Other documents</a>
+      <a href="../articles/local-GREAT.html">Analyze with local GREAT</a>
     </li>
     <li>
       <a href="../articles/other-geneset-databases.html">Work with other geneset databases</a>
@@ -64,7 +62,31 @@
     <li>
       <a href="../articles/other-organisms.html">Work with other organisms</a>
     </li>
+    <li>
+      <a href="../articles/group_associations.html">Get gene-region associations for a group of GO terms</a>
+    </li>
+    <li class="divider">
+    </li>
+<li class="dropdown-header">Supplementaries in the rGREAT paper</li>
+    <li>
+      <a href="../articles/suppl_use_background.html">Suppl 1. Use background regions</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_GO.html">Suppl 2. Compare GO annotations from online and local GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_online_and_local.html">Suppl 3. Compare online and local GREAT</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_tss.html">Suppl 4. Compare different TSS sources</a>
+    </li>
+    <li>
+      <a href="../articles/suppl_compare_genome_version.html">Suppl 5. Compare different genome versions</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -90,7 +112,7 @@
       <h1 data-toc-skip>Work with other geneset databases</h1>
                         <h4 data-toc-skip class="author">Zuguang Gu ( <a href="mailto:z.gu@dkfz.de" class="email">z.gu@dkfz.de</a> )</h4>
             
-            <h4 data-toc-skip class="date">2023-04-02</h4>
+            <h4 data-toc-skip class="date">2024-02-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jokergoo/rGREAT/blob/HEAD/vignettes/other-geneset-databases.Rmd" class="external-link"><code>vignettes/other-geneset-databases.Rmd</code></a></small>
       <div class="hidden name"><code>other-geneset-databases.Rmd</code></div>
@@ -122,7 +144,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/rGREAT" class="external-link">rGREAT</a></span><span class="op">)</span></span>
 <span><span class="va">gr</span> <span class="op">=</span> <span class="fu"><a href="../reference/randomRegions.html">randomRegions</a></span><span class="op">(</span>genome <span class="op">=</span> <span class="st">"hg19"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">kegg_pathways</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
+<pre><code><span><span class="co">## 933 regions are associated to 1377 genes' extended TSSs.</span></span>
 <span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
 <span><span class="co">##   Genome: hg19</span></span>
 <span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
@@ -148,6 +170,26 @@
 <span><span class="co">##                                                 hsa01232 </span></span>
 <span><span class="co">##           "Nucleotide metabolism - Homo sapiens (human)"</span></span></code></pre>
 <p>Please go the the documentation of <strong>KEGGREST</strong> or the main website of KEGG API (<a href="https://rest.kegg.jp/" class="external-link uri">https://rest.kegg.jp/</a>) to find out commands for retrieving various datasets there.</p>
+<p>To make it easier to use, there is already a helper function <code><a href="../reference/getKEGGPathways.html">getKEGGPathways()</a></code> function which directly downloads data from kEGG and format it as a list or a data frame.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lt</span> <span class="op">=</span> <span class="fu"><a href="../reference/getKEGGPathways.html">getKEGGPathways</a></span><span class="op">(</span><span class="st">"hsa"</span><span class="op">)</span></span>
+<span><span class="va">lt</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## $`hsa00010: Glycolysis / Gluconeogenesis`</span></span>
+<span><span class="co">##  [1] "10327"  "124"    "125"    "126"    "127"    "128"    "130"    "130589"</span></span>
+<span><span class="co">##  [9] "131"    "160287" "1737"   "1738"   "2023"   "2026"   "2027"   "217"   </span></span>
+<span><span class="co">## [17] "218"    "219"    "2203"   "221"    "222"    "223"    "224"    "226"   </span></span>
+<span><span class="co">## [25] "229"    "230"    "2538"   "2597"   "26330"  "2645"   "2821"   "3098"  </span></span>
+<span><span class="co">## [33] "3099"   "3101"   "387712" "3939"   "3945"   "3948"   "441531" "501"   </span></span>
+<span><span class="co">## [41] "5105"   "5106"   "5160"   "5161"   "5162"   "5211"   "5213"   "5214"  </span></span>
+<span><span class="co">## [49] "5223"   "5224"   "5230"   "5232"   "5236"   "5313"   "5315"   "55276" </span></span>
+<span><span class="co">## [57] "55902"  "57818"  "669"    "7167"   "80201"  "83440"  "84532"  "8789"  </span></span>
+<span><span class="co">## [65] "92483"  "92579"  "9562"  </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $`hsa00020: Citrate cycle (TCA cycle)`</span></span>
+<span><span class="co">##  [1] "1431"  "1737"  "1738"  "1743"  "2271"  "3417"  "3418"  "3419"  "3420" </span></span>
+<span><span class="co">## [10] "3421"  "4190"  "4191"  "47"    "48"    "4967"  "50"    "5091"  "5105" </span></span>
+<span><span class="co">## [19] "5106"  "5160"  "5161"  "5162"  "55753" "6389"  "6390"  "6391"  "6392" </span></span>
+<span><span class="co">## [28] "8801"  "8802"  "8803"</span></span></code></pre>
 <p style="color:red;">
 Please note, KEGG pathways are only free for academic users, <a href="https://www.pathway.jp/en/licensing.html" class="external-link uri">https://www.pathway.jp/en/licensing.html</a>.
 </p>
@@ -157,11 +199,11 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 </h2>
 <p><a href="https://reactome.org/" class="external-link">Reactome</a> is another popular pathway database for gene set enrichment analysis. In Bioconductor, there is a package <a href="https://bioconductor.org/packages/reactome.db/" class="external-link"><strong>reactome.db</strong></a> that contains genes associated to every pathway in Reactome.</p>
 <p>To get the Reactome pathway gene sets, simply use the object <code>reactomePATHID2EXTID</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">reactome.db</span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">reactomePATHID2EXTID</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">gs</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
+<pre><code><span><span class="co">## 933 regions are associated to 1377 genes' extended TSSs.</span></span>
 <span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
 <span><span class="co">##   Genome: hg19</span></span>
 <span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
@@ -177,19 +219,10 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 </h2>
 <p>UniProt database provides a list of controlled vocabulary represented as keywords for genes or proteins (<a href="https://www.uniprot.org/keywords/" class="external-link uri">https://www.uniprot.org/keywords/</a>). This is useful for summarizing gene functions in a compact way. The <a href="https://bioconductor.org/packages/UniProtKeywords/" class="external-link"><strong>UniProtKeywords</strong></a> package contains gene sets associated to keywords.</p>
 <p><strong>UniProtKeywords</strong> support several organisms. Here we use human as an example. In the function <code><a href="https://rdrr.io/pkg/UniProtKeywords/man/load_keyword_genesets.html" class="external-link">load_keyword_genesets()</a></code>, you need to specify the taxon ID for the organism.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/UniProtKeywords" class="external-link">UniProtKeywords</a></span><span class="op">)</span></span>
 <span><span class="va">gs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/UniProtKeywords/man/load_keyword_genesets.html" class="external-link">load_keyword_genesets</a></span><span class="op">(</span><span class="fl">9606</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/great.html">great</a></span><span class="op">(</span><span class="va">gr</span>, <span class="va">gs</span>, <span class="st">"hg19"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 907 regions are associated to 1371 genes' extended TSSs.</span></span>
-<span><span class="co">##   TSS source: TxDb.Hsapiens.UCSC.hg19.knownGene</span></span>
-<span><span class="co">##   Genome: hg19</span></span>
-<span><span class="co">##   OrgDb: org.Hs.eg.db</span></span>
-<span><span class="co">##   Gene sets: self-provided</span></span>
-<span><span class="co">##   Background: whole genome excluding gaps</span></span>
-<span><span class="co">## Mode: Basal plus extension</span></span>
-<span><span class="co">##   Proximal: 5000 bp upstream, 1000 bp downstream,</span></span>
-<span><span class="co">##   plus Distal: up to 1000000 bp</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="specific-gene-sets-in--gmt-format">Specific gene sets in .gmt format<a class="anchor" aria-label="anchor" href="#specific-gene-sets-in--gmt-format"></a>
@@ -200,136 +233,140 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## R version 4.2.0 (2022-04-22)</span></span>
-<span><span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span></span>
-<span><span class="co">## Running under: macOS Big Sur/Monterey 10.16</span></span>
+<pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
+<span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
+<span><span class="co">## Running under: macOS Ventura 13.2.1</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Matrix products: default</span></span>
-<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib</span></span>
-<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib</span></span>
+<span><span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib </span></span>
+<span><span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## locale:</span></span>
 <span><span class="co">## [1] C/UTF-8/C/C/C/C</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## time zone: Europe/Berlin</span></span>
+<span><span class="co">## tzcode source: internal</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## attached base packages:</span></span>
 <span><span class="co">## [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span></span>
 <span><span class="co">## [8] base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] UniProtKeywords_0.99.4 reactome.db_1.82.0     AnnotationDbi_1.60.0  </span></span>
-<span><span class="co">##  [4] Biobase_2.58.0         rGREAT_2.1.8           GenomicRanges_1.50.2  </span></span>
-<span><span class="co">##  [7] GenomeInfoDb_1.34.9    IRanges_2.32.0         S4Vectors_0.36.1      </span></span>
-<span><span class="co">## [10] BiocGenerics_0.44.0    KEGGREST_1.38.0        knitr_1.42            </span></span>
+<span><span class="co">##  [1] reactome.db_1.84.0   AnnotationDbi_1.62.2 Biobase_2.60.0      </span></span>
+<span><span class="co">##  [4] rGREAT_2.5.4         GenomicRanges_1.52.1 GenomeInfoDb_1.36.4 </span></span>
+<span><span class="co">##  [7] IRanges_2.36.0       S4Vectors_0.40.2     BiocGenerics_0.48.1 </span></span>
+<span><span class="co">## [10] KEGGREST_1.40.1      knitr_1.44          </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
-<span><span class="co">##   [1] colorspace_2.1-0                        </span></span>
-<span><span class="co">##   [2] rjson_0.2.21                            </span></span>
-<span><span class="co">##   [3] ellipsis_0.3.2                          </span></span>
-<span><span class="co">##   [4] rprojroot_2.0.3                         </span></span>
-<span><span class="co">##   [5] circlize_0.4.16                         </span></span>
-<span><span class="co">##   [6] XVector_0.38.0                          </span></span>
-<span><span class="co">##   [7] GlobalOptions_0.1.2                     </span></span>
-<span><span class="co">##   [8] fs_1.6.1                                </span></span>
-<span><span class="co">##   [9] DT_0.27                                 </span></span>
-<span><span class="co">##  [10] bit64_4.0.5                             </span></span>
-<span><span class="co">##  [11] fansi_1.0.4                             </span></span>
-<span><span class="co">##  [12] xml2_1.3.3                              </span></span>
-<span><span class="co">##  [13] codetools_0.2-19                        </span></span>
-<span><span class="co">##  [14] doParallel_1.0.17                       </span></span>
-<span><span class="co">##  [15] cachem_1.0.6                            </span></span>
-<span><span class="co">##  [16] jsonlite_1.8.4                          </span></span>
-<span><span class="co">##  [17] Rsamtools_2.14.0                        </span></span>
-<span><span class="co">##  [18] GO.db_3.16.0                            </span></span>
-<span><span class="co">##  [19] dbplyr_2.3.0                            </span></span>
-<span><span class="co">##  [20] png_0.1-8                               </span></span>
-<span><span class="co">##  [21] shiny_1.7.4                             </span></span>
-<span><span class="co">##  [22] compiler_4.2.0                          </span></span>
-<span><span class="co">##  [23] httr_1.4.4                              </span></span>
-<span><span class="co">##  [24] assertthat_0.2.1                        </span></span>
-<span><span class="co">##  [25] Matrix_1.5-3                            </span></span>
-<span><span class="co">##  [26] fastmap_1.1.0                           </span></span>
-<span><span class="co">##  [27] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2 </span></span>
-<span><span class="co">##  [28] cli_3.6.0                               </span></span>
-<span><span class="co">##  [29] later_1.3.0                             </span></span>
-<span><span class="co">##  [30] htmltools_0.5.4                         </span></span>
-<span><span class="co">##  [31] prettyunits_1.1.1                       </span></span>
-<span><span class="co">##  [32] tools_4.2.0                             </span></span>
-<span><span class="co">##  [33] glue_1.6.2                              </span></span>
-<span><span class="co">##  [34] GenomeInfoDbData_1.2.9                  </span></span>
-<span><span class="co">##  [35] dplyr_1.1.0                             </span></span>
-<span><span class="co">##  [36] rappdirs_0.3.3                          </span></span>
-<span><span class="co">##  [37] Rcpp_1.0.10                             </span></span>
-<span><span class="co">##  [38] TxDb.Hsapiens.UCSC.hg38.knownGene_3.16.0</span></span>
-<span><span class="co">##  [39] jquerylib_0.1.4                         </span></span>
-<span><span class="co">##  [40] pkgdown_2.0.7                           </span></span>
-<span><span class="co">##  [41] vctrs_0.5.2                             </span></span>
-<span><span class="co">##  [42] Biostrings_2.66.0                       </span></span>
-<span><span class="co">##  [43] rtracklayer_1.58.0                      </span></span>
-<span><span class="co">##  [44] iterators_1.0.14                        </span></span>
-<span><span class="co">##  [45] xfun_0.37                               </span></span>
-<span><span class="co">##  [46] stringr_1.5.0                           </span></span>
-<span><span class="co">##  [47] mime_0.12                               </span></span>
-<span><span class="co">##  [48] lifecycle_1.0.3                         </span></span>
-<span><span class="co">##  [49] restfulr_0.0.15                         </span></span>
-<span><span class="co">##  [50] XML_3.99-0.13                           </span></span>
-<span><span class="co">##  [51] org.Hs.eg.db_3.16.0                     </span></span>
-<span><span class="co">##  [52] zlibbioc_1.44.0                         </span></span>
-<span><span class="co">##  [53] ragg_1.2.5                              </span></span>
-<span><span class="co">##  [54] hms_1.1.2                               </span></span>
-<span><span class="co">##  [55] promises_1.2.0.1                        </span></span>
-<span><span class="co">##  [56] MatrixGenerics_1.10.0                   </span></span>
-<span><span class="co">##  [57] parallel_4.2.0                          </span></span>
-<span><span class="co">##  [58] SummarizedExperiment_1.28.0             </span></span>
-<span><span class="co">##  [59] RColorBrewer_1.1-3                      </span></span>
-<span><span class="co">##  [60] yaml_2.3.7                              </span></span>
-<span><span class="co">##  [61] curl_5.0.0                              </span></span>
-<span><span class="co">##  [62] memoise_2.0.1                           </span></span>
-<span><span class="co">##  [63] sass_0.4.5                              </span></span>
-<span><span class="co">##  [64] biomaRt_2.54.0                          </span></span>
-<span><span class="co">##  [65] stringi_1.7.12                          </span></span>
-<span><span class="co">##  [66] RSQLite_2.2.20                          </span></span>
-<span><span class="co">##  [67] BiocIO_1.8.0                            </span></span>
-<span><span class="co">##  [68] desc_1.4.2                              </span></span>
-<span><span class="co">##  [69] foreach_1.5.2                           </span></span>
-<span><span class="co">##  [70] GenomicFeatures_1.50.4                  </span></span>
-<span><span class="co">##  [71] filelock_1.0.2                          </span></span>
-<span><span class="co">##  [72] BiocParallel_1.32.5                     </span></span>
-<span><span class="co">##  [73] shape_1.4.6                             </span></span>
-<span><span class="co">##  [74] rlang_1.0.6                             </span></span>
-<span><span class="co">##  [75] pkgconfig_2.0.3                         </span></span>
-<span><span class="co">##  [76] systemfonts_1.0.4                       </span></span>
-<span><span class="co">##  [77] matrixStats_0.63.0                      </span></span>
-<span><span class="co">##  [78] bitops_1.0-7                            </span></span>
-<span><span class="co">##  [79] evaluate_0.20                           </span></span>
-<span><span class="co">##  [80] lattice_0.20-45                         </span></span>
-<span><span class="co">##  [81] purrr_1.0.1                             </span></span>
-<span><span class="co">##  [82] GenomicAlignments_1.34.0                </span></span>
-<span><span class="co">##  [83] htmlwidgets_1.6.1                       </span></span>
-<span><span class="co">##  [84] bit_4.0.5                               </span></span>
-<span><span class="co">##  [85] tidyselect_1.2.0                        </span></span>
-<span><span class="co">##  [86] magrittr_2.0.3                          </span></span>
-<span><span class="co">##  [87] R6_2.5.1                                </span></span>
-<span><span class="co">##  [88] generics_0.1.3                          </span></span>
-<span><span class="co">##  [89] DelayedArray_0.24.0                     </span></span>
-<span><span class="co">##  [90] DBI_1.1.3                               </span></span>
-<span><span class="co">##  [91] pillar_1.8.1                            </span></span>
-<span><span class="co">##  [92] RCurl_1.98-1.10                         </span></span>
-<span><span class="co">##  [93] tibble_3.1.8                            </span></span>
-<span><span class="co">##  [94] crayon_1.5.2                            </span></span>
-<span><span class="co">##  [95] utf8_1.2.3                              </span></span>
-<span><span class="co">##  [96] BiocFileCache_2.6.0                     </span></span>
-<span><span class="co">##  [97] rmarkdown_2.20                          </span></span>
-<span><span class="co">##  [98] GetoptLong_1.1.0                        </span></span>
-<span><span class="co">##  [99] progress_1.2.2                          </span></span>
-<span><span class="co">## [100] grid_4.2.0                              </span></span>
-<span><span class="co">## [101] blob_1.2.3                              </span></span>
-<span><span class="co">## [102] digest_0.6.31                           </span></span>
-<span><span class="co">## [103] xtable_1.8-4                            </span></span>
-<span><span class="co">## [104] httpuv_1.6.8                            </span></span>
-<span><span class="co">## [105] textshaping_0.3.6                       </span></span>
-<span><span class="co">## [106] bslib_0.4.2</span></span></code></pre>
+<span><span class="co">##   [1] DBI_1.1.3                               </span></span>
+<span><span class="co">##   [2] bitops_1.0-7                            </span></span>
+<span><span class="co">##   [3] biomaRt_2.56.1                          </span></span>
+<span><span class="co">##   [4] rlang_1.1.2                             </span></span>
+<span><span class="co">##   [5] magrittr_2.0.3                          </span></span>
+<span><span class="co">##   [6] GetoptLong_1.0.5                        </span></span>
+<span><span class="co">##   [7] matrixStats_1.2.0                       </span></span>
+<span><span class="co">##   [8] compiler_4.3.1                          </span></span>
+<span><span class="co">##   [9] RSQLite_2.3.1                           </span></span>
+<span><span class="co">##  [10] GenomicFeatures_1.52.2                  </span></span>
+<span><span class="co">##  [11] png_0.1-8                               </span></span>
+<span><span class="co">##  [12] systemfonts_1.0.5                       </span></span>
+<span><span class="co">##  [13] vctrs_0.6.4                             </span></span>
+<span><span class="co">##  [14] stringr_1.5.0                           </span></span>
+<span><span class="co">##  [15] pkgconfig_2.0.3                         </span></span>
+<span><span class="co">##  [16] shape_1.4.6                             </span></span>
+<span><span class="co">##  [17] crayon_1.5.2                            </span></span>
+<span><span class="co">##  [18] fastmap_1.1.1                           </span></span>
+<span><span class="co">##  [19] ellipsis_0.3.2                          </span></span>
+<span><span class="co">##  [20] dbplyr_2.3.4                            </span></span>
+<span><span class="co">##  [21] XVector_0.40.0                          </span></span>
+<span><span class="co">##  [22] utf8_1.2.3                              </span></span>
+<span><span class="co">##  [23] promises_1.2.1                          </span></span>
+<span><span class="co">##  [24] Rsamtools_2.16.0                        </span></span>
+<span><span class="co">##  [25] rmarkdown_2.25                          </span></span>
+<span><span class="co">##  [26] ragg_1.2.6                              </span></span>
+<span><span class="co">##  [27] purrr_1.0.2                             </span></span>
+<span><span class="co">##  [28] bit_4.0.5                               </span></span>
+<span><span class="co">##  [29] xfun_0.40                               </span></span>
+<span><span class="co">##  [30] zlibbioc_1.46.0                         </span></span>
+<span><span class="co">##  [31] cachem_1.0.8                            </span></span>
+<span><span class="co">##  [32] jsonlite_1.8.8                          </span></span>
+<span><span class="co">##  [33] progress_1.2.2                          </span></span>
+<span><span class="co">##  [34] blob_1.2.4                              </span></span>
+<span><span class="co">##  [35] later_1.3.2                             </span></span>
+<span><span class="co">##  [36] DelayedArray_0.26.7                     </span></span>
+<span><span class="co">##  [37] BiocParallel_1.34.2                     </span></span>
+<span><span class="co">##  [38] parallel_4.3.1                          </span></span>
+<span><span class="co">##  [39] prettyunits_1.2.0                       </span></span>
+<span><span class="co">##  [40] R6_2.5.1                                </span></span>
+<span><span class="co">##  [41] bslib_0.6.1                             </span></span>
+<span><span class="co">##  [42] stringi_1.7.12                          </span></span>
+<span><span class="co">##  [43] RColorBrewer_1.1-3                      </span></span>
+<span><span class="co">##  [44] rtracklayer_1.60.1                      </span></span>
+<span><span class="co">##  [45] jquerylib_0.1.4                         </span></span>
+<span><span class="co">##  [46] Rcpp_1.0.11                             </span></span>
+<span><span class="co">##  [47] SummarizedExperiment_1.30.2             </span></span>
+<span><span class="co">##  [48] iterators_1.0.14                        </span></span>
+<span><span class="co">##  [49] httpuv_1.6.13                           </span></span>
+<span><span class="co">##  [50] Matrix_1.6-1.1                          </span></span>
+<span><span class="co">##  [51] tidyselect_1.2.0                        </span></span>
+<span><span class="co">##  [52] abind_1.4-5                             </span></span>
+<span><span class="co">##  [53] yaml_2.3.7                              </span></span>
+<span><span class="co">##  [54] doParallel_1.0.17                       </span></span>
+<span><span class="co">##  [55] codetools_0.2-19                        </span></span>
+<span><span class="co">##  [56] curl_5.1.0                              </span></span>
+<span><span class="co">##  [57] lattice_0.21-9                          </span></span>
+<span><span class="co">##  [58] tibble_3.2.1                            </span></span>
+<span><span class="co">##  [59] shiny_1.8.0                             </span></span>
+<span><span class="co">##  [60] evaluate_0.22                           </span></span>
+<span><span class="co">##  [61] desc_1.4.2                              </span></span>
+<span><span class="co">##  [62] BiocFileCache_2.8.0                     </span></span>
+<span><span class="co">##  [63] xml2_1.3.6                              </span></span>
+<span><span class="co">##  [64] circlize_0.4.15                         </span></span>
+<span><span class="co">##  [65] Biostrings_2.68.1                       </span></span>
+<span><span class="co">##  [66] pillar_1.9.0                            </span></span>
+<span><span class="co">##  [67] filelock_1.0.2                          </span></span>
+<span><span class="co">##  [68] MatrixGenerics_1.12.3                   </span></span>
+<span><span class="co">##  [69] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2 </span></span>
+<span><span class="co">##  [70] DT_0.30                                 </span></span>
+<span><span class="co">##  [71] foreach_1.5.2                           </span></span>
+<span><span class="co">##  [72] generics_0.1.3                          </span></span>
+<span><span class="co">##  [73] rprojroot_2.0.3                         </span></span>
+<span><span class="co">##  [74] RCurl_1.98-1.12                         </span></span>
+<span><span class="co">##  [75] hms_1.1.3                               </span></span>
+<span><span class="co">##  [76] xtable_1.8-4                            </span></span>
+<span><span class="co">##  [77] glue_1.6.2                              </span></span>
+<span><span class="co">##  [78] tools_4.3.1                             </span></span>
+<span><span class="co">##  [79] BiocIO_1.10.0                           </span></span>
+<span><span class="co">##  [80] TxDb.Hsapiens.UCSC.hg38.knownGene_3.17.0</span></span>
+<span><span class="co">##  [81] GenomicAlignments_1.36.0                </span></span>
+<span><span class="co">##  [82] fs_1.6.3                                </span></span>
+<span><span class="co">##  [83] XML_3.99-0.14                           </span></span>
+<span><span class="co">##  [84] grid_4.3.1                              </span></span>
+<span><span class="co">##  [85] colorspace_2.1-0                        </span></span>
+<span><span class="co">##  [86] GenomeInfoDbData_1.2.10                 </span></span>
+<span><span class="co">##  [87] restfulr_0.0.15                         </span></span>
+<span><span class="co">##  [88] cli_3.6.2                               </span></span>
+<span><span class="co">##  [89] rappdirs_0.3.3                          </span></span>
+<span><span class="co">##  [90] textshaping_0.3.7                       </span></span>
+<span><span class="co">##  [91] fansi_1.0.5                             </span></span>
+<span><span class="co">##  [92] S4Arrays_1.0.6                          </span></span>
+<span><span class="co">##  [93] dplyr_1.1.3                             </span></span>
+<span><span class="co">##  [94] sass_0.4.8                              </span></span>
+<span><span class="co">##  [95] digest_0.6.33                           </span></span>
+<span><span class="co">##  [96] org.Hs.eg.db_3.17.0                     </span></span>
+<span><span class="co">##  [97] rjson_0.2.21                            </span></span>
+<span><span class="co">##  [98] htmlwidgets_1.6.2                       </span></span>
+<span><span class="co">##  [99] memoise_2.0.1                           </span></span>
+<span><span class="co">## [100] htmltools_0.5.7                         </span></span>
+<span><span class="co">## [101] pkgdown_2.0.7                           </span></span>
+<span><span class="co">## [102] lifecycle_1.0.4                         </span></span>
+<span><span class="co">## [103] httr_1.4.7                              </span></span>
+<span><span class="co">## [104] mime_0.12                               </span></span>
+<span><span class="co">## [105] GlobalOptions_0.1.2                     </span></span>
+<span><span class="co">## [106] GO.db_3.17.0                            </span></span>
+<span><span class="co">## [107] bit64_4.0.5</span></span></code></pre>
 </div>
   </div>
 
@@ -359,7 +396,6 @@ Please note, KEGG pathways are only free for academic users, <a href="https://ww
   
 
 
-  
-
-  </body>
+  <style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>
+</body>
 </html>

@@ -1,1 +1,39 @@
 destination: docs
+
+navbar:
+  title: "rGREAT"
+  left:
+    - text: "Articles"
+      menu:
+        - text: Online GREAT
+        - text: "Analyze with online GREAT"
+          href: articles/online-GREAT.html
+        - text: -------
+        - text: Local GREAT
+        - text: "Analyze with local GREAT"
+          href: articles/local-GREAT.html
+        - text: "Work with other geneset databases"
+          href: articles/other-geneset-databases.html
+        - text: "Work with other organisms"
+          href: articles/other-organisms.html
+        - text: "Get gene-region associations for a group of GO terms"
+          href: articles/group_associations.html
+        - text: -------
+        - text: Supplementaries in the rGREAT paper
+        - text: "Suppl 1. Use background regions"
+          href: articles/suppl_use_background.html
+        - text: "Suppl 2. Compare GO annotations from online and local GREAT"
+          href: articles/suppl_compare_GO.html
+        - text: "Suppl 3. Compare online and local GREAT"
+          href: articles/suppl_compare_online_and_local.html
+        - text: "Suppl 4. Compare different TSS sources"
+          href: articles/suppl_compare_tss.html
+        - text: "Suppl 5. Compare different genome versions"
+          href: articles/suppl_compare_genome_version.html
+    - text: "Reference"
+      href: reference/index.html
+
+
+template:
+  includes:
+    after_body: "<style>nav[data-toggle='toc'] .nav .nav {display: block;}</style>"

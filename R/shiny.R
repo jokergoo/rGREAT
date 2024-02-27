@@ -86,7 +86,7 @@ setMethod(f = "shinyReport",
 		
 		BASE_URL = BASE_URL_LIST[job@parameters$version]
 
-		tb2[, "name"] = qq("<a href='@{BASE_URL}/showTermDetails.php?termId=@{tb2[, 'ID']}&ontoName=@{job@job_env$ONTOLOGY_KEYS[onto]}&ontoUiName=@{onto}&sessionName=@{job@job_env$id}&species=@{job@parameters$species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region' target='_blank'>@{tb2[, 'name']}</a>", collapse = FALSE)
+		tb2[, "name"] = qq("<a href='@{BASE_URL}/showTermDetails.php?termId=@{tb2[, 'ID']}&ontoName=@{job@job_env$ONTOLOGY_KEYS[onto]}&ontoUiName=@{onto}&sessionName=@{job@job_env$id}&species=@{job@parameters$genome}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region' target='_blank'>@{tb2[, 'name']}</a>", collapse = FALSE)
 		colnames(tb2) = c("ID", "Term Name", "Binom Raw P-value", "Binom Adjusted P-value", "Binom Fold Enrichment", "Binom Observed Region Hits", "Genome Fraction",
 			"Hyper Raw P-value", "Hyper Adjusted P-value", "Hyper Observed Gene Hits", "Hyper Total Genes in Gene Set")
 		colnames(tb2) = gsub("_", " ", colnames(tb2))

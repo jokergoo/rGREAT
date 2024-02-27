@@ -1,0 +1,291 @@
+---
+title: "Suppl 3. Compare online and local GREAT"
+author: "Zuguang Gu ( z.gu@dkfz.de )"
+date: '`r Sys.Date()`'
+output: html_document
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(knitr)
+knitr::opts_chunk$set(
+    error = FALSE,
+    tidy  = FALSE,
+    message = FALSE,
+    warning = FALSE,
+    fig.align = "center")
+```
+
+```{r}
+library(rGREAT)
+library(eulerr)
+```
+
+In this document, we will compare the enrichment results from online GREAT and local GREAT. The four
+datasets are all from [UCSC table browser](https://genome.ucsc.edu/cgi-bin/hgTables). Parameters are:
+
+```
+clade = Mammal
+genome = Human
+assembly = GRCh37/hg19
+group = Regulation
+track = ENCODE 3 TFBS
+table: A549 JUN, A549 ELF1, H1-hESC RXRA, GM12878 MYB
+```
+
+And in the “Retrieve and display data” section:
+
+```
+output format = BED - browser extensible data
+```
+
+Then click the button “get output”.
+
+We first read the files into `GRanges` objects:
+
+
+```{r}
+read_bed = function(f) {
+    df = read.table(f)
+    df = df[df[, 1] %in% paste0("chr", c(1:22, "X", "Y")), ]
+    GRanges(seqnames = df[, 1], ranges = IRanges(df[, 2] + 1, df[, 3]))
+}
+grl = list()
+grl$A549_JUN = read_bed("data/tb_encTfChipPkENCFF708LCH_A549_JUN_hg19.bed")
+grl$A549_ELF1 = read_bed("data/tb_encTfChipPkENCFF533NIV_A549_ELF1_hg19.bed")
+grl$H1_hESC_RXRA = read_bed("data/tb_encTfChipPkENCFF369JAI_H1_hESC_RXRA_hg19.bed")
+grl$GM12878_MYB = read_bed("data/tb_encTfChipPkENCFF215YWS_GM12878_MYB_hg19.bed")
+sapply(grl, length)
+```
+
+
+## A549_JUN (`r length(grl$A549_JUN)` input regions)
+
+Apply both online and local GREAT analysis. Note online GREAT exclude gap regions, and in local GREAT, by default gap regions are removed as well.
+
+```{r}
+gr = grl$A549_JUN
+job = submitGreatJob(gr)
+tbl = getEnrichmentTables(job)
+tb1 = tbl[["GO Biological Process"]]
+
+res = great(gr, "GO:BP", "hg19")
+tb2 = getEnrichmentTable(res)
+```
+
+`tb1` and `tb2` contain the full table of all GO terms under test. First we take the common GO terms in the two result tables.
+
+```{r}
+cn = intersect(tb1$ID, tb2$id)
+length(cn)
+rownames(tb1) = tb1$ID
+rownames(tb2) = tb2$id
+tb1 = tb1[cn, ]
+tb2 = tb2[cn, ]
+```
+
+The significant GO terms from the two tables.
+
+```{r}
+lt2 = list(online = tb1$ID[tb1$Binom_Adjp_BH < 0.001],
+          local = tb2$id[tb2$p_adjust < 0.001])
+plot(euler(lt2), quantities = TRUE, main = "A549_JUN")
+```
+
+Next we compare the observed region hits and fold enrichment in the two results.
+
+```{r, fig.width = 10, fig.height = 5}
+par(mfrow = c(1, 2))
+plot(tb1$Binom_Observed_Region_Hits, tb2$observed_region_hits, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Observed region hits")
+plot(tb1$Binom_Fold_Enrichment, tb2$fold_enrichment, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Fold enrichment")
+```
+
+
+Next we compare the two significant GO term lists by clustering them into groups.
+
+```{r, fig.width = 8, fig.height = 5}
+lt3 = list(online = data.frame(id = tb1$ID, p_adjust = tb1$Binom_Adjp_BH), 
+           local = data.frame(id = tb2$id, p_adjust = tb2$p_adjust))
+library(simplifyEnrichment)
+se_opt$verbose = FALSE
+simplifyGOFromMultipleLists(lt3, padj_cutoff = 0.001)
+```
+
+
+
+## A549_ELF1 (`r length(grl$A549_ELF1)` input regions)
+
+Apply both online and local GREAT analysis:
+
+```{r}
+gr = grl$A549_ELF1
+job = submitGreatJob(gr)
+tbl = getEnrichmentTables(job)
+tb1 = tbl[["GO Biological Process"]]
+
+res = great(gr, "GO:BP", "hg19")
+tb2 = getEnrichmentTable(res)
+```
+
+`tb1` and `tb2` contain the full table of all GO terms under test. First we take the common GO terms in the two result tables.
+
+```{r}
+cn = intersect(tb1$ID, tb2$id)
+length(cn)
+rownames(tb1) = tb1$ID
+rownames(tb2) = tb2$id
+tb1 = tb1[cn, ]
+tb2 = tb2[cn, ]
+```
+
+The significant GO terms from the two tables.
+
+```{r}
+lt2 = list(online = tb1$ID[tb1$Binom_Adjp_BH < 0.001],
+          local = tb2$id[tb2$p_adjust < 0.001])
+plot(euler(lt2), quantities = TRUE, main = "A549_ELF1")
+```
+
+Next we compare the observed region hits and fold enrichment in the two results.
+
+```{r, fig.width = 10, fig.height = 5}
+par(mfrow = c(1, 2))
+plot(tb1$Binom_Observed_Region_Hits, tb2$observed_region_hits, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Observed region hits")
+plot(tb1$Binom_Fold_Enrichment, tb2$fold_enrichment, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Fold enrichment")
+```
+
+
+Next we compare the two significant GO term lists by clustering them into groups.
+
+```{r, fig.width = 8, fig.height = 5}
+lt3 = list(online = data.frame(id = tb1$ID, p_adjust = tb1$Binom_Adjp_BH), 
+           local = data.frame(id = tb2$id, p_adjust = tb2$p_adjust))
+library(simplifyEnrichment)
+se_opt$verbose = FALSE
+simplifyGOFromMultipleLists(lt3, padj_cutoff = 0.001)
+```
+
+
+## H1_hESC_RXRA (`r length(grl$H1_hESC_RXRA)` input regions)
+
+Apply both online and local GREAT analysis:
+
+```{r}
+gr = grl$H1_hESC_RXRA
+job = submitGreatJob(gr)
+tbl = getEnrichmentTables(job)
+tb1 = tbl[["GO Biological Process"]]
+
+res = great(gr, "GO:BP", "hg19")
+tb2 = getEnrichmentTable(res)
+```
+
+
+`tb1` and `tb2` contain the full table of all GO terms under test. First we take the common GO terms in the two result tables.
+
+```{r}
+cn = intersect(tb1$ID, tb2$id)
+length(cn)
+rownames(tb1) = tb1$ID
+rownames(tb2) = tb2$id
+tb1 = tb1[cn, ]
+tb2 = tb2[cn, ]
+```
+
+The significant GO terms from the two tables.
+
+
+```{r}
+lt2 = list(online = tb1$ID[tb1$Binom_Adjp_BH < 0.001],
+          local = tb2$id[tb2$p_adjust < 0.001])
+plot(euler(lt2), quantities = TRUE, main = "H1_hESC_RXRA")
+```
+
+Next we compare the observed region hits and fold enrichment in the two results.
+
+```{r, fig.width = 10, fig.height = 5}
+par(mfrow = c(1, 2))
+plot(tb1$Binom_Observed_Region_Hits, tb2$observed_region_hits, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Observed region hits")
+plot(tb1$Binom_Fold_Enrichment, tb2$fold_enrichment, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Fold enrichment")
+```
+
+
+Next we compare the two significant GO term lists by clustering them into groups.
+
+```{r, fig.width = 8, fig.height = 5}
+lt3 = list(online = data.frame(id = tb1$ID, p_adjust = tb1$Binom_Adjp_BH), 
+           local = data.frame(id = tb2$id, p_adjust = tb2$p_adjust))
+library(simplifyEnrichment)
+se_opt$verbose = FALSE
+simplifyGOFromMultipleLists(lt3, padj_cutoff = 0.001)
+```
+
+
+
+## GM12878_MYB (`r length(grl$GM12878_MYB)` input regions)
+
+Apply both online and local GREAT analysis:
+
+```{r}
+gr = grl$GM12878_MYB
+job = submitGreatJob(gr)
+tbl = getEnrichmentTables(job)
+tb1 = tbl[["GO Biological Process"]]
+
+res = great(gr, "GO:BP", "hg19")
+tb2 = getEnrichmentTable(res)
+```
+
+
+`tb1` and `tb2` contain the full table of all GO terms under test. First we take the common GO terms in the two result tables.
+
+```{r}
+cn = intersect(tb1$ID, tb2$id)
+length(cn)
+rownames(tb1) = tb1$ID
+rownames(tb2) = tb2$id
+tb1 = tb1[cn, ]
+tb2 = tb2[cn, ]
+```
+
+The significant GO terms from the two tables.
+
+
+```{r}
+lt2 = list(online = tb1$ID[tb1$Binom_Adjp_BH < 0.001],
+          local = tb2$id[tb2$p_adjust < 0.001])
+plot(euler(lt2), quantities = TRUE, main = "GM12878_MYB")
+```
+
+Next we compare the observed region hits and fold enrichment in the two results.
+
+```{r, fig.width = 10, fig.height = 5}
+par(mfrow = c(1, 2))
+plot(tb1$Binom_Observed_Region_Hits, tb2$observed_region_hits, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Observed region hits")
+plot(tb1$Binom_Fold_Enrichment, tb2$fold_enrichment, pch = 16, col = "#00000010",
+    xlab = "online GREAT", ylab = "local GREAT", main = "Fold enrichment")
+```
+
+
+Next we compare the two significant GO term lists by clustering them into groups.
+
+```{r, fig.width = 8, fig.height = 5}
+lt3 = list(online = data.frame(id = tb1$ID, p_adjust = tb1$Binom_Adjp_BH), 
+           local = data.frame(id = tb2$id, p_adjust = tb2$p_adjust))
+library(simplifyEnrichment)
+se_opt$verbose = FALSE
+simplifyGOFromMultipleLists(lt3, padj_cutoff = 0.001)
+```
+
+## Session info
+
+```{r}
+sessionInfo()
+```
+

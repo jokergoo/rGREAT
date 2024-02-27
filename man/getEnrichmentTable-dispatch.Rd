@@ -10,8 +10,8 @@ Method dispatch page for \code{getEnrichmentTable}.
 \code{getEnrichmentTable} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{getEnrichmentTable,GreatObject-method}}, \code{\link{GreatObject-class}} class method
 \item \code{\link{getEnrichmentTable,GreatJob-method}}, \code{\link{GreatJob-class}} class method
+\item \code{\link{getEnrichmentTable,GreatObject-method}}, \code{\link{GreatObject-class}} class method
 }
 }
 \examples{

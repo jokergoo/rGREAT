@@ -553,7 +553,7 @@ getKEGGGenome = function(organism) {
 		ln = rGREAT_env$KEGGGenomeDownloaded[[link]]
 	}
 
-	ln = grep("Assembly:GCF_\\d+", ln, value = TRUE)
+	ln = grep("Assembly: GCF_\\d+", ln, value = TRUE)
 	if(length(ln) == 0) {
 		return(NA)
 	}

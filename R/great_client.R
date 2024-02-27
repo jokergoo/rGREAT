@@ -59,7 +59,8 @@ GreatJob = function(...) {
 # -gr A `GenomicRanges::GRanges` object or a data frame which contains at least three columns (chr, start and end).
 # -bg Not supported any more. See explanations in section "When_background_regions_are_set".
 # -gr_is_zero_based Are start positions in ``gr`` zero-based?
-# -species Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
+# -genome Genome. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
+# -species The same as ``genome`` but it will be deprecated soon.
 # -includeCuratedRegDoms  Whether to include curated regulatory domains, see https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains .
 # -rule How to associate genomic regions to genes. See 'Details' section.
 # -adv_upstream Unit: kb, only used when rule is ``basalPlusExt``.
@@ -78,7 +79,7 @@ GreatJob = function(...) {
 #
 # == details
 # Note: On Aug 19 2019 GREAT released version 4(https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History ) where it supports ``hg38`` genome and removes some ontologies such pathways. `submitGreatJob` still
-# takes ``hg19`` as default. ``hg38`` can be specified by the ``species = "hg38"`` argument.
+# takes ``hg19`` as default. ``hg38`` can be specified by the ``genome = "hg38"`` argument.
 # To use the older versions such as 3.0.0, specify as ``submitGreatJob(..., version = "3.0.0")``.
 #
 # Note it does not use the standard GREAT API. This function directly send data to GREAT web server
@@ -150,6 +151,7 @@ GreatJob = function(...) {
 submitGreatJob = function(gr, bg = NULL,
     gr_is_zero_based      = FALSE,
     species               = "hg19",
+    genome                = species,
     includeCuratedRegDoms = TRUE,
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
@@ -166,20 +168,20 @@ submitGreatJob = function(gr, bg = NULL,
     ) {
         
     version = version[1]
-    if(!version %in% names(SPECIES)) {
-        stop(paste0("'version' should be in ", paste(names(SPECIES), collapse = ", "), "."))
+    if(!version %in% names(GENOME)) {
+        stop(paste0("'version' should be in ", paste(names(GENOME), collapse = ", "), "."))
     }
-    species  = species[1]
-    if(!species %in% SPECIES[[version]]) {
-        stop(paste0("GREAT with version '", version, "' only supports following species:\n  ", paste(SPECIES[[version]], collapse = ", ")))
+    genome  = genome[1]
+    if(!genome %in% GENOME[[version]]) {
+        stop(paste0("GREAT with version '", version, "' only supports following genome:\n  ", paste(GENOME[[version]], collapse = ", ")))
     }
     rule = match.arg(rule)[1]
 
     if(verbose) {
         cl = as.list(match.call())
-        if(version == "4.0.4" && (!"species" %in% names(cl))) {
+        if(version == "4.0.4" && (!"genome" %in% names(cl))) {
             message_wrap('Note: On Aug 19 2019 GREAT released version 4 which supports hg38 genome and removes some ontologies such
-pathways. submitGreatJob() still takes hg19 as default. hg38 can be specified by argument `species = "hg38"`. To use
+pathways. submitGreatJob() still takes hg19 as default. hg38 can be specified by argument `genome = "hg38"`. To use
 the older versions such as 3.0.0, specify as submitGreatJob(..., version = "3"). Set argument `help` to `FALSE`
 to turn off this message.')
         }
@@ -235,7 +237,7 @@ to turn off this message.')
     }
 
     # check seqnames should have 'chr' prefix
-    if(species %in% c("hg19", "hg18", "hg38", "mm10", "mm9")) {
+    if(genome %in% c("hg19", "hg18", "hg38", "mm10", "mm9")) {
         if(!all(grepl("^chr", seqnames(gr)))) {
             stop("Chromosome names (in `gr`) should have 'chr' prefix.\n")
         }
@@ -244,7 +246,7 @@ to turn off this message.')
                 stop("Chromosome names (in `bg`) should have 'chr' prefix.\n")
             }
         }
-    } else if(species == "danRer7") {
+    } else if(genome == "danRer7") {
         if(!all(grepl("^(chr|Zv9)", seqnames(gr)))) {
             stop("Chromosome names (in `gr`) should have 'chr/Zv9' prefix.\n")
         }
@@ -317,7 +319,7 @@ to turn off this message.')
         
         if(bgChoice == "wholeGenome") {
             error = try(response <- postForm(qq("@{BASE_URL}/greatWeb.php"),
-                    "species"               = species,
+                    "species"               = genome,
                     "rule"                  = rule,
                     "span"                  = adv_span,
                     "upstream"              = adv_upstream,
@@ -336,7 +338,7 @@ to turn off this message.')
                     ))
         } else {
             error = try(response <- postForm(qq("@{BASE_URL}/greatWeb.php"),
-                    "species"               = species,
+                    "species"               = genome,
                     "rule"                  = rule,
                     "span"                  = adv_span,
                     "upstream"              = adv_upstream,
@@ -420,7 +422,7 @@ to turn off this message.')
     if(version == "default") version = DEFAULT_VERSION
     
     job@parameters = list(
-            "species"               = species,
+            "genome"               = genome,
             "rule"                  = rule,
             "span"                  = adv_span,
             "upstream"              = adv_upstream,
@@ -507,7 +509,7 @@ setMethod(f = "show",
     cat("  Note the results may only be avaiable on GREAT server for 24 hours.\n")
     cat("Version:", param(object, "version"), "\n")
     #cat("Session ID:", id(object), "\n")
-    cat("Species:", param(object, "species"), "\n")
+    cat("Genome:", param(object, "genome"), "\n")
     cat("Inputs:", param(object, "n_region"), "regions\n")
     # if(param(object, "bgChoice") == "wholeGenome") {
     #     cat("Background:", param(object, "bgChoice"), "\n")
@@ -609,7 +611,7 @@ setMethod(f = "getEnrichmentTables",
     job = object
 
     jobid = id(job)
-    species = param(job, "species")
+    genome = param(job, "genome")
     version = param(job, "version")
     BASE_URL = BASE_URL_LIST[version]
 
@@ -701,7 +703,7 @@ message_wrap = function (...)  {
 
 download_enrichment_table = function(job, onto, request_interval = 10, max_tries = 100) {
     jobid = id(job)
-    species = param(job, "species")
+    genome = param(job, "genome")
     bgChoice = param(job, "bgChoice")
     version = param(job, "version")
     BASE_URL = BASE_URL_LIST[version]
@@ -713,7 +715,7 @@ download_enrichment_table = function(job, onto, request_interval = 10, max_tries
                 outputDir = qq("/scratch/great/tmp/results/@{jobid}.d/"),
                 outputPath = qq("/tmp/results/@{jobid}.d/"),
                 ontoName = onto,
-                species = species,
+                species = genome,
                 ontoList = qq("@{onto}@1-Inf"),
                 binom = ifelse(bgChoice == "wholeGenome", "true", "false")
             )
@@ -775,7 +777,7 @@ setMethod(f = "availableOntologies",
         
     job = object
 
-    species = param(job, "species")
+    genome = param(job, "genome")
     CATEGORY = job@job_env$CATEGORY
     
     if(is.null(category)) {
@@ -817,7 +819,7 @@ setMethod(f = "availableCategories",
     signature = "GreatJob",
     definition = function(object) {
 
-    species = param(object, "species")
+    genome = param(object, "genome")
     CATEGORY = object@job_env$CATEGORY
     
     names(CATEGORY)
@@ -1205,7 +1207,7 @@ setMethod(f = "getRegionGeneAssociations",
     }
     
     jobid = id(job)
-    species = param(job, "species")
+    genome = param(job, "genome")
     TEMP_DIR = job@job_env$tempdir
     version = param(job, "version")
     BASE_URL = BASE_URL_LIST[version]
@@ -1246,20 +1248,20 @@ setMethod(f = "getRegionGeneAssociations",
     if(using_term) {
 
         # prepare file names for local table
-        f_term = qq("@{jobid}-@{ontology}-@{termID}-@{species}-region.txt")
+        f_term = qq("@{jobid}-@{ontology}-@{termID}-@{genome}-region.txt")
         f_term = gsub('[\\/:*?"<>|]', "_", f_term)
         f_term = qq("@{TEMP_DIR}/@{f_term}")
         
-        if(verbose) message(qq("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n Note the web page might be deleted from GREAT web server because it is only for temporary use."))
+        if(verbose) message(qq("The webpage for '@{ontology}:@{termID}' is available at:\n  @{BASE_URL}/showTermDetails.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&ontoUiName=@{ontology}&sessionName=@{jobid}&species=@{genome}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region\n Note the web page might be deleted from GREAT web server because it is only for temporary use."))
 
         if(!is.null(job@association_tables[[qq("@{ontology}-@{termID}")]])) {
             df_term = job@association_tables[[qq("@{ontology}-@{termID}")]]
         } else {
             
             if (param(job, "bgChoice") != "data") {
-              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{genome}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             } else {
-              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
+              url = qq("@{BASE_URL}/downloadAssociations.php?termId=@{termID}&ontoName=@{ONTOLOGY_KEYS[ontology]}&sessionName=@{jobid}&species=@{genome}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
             }
             download(url, file = f_term, request_interval = request_interval, max_tries = max_tries)
             check_asso_file(f_term)
@@ -1270,13 +1272,13 @@ setMethod(f = "getRegionGeneAssociations",
         }
     }
     
-    f_all = qq("@{TEMP_DIR}/@{jobid}-@{species}-all-region.txt")
+    f_all = qq("@{TEMP_DIR}/@{jobid}-@{genome}-all-region.txt")
         
     # download
     if(!is.null(job@association_tables[["all"]])) {
         df_all = job@association_tables[["all"]]
     } else {
-        url = qq("@{BASE_URL}/downloadAssociations.php?sessionName=@{jobid}&species=@{species}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
+        url = qq("@{BASE_URL}/downloadAssociations.php?sessionName=@{jobid}&species=@{genome}&foreName=@{basename(param(job, 'f_bed'))}&backName=@{basename(param(job, 'f_bed_bg'))}&table=region")
         download(url, file = f_all, request_interval = request_interval, max_tries = max_tries)
         check_asso_file(f_all)
         df_all = parseRegionGeneAssociationFile(f_all)

@@ -10,6 +10,7 @@ Perform online GREAT analysis
 submitGreatJob(gr, bg = NULL,
     gr_is_zero_based      = FALSE,
     species               = "hg19",
+    genome                = species,
     includeCuratedRegDoms = TRUE,
     rule                  = c("basalPlusExt", "twoClosest", "oneClosest"),
     adv_upstream          = 5.0,
@@ -29,7 +30,8 @@ submitGreatJob(gr, bg = NULL,
   \item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object or a data frame which contains at least three columns (chr, start and end).}
   \item{bg}{Not supported any more. See explanations in section "When_background_regions_are_set".}
   \item{gr_is_zero_based}{Are start positions in \code{gr} zero-based?}
-  \item{species}{Species. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
+  \item{genome}{Genome. "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.}
+  \item{species}{The same as \code{genome} but it will be deprecated soon.}
   \item{includeCuratedRegDoms}{Whether to include curated regulatory domains, see \url{https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655443/Association+Rules#AssociationRules-CuratedRegulatoryDomains} .}
   \item{rule}{How to associate genomic regions to genes. See 'Details' section.}
   \item{adv_upstream}{Unit: kb, only used when rule is \code{basalPlusExt}.}
@@ -48,7 +50,7 @@ submitGreatJob(gr, bg = NULL,
 }
 \details{
 Note: On Aug 19 2019 GREAT released version 4(\url{https://great-help.atlassian.net/wiki/spaces/GREAT/pages/655442/Version+History} ) where it supports \code{hg38} genome and removes some ontologies such pathways. \code{\link{submitGreatJob}} still
-takes \code{hg19} as default. \code{hg38} can be specified by the \code{species = "hg38"} argument.
+takes \code{hg19} as default. \code{hg38} can be specified by the \code{genome = "hg38"} argument.
 To use the older versions such as 3.0.0, specify as \code{submitGreatJob(..., version = "3.0.0")}.
 
 Note it does not use the standard GREAT API. This function directly send data to GREAT web server

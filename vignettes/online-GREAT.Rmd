@@ -2,16 +2,7 @@
 title: "Analyze with online GREAT"
 author: "Zuguang Gu ( z.gu@dkfz.de )"
 date: '`r Sys.Date()`'
-output:
-  html_document:
-    toc: true
-    toc_depth: 3
-    toc_collapsed: false
-    toc_float: true
-vignette: >
-  %\VignetteIndexEntry{1. Analyze with online GREAT}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: html_document
 ---
 
 ```{r, echo = FALSE, message = FALSE}
@@ -25,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 **Note: [On Aug 19 2019 GREAT released version 4](http://great.stanford.edu/help/display/GREAT/Version+History) which supports `hg38` genome and removes some ontologies such pathways. `submitGreatJob()` still
-takes `hg19` as default. `hg38` can be specified by argument `species = "hg38"`.
+takes `hg19` as default. `hg38` can be specified by argument `genome = "hg38"`.
 To use the older versions such as 3.0.0, specify as `submitGreatJob(..., version = "3")`.**
 
 **GREAT** ([Genomic Regions Enrichment of Annotations Tool](http://great.stanford.edu)) is a popular 
@@ -72,7 +63,7 @@ job
 More parameters can be set for the job:
 
 ```{r, eval = FALSE}
-job = submitGreatJob(gr, species = "mm9") # of course, gr should be from mm9
+job = submitGreatJob(gr, genome = "mm9") # of course, gr should be from mm9
 job = submitGreatJob(gr, adv_upstream = 10, adv_downstream = 2, adv_span = 2000)
 job = submitGreatJob(gr, rule = "twoClosest", adv_twoDistance = 2000)
 job = submitGreatJob(gr, rule = "oneClosest", adv_oneDistance = 2000)
@@ -92,7 +83,7 @@ for the enrichment analysis and returns enrichment tables in a different format.
 
 Available parameters are (following content is copied from **GREAT** website):
 
-- `species`:  "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
+- `genome`:  "hg38", "hg19", "mm10", "mm9" are supported in GREAT version 4.x.x, "hg19", "mm10", "mm9", "danRer7" are supported in GREAT version 3.x.x and "hg19", "hg18", "mm9", "danRer7" are supported in GREAT version 2.x.x.
 - `includeCuratedRegDoms`: Whether to include curated regulatory domains.
 - `rule`: How to associate genomic regions to genes.
     * `basalPlusExt`: mode 'Basal plus extension'. Gene regulatory domain definition: Each gene is assigned a basal regulatory domain of a minimum distance upstream and downstream of the TSS (regardless of other nearby genes). The gene regulatory domain is extended in both directions to the nearest gene's basal domain but no more than the maximum extension in one direction.
@@ -148,9 +139,9 @@ tables, but due to [the restriction from GREAT web server](https://great-help.at
 tbl2 = getEnrichmentTables(job, download_by = "tsv")
 ```
 
-All available ontology names for a given species can be get by `availableOntologies()` 
+All available ontology names for a given genome can be get by `availableOntologies()` 
 and all available ontology categories can be get by `availableCategories()`. Here you do not
-need to provide species information because `job` already contains it.
+need to provide genome information because `job` already contains it.
 
 ```{r}
 availableOntologies(job)
