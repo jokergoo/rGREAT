@@ -14,8 +14,6 @@ tests/test-no-run.R
 .*\.o
 .*\.so
 inst/pkgdown
-*.o
-*.so
 
 vignettes/1.online-GREAT.Rmd
 vignettes/2.local-GREAT.Rmd
