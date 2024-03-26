@@ -267,14 +267,19 @@ to turn off this message.')
     # transform GRanges to data frame
     bed = as.data.frame(gr)
     if(!gr_is_zero_based) {
-        bed[, 2] = bed[, 2] - 1
+        bed[, 2] = bed[, 2] - 1L
     }
+    bed[, 2] = as.integer(bed[, 2])
+    bed[, 3] = as.integer(bed[, 3])
+
     bed_bg = NULL
     if(!is.null(bg)) {
         bed_bg = as.data.frame(bg)[, 1:3]
         if(!gr_is_zero_based) {
-            bed_bg[, 2] = bed_bg[, 2] - 1
+            bed_bg[, 2] = bed_bg[, 2] - 1L
         }
+        bed_bg[, 2] = as.integer(bed_bg[, 2])
+        bed_bg[, 3] = as.integer(bed_bg[, 3])
     }
 
     # check request frequency
