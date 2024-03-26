@@ -366,7 +366,8 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 			param$genome = tss_source$genome
 		}
 
-		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)[1]
+		# in bioc 3.19, seqlevelsStyle() throws error if the style cannot be detected
+		try(seqlevelsStyle(extended_tss) <- seqlevelsStyle(gr)[1], silent = TRUE)
 
 		# check genomic end coordinate and chr length
 		sl = seqlengths(extended_tss)
@@ -391,7 +392,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		}
 		param$tss_source = "self-provided"
 
-		seqlevelsStyle(extended_tss) = seqlevelsStyle(gr)[1]
+		try(seqlevelsStyle(extended_tss) <- seqlevelsStyle(gr)[1], silent = TRUE)
 	}
 
 	param$orgdb = get_orgdb_from_genome_version(param$genome)
