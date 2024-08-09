@@ -615,7 +615,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		if(n_hits == 0) {
 			p = 1
 		} else {
-			p = 1 - pbinom(n_hits - 1, n_total, prop)
+			p = (-1) * pbinom(q = (n_hits - 1), size = n_total, prob = prop, log.p = TRUE)
 		}
 		n_obs = n_hits
 		n_exp = prop*n_total
