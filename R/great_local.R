@@ -615,7 +615,8 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 		if(n_hits == 0) {
 			p = 1
 		} else {
-			p = 1 - pbinom(n_hits - 1, n_total, prop)
+			p = pbinom(q = (n_hits - 1), size = n_total, prob = prop, log.p = TRUE, lower.tail = FALSE)
+			p = exp(p)
 		}
 		n_obs = n_hits
 		n_exp = prop*n_total
@@ -648,7 +649,7 @@ great = function(gr, gene_sets, tss_source, biomart_dataset = NULL,
 	n_gene_total = length(unique(extended_tss$gene_id))
 	n_gene_gr = length(unique(extended_tss[subjectHits(ov)]$gene_id))
 	df$fold_enrichment_hyper = df$observed_gene_hits/(df$gene_set_size*n_gene_gr/n_gene_total)
-	df$p_value_hyper = 1 - phyper(df$observed_gene_hits - 1, df$gene_set_size, n_gene_total - df$gene_set_size, n_gene_gr)
+	df$p_value_hyper = exp(phyper(q = (df$observed_gene_hits - 1), m = df$gene_set_size, n = (n_gene_total - df$gene_set_size), k = n_gene_gr, lower.tail = FALSE, log.p = TRUE))
 	df$p_adjust_hyper = p.adjust(df$p_value_hyper, "BH")
 
 	df = df[order(df$p_adjust, df$p_value, -df$fold_enrichment), , drop = FALSE]
