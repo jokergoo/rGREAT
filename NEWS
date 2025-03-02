@@ -1,6 +1,8 @@
 CHANGES in VERSION 2.9.1
 
 - change NCBI api to v2.
+- use `exp(phyper(..., log.p = TRUE))` to get rid of zero p-values. Thank @andvon
+  for the code contribution.
 
 ---------------------------------------
 
