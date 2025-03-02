@@ -33,7 +33,7 @@ getGenomeDataFromNCBI = function(refseq_assembly_accession, return_granges = FAL
 
 	if(is.null(rGREAT_env$NCBIGenomeDownloaded[[refseq_assembly_accession]])) {
 
-		url = qq("https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/@{refseq_assembly_accession}/download?include_annotation_type=GENOME_GFF,SEQUENCE_REPORT&filename=@{refseq_assembly_accession}.zip")
+		url = qq("https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/@{refseq_assembly_accession}/download?include_annotation_type=GENOME_GFF,SEQUENCE_REPORT&filename=@{refseq_assembly_accession}.zip")
 
 		tmpdir = tempdir()
 		destfile = qq("@{tmpdir}/@{refseq_assembly_accession}.zip")
