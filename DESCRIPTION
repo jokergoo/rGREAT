@@ -1,8 +1,8 @@
 Package: rGREAT
 Type: Package
 Title: GREAT Analysis - Functional Enrichment on Genomic Regions
-Version: 2.9.1
-Date: 2025-03-02
+Version: 2.9.2
+Date: 2025-03-13
 Authors@R: person("Zuguang", "Gu", email = "z.gu@dkfz.de", role = c("aut", "cre"),
                   comment = c('ORCID'="0000-0002-7395-8709"))
 Depends: R (>= 4.0.0), GenomicRanges, IRanges, methods
