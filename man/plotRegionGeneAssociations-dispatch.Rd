@@ -10,8 +10,8 @@ Method dispatch page for \code{plotRegionGeneAssociations}.
 \code{plotRegionGeneAssociations} can be dispatched on following classes:
 
 \itemize{
-\item \code{\link{plotRegionGeneAssociations,GreatObject-method}}, \code{\link{GreatObject-class}} class method
 \item \code{\link{plotRegionGeneAssociations,GreatJob-method}}, \code{\link{GreatJob-class}} class method
+\item \code{\link{plotRegionGeneAssociations,GreatObject-method}}, \code{\link{GreatObject-class}} class method
 }
 }
 \examples{
