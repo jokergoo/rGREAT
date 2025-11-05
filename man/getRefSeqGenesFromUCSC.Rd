@@ -16,7 +16,7 @@ getRefSeqGenesFromUCSC(genome, subset = c("RefSeqSelect", "RefSeqCurated"))
 
 }
 \value{
-A \code{\link{GenomicRanges}} object.
+A \code{\link[GenomicRanges:GRanges-class]{GRanges}} object.
 }
 \examples{
 # There is no example
