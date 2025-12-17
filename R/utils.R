@@ -201,7 +201,7 @@ guess_gene_id_type = function(id) {
 # A named list of vectors.
 #
 # == example
-# read_gmt(url("http://dsigdb.tanlab.org/Downloads/D2_LINCS.gmt"))
+# read_gmt(url("https://data.broadinstitute.org/gsea-msigdb/msigdb/release/2025.1.Hs/h.all.v2025.1.Hs.entrez.gmt"))
 read_gmt = function(x, from = NULL, to = NULL, orgdb = NULL) {
 	ln = readLines(x)
 	lt = strsplit(ln, "\t")

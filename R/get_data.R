@@ -82,7 +82,7 @@ filter_seqlength = function(sl, max_seq = 500) {
 # -subset Subset of RefSeq genes. See https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg38&g=refSeqComposite .
 #
 # == value
-# A `GenomicRanges` object.
+# A `GenomicRanges::GRanges` object.
 getRefSeqGenesFromUCSC = function(genome, subset = c("RefSeqSelect", "RefSeqCurated")) {
 	subset = match.arg(subset)[1]
 	url = qq("https://hgdownload.cse.ucsc.edu/goldenPath/@{genome}/database/ncbi@{subset}.txt.gz")

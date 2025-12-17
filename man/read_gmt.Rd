@@ -21,5 +21,5 @@ read_gmt(x, from = NULL, to = NULL, orgdb = NULL)
 A named list of vectors.
 }
 \examples{
-read_gmt(url("http://dsigdb.tanlab.org/Downloads/D2_LINCS.gmt"))
+read_gmt(url("https://data.broadinstitute.org/gsea-msigdb/msigdb/release/2025.1.Hs/h.all.v2025.1.Hs.entrez.gmt"))
 }
