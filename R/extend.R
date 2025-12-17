@@ -32,6 +32,12 @@ detect_txdb = function(x) {
 		return(i[1])
 	}
 
+	# hsa
+	i = which(tolower(BIOC_ANNO_PKGS$kegg_code) %in% x)
+	if(length(i)) {
+		return(i[1])
+	}
+
 	# Homo sapiens
 	i = which(tolower(BIOC_ANNO_PKGS$species_latin) %in% x)
 	if(length(i)) {

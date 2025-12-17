@@ -1,3 +1,11 @@
+CHANGES in VERSION 2.11.1
+
+- `getGenomeDataFromNCBI()`: also add the genome information
+- updated msigdb and support mouse
+- support kegg pathways
+
+---------------------------------------
+
 CHANGES in VERSION 2.9.1
 
 - change NCBI api to v2.

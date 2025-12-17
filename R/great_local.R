@@ -84,6 +84,7 @@ GreatObject = function(...) {
 # - In a format of ``RefSeqSelect:$genome`` where ``$genome`` is the genome version of an organism, such as hg19. RefSeqSelect subset will be used.
 # - In a format of ``Gencode_v$version`` where ``$version`` is gencode version, such as 19 (for human) or M21 for mouse. Gencode protein coding genes will be used.
 # - In a format of ``GREAT:$genome``, where ``$genome`` can only be mm9, mm10, hg19, hg38. The TSS from GREAT will be used.
+# - A `GenomicRanges::GRanges` object of genes or TSS.
 #
 # == Genesets
 #
@@ -785,6 +786,7 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 	}
 
 	orgdb = BIOC_ANNO_PKGS$orgdb[ BIOC_ANNO_PKGS$genome_version_in_txdb == mt$genome ][1]
+	kegg_code = BIOC_ANNO_PKGS$kegg_code[ BIOC_ANNO_PKGS$genome_version_in_txdb == mt$genome ][1]
 	if(is.na(orgdb)) {
 		return(NULL)
 	}
@@ -862,19 +864,31 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 		}
 
 	} else if(grepl("msigdb", name)) {
-		if(!grepl("^hg\\d", mt$genome)) {
-			stop_wrap("MSigDB only supports human.")
+		if(!grepl("^(hg|mm)\\d", mt$genome)) {
+			stop_wrap("MSigDB only supports human/mouse.")
 		}
 
 		name = gsub(":", ".", name)
 		name = gsub("^msigdb\\.?", "", name)
-		if(name %in% names(MSIGDB)) {
-			gene_sets = readRDS(get_url(MSIGDB[[name]]))
+			
+		if(grepl("^hg\\d", mt$genome)) {
+			if(name %in% names(MSIGDB)[!grepl("^m", names(MSIGDB))]) {
+				gene_sets = readRDS(get_url(MSIGDB[[name]]))
+			} else {
+				stop_wrap("Wrong MSigDB gene set collection. All supported gene sets are in `names(rGREAT:::MSIGDB)`.")
+			}
+			orgdb = "org.Hs.eg.db"
 		} else {
-			stop_wrap("Wrong MSigDB gene set collection. All supported gene sets are in `names(rGREAT:::MSIGDB)`.")
+			if(!grepl("^m", name)) {
+				name = paste0("m", name)
+			}
+			if(name %in% names(MSIGDB)[grepl("^m", names(MSIGDB))]) {
+				gene_sets = readRDS(get_url(MSIGDB[[name]]))
+			} else {
+				stop_wrap("Wrong MSigDB gene set collection. All supported gene sets are in `names(rGREAT:::MSIGDB)`.")
+			}
+			orgdb = "org.Mm.eg.db"
 		}
-
-		orgdb = "org.Hs.eg.db"
 		if(is.null(gene_id_type)) {
 			return(gene_sets)
 		} else if(gene_id_type == "ENTREZ" || gene_id_type == "Entrez Gene ID" || gene_id_type == "SGD Gene ID" || gene_id_type == "TAIR ID") {
@@ -909,36 +923,56 @@ get_defaultly_suppported_gene_sets = function(name, mt, verbose = great_opt$verb
 }
 
 MSIGDB = c(
-	"c1" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c1.all.v7.5.1.entrez.gmt.rds",
-	"c2" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.all.v7.5.1.entrez.gmt.rds",
-	"c2.cgp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cgp.v7.5.1.entrez.gmt.rds",
-	"c2.cp.kegg" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.kegg.v7.5.1.entrez.gmt.rds",
-	"c2.cp.pid" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.pid.v7.5.1.entrez.gmt.rds",
-	"c2.cp.reactome" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.reactome.v7.5.1.entrez.gmt.rds",
-	"c2.cp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.v7.5.1.entrez.gmt.rds",
-	"c2.cp.wikipathways" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.wikipathways.v7.5.1.entrez.gmt.rds",
-	"c3" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.all.v7.5.1.entrez.gmt.rds",
-	"c3.mir.mir_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mir_legacy.v7.5.1.entrez.gmt.rds",
-	"c3.mir.mirdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mirdb.v7.5.1.entrez.gmt.rds",
-	"c3.mir" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.v7.5.1.entrez.gmt.rds",
-	"c3.tft.gtrd" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.gtrd.v7.5.1.entrez.gmt.rds",
-	"c3.tft.tft_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.tft_legacy.v7.5.1.entrez.gmt.rds",
-	"c3.tft" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.v7.5.1.entrez.gmt.rds",
-	"c4" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.all.v7.5.1.entrez.gmt.rds",
-	"c4.cgn" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cgn.v7.5.1.entrez.gmt.rds",
-	"c4.cm" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cm.v7.5.1.entrez.gmt.rds",
-	"c5" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.all.v7.5.1.entrez.gmt.rds",
-	"c5.go.bp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.bp.v7.5.1.entrez.gmt.rds",
-	"c5.go.cc" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.cc.v7.5.1.entrez.gmt.rds",
-	"c5.go.mf" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.mf.v7.5.1.entrez.gmt.rds",
-	"c5.go" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.v7.5.1.entrez.gmt.rds",
-	"c5.hpo" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.hpo.v7.5.1.entrez.gmt.rds",
-	"c6" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c6.all.v7.5.1.entrez.gmt.rds",
-	"c7" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.all.v7.5.1.entrez.gmt.rds",
-	"c7.immunesigdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.immunesigdb.v7.5.1.entrez.gmt.rds",
-	"c7.vax" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.vax.v7.5.1.entrez.gmt.rds",
-	"c8" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c8.all.v7.5.1.entrez.gmt.rds",
-	"h" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/h.all.v7.5.1.entrez.gmt.rds"
+	"c1" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c1.all.v2024.1.Hs.entrez.gmt.rds",
+	"c2" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.all.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cgp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cgp.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cp.kegg" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.kegg.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cp.pid" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.pid.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cp.reactome" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.reactome.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.v2024.1.Hs.entrez.gmt.rds",
+	"c2.cp.wikipathways" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c2.cp.wikipathways.v2024.1.Hs.entrez.gmt.rds",
+	"c3" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.all.v2024.1.Hs.entrez.gmt.rds",
+	"c3.mir.mir_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mir_legacy.v2024.1.Hs.entrez.gmt.rds",
+	"c3.mir.mirdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.mirdb.v2024.1.Hs.entrez.gmt.rds",
+	"c3.mir" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.mir.v2024.1.Hs.entrez.gmt.rds",
+	"c3.tft.gtrd" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.gtrd.v2024.1.Hs.entrez.gmt.rds",
+	"c3.tft.tft_legacy" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.tft_legacy.v2024.1.Hs.entrez.gmt.rds",
+	"c3.tft" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c3.tft.v2024.1.Hs.entrez.gmt.rds",
+	"c4" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.all.v2024.1.Hs.entrez.gmt.rds",
+	"c4.cgn" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cgn.v2024.1.Hs.entrez.gmt.rds",
+	"c4.cm" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c4.cm.v2024.1.Hs.entrez.gmt.rds",
+	"c5" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.all.v2024.1.Hs.entrez.gmt.rds",
+	"c5.go.bp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.bp.v2024.1.Hs.entrez.gmt.rds",
+	"c5.go.cc" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.cc.v2024.1.Hs.entrez.gmt.rds",
+	"c5.go.mf" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.mf.v2024.1.Hs.entrez.gmt.rds",
+	"c5.go" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.go.v2024.1.Hs.entrez.gmt.rds",
+	"c5.hpo" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c5.hpo.v2024.1.Hs.entrez.gmt.rds",
+	"c6" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c6.all.v2024.1.Hs.entrez.gmt.rds",
+	"c7" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.all.v2024.1.Hs.entrez.gmt.rds",
+	"c7.immunesigdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.immunesigdb.v2024.1.Hs.entrez.gmt.rds",
+	"c7.vax" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c7.vax.v2024.1.Hs.entrez.gmt.rds",
+	"c8" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/c8.all.v2024.1.Hs.entrez.gmt.rds",
+	"h" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/h.all.v2024.1.Hs.entrez.gmt.rds",
+
+	"m1" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m1.all.v2024.1.Mm.entrez.gmt.rds",
+	"m2" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.all.v2024.1.Mm.entrez.gmt.rds",
+	"m2.cgp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.cgp.v2024.1.Mm.entrez.gmt.rds",
+	"m2.cp.biocarta" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.cp.biocarta.v2024.1.Mm.entrez.gmt.rds",
+	"m2.cp.reactome" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.cp.reactome.v2024.1.Mm.entrez.gmt.rds",
+	"m2.cp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.cp.v2024.1.Mm.entrez.gmt.rds",
+	"m2.cp.wikipathways" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m2.cp.wikipathways.v2024.1.Mm.entrez.gmt.rds",
+	"m3" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m3.all.v2024.1.Mm.entrez.gmt.rds",
+	"m3.gtrd" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m3.gtrd.v2024.1.Mm.entrez.gmt.rds",
+	"m3.mirdb" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m3.mirdb.v2024.1.Mm.entrez.gmt.rds",
+	"m5" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.all.v2024.1.Mm.entrez.gmt.rds",
+	"m5.go.bp" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.go.bp.v2024.1.Mm.entrez.gmt.rds",
+	"m5.go.cc" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.go.cc.v2024.1.Mm.entrez.gmt.rds",
+	"m5.go.mf" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.go.mf.v2024.1.Mm.entrez.gmt.rds",
+	"m5.go" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.go.v2024.1.Mm.entrez.gmt.rds",
+	"m5.mpt" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m5.mpt.v2024.1.Mm.entrez.gmt.rds",
+	"m8" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/m8.all.v2024.1.Mm.entrez.gmt.rds",
+	"mh" = "https://jokergoo.github.io/rGREAT_genesets/msigdb/mh.all.v2024.1.Mm.entrez.gmt.rds"
+
 )
 
 
