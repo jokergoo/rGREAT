@@ -1,41 +1,41 @@
-species_name;species_latin;taxon_id;txdb;gene_id_in_txdb;genome_version_in_txdb;orgdb;primary_gene_id_in_orgdb;chromosome_prefix
-human;Homo sapiens;9606;TxDb.Hsapiens.UCSC.hg18.knownGene;Entrez Gene ID;hg18;org.Hs.eg.db;Entrez Gene ID;chr
-human;Homo sapiens;9606;TxDb.Hsapiens.UCSC.hg19.knownGene;Entrez Gene ID;hg19;org.Hs.eg.db;Entrez Gene ID;chr
-human;Homo sapiens;9606;TxDb.Hsapiens.UCSC.hg38.knownGene;Entrez Gene ID;hg38;org.Hs.eg.db;Entrez Gene ID;chr
-human;Homo sapiens;9606;TxDb.Hsapiens.UCSC.hg38.refGene;Entrez Gene ID;hg38;org.Hs.eg.db;Entrez Gene ID;chr
-mouse;Mus musculus;10090;TxDb.Mmusculus.UCSC.mm10.knownGene;Entrez Gene ID;mm10;org.Mm.eg.db;Entrez Gene ID;chr
-mouse;Mus musculus;10090;TxDb.Mmusculus.UCSC.mm10.ensGene;Ensembl gene ID;mm10;org.Mm.eg.db;Entrez Gene ID;chr
-mouse;Mus musculus;10090;TxDb.Mmusculus.UCSC.mm39.refGene;Entrez Gene ID;mm39;org.Mm.eg.db;Entrez Gene ID;chr
-mouse;Mus musculus;10090;TxDb.Mmusculus.UCSC.mm9.knownGene;Entrez Gene ID;mm9;org.Mm.eg.db;Entrez Gene ID;chr
-rat;Rattus norvegicus;10116;TxDb.Rnorvegicus.UCSC.rn4.ensGene;Ensembl gene ID;rn4;org.Rn.eg.db;Entrez Gene ID;chr
-rat;Rattus norvegicus;10116;TxDb.Rnorvegicus.UCSC.rn5.refGene;Entrez Gene ID;rn5;org.Rn.eg.db;Entrez Gene ID;chr
-rat;Rattus norvegicus;10116;TxDb.Rnorvegicus.UCSC.rn6.refGene;Entrez Gene ID;rn6;org.Rn.eg.db;Entrez Gene ID;chr
-rat;Rattus norvegicus;10116;TxDb.Rnorvegicus.UCSC.rn7.refGene;Entrez Gene ID;rn7;org.Rn.eg.db;Entrez Gene ID;chr
-chicken;Gallus gallus;9031;TxDb.Ggallus.UCSC.galGal4.refGene;Entrez Gene ID;galGal4;org.Gg.eg.db;Entrez Gene ID;chr
-chicken;Gallus gallus;9031;TxDb.Ggallus.UCSC.galGal5.refGene;Entrez Gene ID;galGal5;org.Gg.eg.db;Entrez Gene ID;chr
-chicken;Gallus gallus;9031;TxDb.Ggallus.UCSC.galGal6.refGene;Entrez Gene ID;galGal6;org.Gg.eg.db;Entrez Gene ID;chr
-rhesus;Macaca mulatta;9544;TxDb.Mmulatta.UCSC.rheMac10.refGene;Entrez Gene ID;rheMac10;org.Mmu.eg.db;Entrez Gene ID;chr
-rhesus;Macaca mulatta;9544;TxDb.Mmulatta.UCSC.rheMac3.refGene;Entrez Gene ID;rheMac3;org.Mmu.eg.db;Entrez Gene ID;chr
-rhesus;Macaca mulatta;9544;TxDb.Mmulatta.UCSC.rheMac8.refGene;Entrez Gene ID;rheMac8;org.Mmu.eg.db;Entrez Gene ID;chr
-worm;Caenorhabditis elegans;6239;TxDb.Celegans.UCSC.ce11.refGene;Entrez Gene ID;ce11;org.Ce.eg.db;Entrez Gene ID;chr
-worm;Caenorhabditis elegans;6239;TxDb.Celegans.UCSC.ce11.ensGene;Ensembl gene ID;ce11;org.Ce.eg.db;Entrez Gene ID;chr
-dog;Canis familiari;9615;TxDb.Cfamiliaris.UCSC.canFam3.refGene;Entrez Gene ID;canFam3;org.Cf.eg.db;Entrez Gene ID;chr
-dog;Canis familiari;9615;TxDb.Cfamiliaris.UCSC.canFam4.refGene;Entrez Gene ID;canFam4;org.Cf.eg.db;Entrez Gene ID;chr
-dog;Canis familiari;9615;TxDb.Cfamiliaris.UCSC.canFam5.refGene;Entrez Gene ID;canFam5;org.Cf.eg.db;Entrez Gene ID;chr
-pig;Sus scrofa;9823;TxDb.Sscrofa.UCSC.susScr11.refGene;Entrez Gene ID;susScr11;org.Ss.eg.db;Entrez Gene ID;chr
-pig;Sus scrofa;9823;TxDb.Sscrofa.UCSC.susScr3.refGene;Entrez Gene ID;susScr3;org.Ss.eg.db;Entrez Gene ID;chr
-yeast;Saccharomyces cerevisiae;4932;TxDb.Scerevisiae.UCSC.sacCer2.sgdGene;SGD Gene ID;sacCer2;org.Sc.sgd.db;SGD Gene ID;chr
-yeast;Saccharomyces cerevisiae;4932;TxDb.Scerevisiae.UCSC.sacCer3.sgdGene;SGD Gene ID;sacCer3;org.Sc.sgd.db;SGD Gene ID;chr
-chimp;Pan troglodytes;9598;TxDb.Ptroglodytes.UCSC.panTro4.refGene;Entrez Gene ID;panTro4;org.Pt.eg.db;Entrez Gene ID;chr
-chimp;Pan troglodytes;9598;TxDb.Ptroglodytes.UCSC.panTro5.refGene;Entrez Gene ID;panTro5;org.Pt.eg.db;Entrez Gene ID;chr
-chimp;Pan troglodytes;9598;TxDb.Ptroglodytes.UCSC.panTro6.refGene;Entrez Gene ID;panTro6;org.Pt.eg.db;Entrez Gene ID;chr
-fruitfly;Drosophila melanogaster;7227;TxDb.Dmelanogaster.UCSC.dm3.ensGene;Ensembl gene ID;dm3;org.Dm.eg.db;Entrez Gene ID;chr
-fruitfly;Drosophila melanogaster;7227;TxDb.Dmelanogaster.UCSC.dm6.ensGene;Ensembl gene ID;dm6;org.Dm.eg.db;Entrez Gene ID;chr
-zebrafish;Danio rerio;7955;TxDb.Drerio.UCSC.danRer10.refGene;Entrez Gene ID;danRer10;org.Dr.eg.db;Entrez Gene ID;chr
-zebrafish;Danio rerio;7955;TxDb.Drerio.UCSC.danRer11.refGene;Entrez Gene ID;danRer11;org.Dr.eg.db;Entrez Gene ID;chr
-cattle;Bos taurus;9913;TxDb.Btaurus.UCSC.bosTau8.refGene;Entrez Gene ID;bosTau8;org.Bt.eg.db;Entrez Gene ID;chr
-cattle;Bos taurus;9913;TxDb.Btaurus.UCSC.bosTau9.refGene;Entrez Gene ID;bosTau9;org.Bt.eg.db;Entrez Gene ID;chr
-thale cress;Arabidopsis thaliana;3702;TxDb.Athaliana.BioMart.plantsmart51;TAIR ID;araTha;org.At.tair.db;TAIR ID;
-thale cress;Arabidopsis thaliana;3702;TxDb.Athaliana.BioMart.plantsmart22;TAIR ID;araTha;org.At.tair.db;TAIR ID;
-thale cress;Arabidopsis thaliana;3702;TxDb.Athaliana.BioMart.plantsmart25;TAIR ID;araTha;org.At.tair.db;TAIR ID;
-thale cress;Arabidopsis thaliana;3702;TxDb.Athaliana.BioMart.plantsmart28;TAIR ID;araTha;org.At.tair.db;TAIR ID;
+species_name;species_latin;kegg_code;taxon_id;txdb;gene_id_in_txdb;genome_version_in_txdb;orgdb;primary_gene_id_in_orgdb;chromosome_prefix
+human;Homo sapiens;hsa;9606;TxDb.Hsapiens.UCSC.hg18.knownGene;Entrez Gene ID;hg18;org.Hs.eg.db;Entrez Gene ID;chr
+human;Homo sapiens;hsa;9606;TxDb.Hsapiens.UCSC.hg19.knownGene;Entrez Gene ID;hg19;org.Hs.eg.db;Entrez Gene ID;chr
+human;Homo sapiens;hsa;9606;TxDb.Hsapiens.UCSC.hg38.knownGene;Entrez Gene ID;hg38;org.Hs.eg.db;Entrez Gene ID;chr
+human;Homo sapiens;hsa;9606;TxDb.Hsapiens.UCSC.hg38.refGene;Entrez Gene ID;hg38;org.Hs.eg.db;Entrez Gene ID;chr
+mouse;Mus musculus;mmu;10090;TxDb.Mmusculus.UCSC.mm10.knownGene;Entrez Gene ID;mm10;org.Mm.eg.db;Entrez Gene ID;chr
+mouse;Mus musculus;mmu;10090;TxDb.Mmusculus.UCSC.mm10.ensGene;Ensembl gene ID;mm10;org.Mm.eg.db;Entrez Gene ID;chr
+mouse;Mus musculus;mmu;10090;TxDb.Mmusculus.UCSC.mm39.refGene;Entrez Gene ID;mm39;org.Mm.eg.db;Entrez Gene ID;chr
+mouse;Mus musculus;mmu;10090;TxDb.Mmusculus.UCSC.mm9.knownGene;Entrez Gene ID;mm9;org.Mm.eg.db;Entrez Gene ID;chr
+rat;Rattus norvegicus;rno;10116;TxDb.Rnorvegicus.UCSC.rn4.ensGene;Ensembl gene ID;rn4;org.Rn.eg.db;Entrez Gene ID;chr
+rat;Rattus norvegicus;rno;10116;TxDb.Rnorvegicus.UCSC.rn5.refGene;Entrez Gene ID;rn5;org.Rn.eg.db;Entrez Gene ID;chr
+rat;Rattus norvegicus;rno;10116;TxDb.Rnorvegicus.UCSC.rn6.refGene;Entrez Gene ID;rn6;org.Rn.eg.db;Entrez Gene ID;chr
+rat;Rattus norvegicus;rno;10116;TxDb.Rnorvegicus.UCSC.rn7.refGene;Entrez Gene ID;rn7;org.Rn.eg.db;Entrez Gene ID;chr
+chicken;Gallus gallus;gga;9031;TxDb.Ggallus.UCSC.galGal4.refGene;Entrez Gene ID;galGal4;org.Gg.eg.db;Entrez Gene ID;chr
+chicken;Gallus gallus;gga;9031;TxDb.Ggallus.UCSC.galGal5.refGene;Entrez Gene ID;galGal5;org.Gg.eg.db;Entrez Gene ID;chr
+chicken;Gallus gallus;gga;9031;TxDb.Ggallus.UCSC.galGal6.refGene;Entrez Gene ID;galGal6;org.Gg.eg.db;Entrez Gene ID;chr
+rhesus;Macaca mulatta;mcc;9544;TxDb.Mmulatta.UCSC.rheMac10.refGene;Entrez Gene ID;rheMac10;org.Mmu.eg.db;Entrez Gene ID;chr
+rhesus;Macaca mulatta;mcc;9544;TxDb.Mmulatta.UCSC.rheMac3.refGene;Entrez Gene ID;rheMac3;org.Mmu.eg.db;Entrez Gene ID;chr
+rhesus;Macaca mulatta;mcc;9544;TxDb.Mmulatta.UCSC.rheMac8.refGene;Entrez Gene ID;rheMac8;org.Mmu.eg.db;Entrez Gene ID;chr
+worm;Caenorhabditis elegans;cel;6239;TxDb.Celegans.UCSC.ce11.refGene;Entrez Gene ID;ce11;org.Ce.eg.db;Entrez Gene ID;chr
+worm;Caenorhabditis elegans;cel;6239;TxDb.Celegans.UCSC.ce11.ensGene;Ensembl gene ID;ce11;org.Ce.eg.db;Entrez Gene ID;chr
+dog;Canis familiari;cfa;9615;TxDb.Cfamiliaris.UCSC.canFam3.refGene;Entrez Gene ID;canFam3;org.Cf.eg.db;Entrez Gene ID;chr
+dog;Canis familiari;cfa;9615;TxDb.Cfamiliaris.UCSC.canFam4.refGene;Entrez Gene ID;canFam4;org.Cf.eg.db;Entrez Gene ID;chr
+dog;Canis familiari;cfa;9615;TxDb.Cfamiliaris.UCSC.canFam5.refGene;Entrez Gene ID;canFam5;org.Cf.eg.db;Entrez Gene ID;chr
+pig;Sus scrofa;ssc;9823;TxDb.Sscrofa.UCSC.susScr11.refGene;Entrez Gene ID;susScr11;org.Ss.eg.db;Entrez Gene ID;chr
+pig;Sus scrofa;ssc;9823;TxDb.Sscrofa.UCSC.susScr3.refGene;Entrez Gene ID;susScr3;org.Ss.eg.db;Entrez Gene ID;chr
+yeast;Saccharomyces cerevisiae;sce;4932;TxDb.Scerevisiae.UCSC.sacCer2.sgdGene;SGD Gene ID;sacCer2;org.Sc.sgd.db;SGD Gene ID;chr
+yeast;Saccharomyces cerevisiae;sce;4932;TxDb.Scerevisiae.UCSC.sacCer3.sgdGene;SGD Gene ID;sacCer3;org.Sc.sgd.db;SGD Gene ID;chr
+chimp;Pan troglodytes;ptr;9598;TxDb.Ptroglodytes.UCSC.panTro4.refGene;Entrez Gene ID;panTro4;org.Pt.eg.db;Entrez Gene ID;chr
+chimp;Pan troglodytes;ptr;9598;TxDb.Ptroglodytes.UCSC.panTro5.refGene;Entrez Gene ID;panTro5;org.Pt.eg.db;Entrez Gene ID;chr
+chimp;Pan troglodytes;ptr;9598;TxDb.Ptroglodytes.UCSC.panTro6.refGene;Entrez Gene ID;panTro6;org.Pt.eg.db;Entrez Gene ID;chr
+fruitfly;Drosophila melanogaster;dme;7227;TxDb.Dmelanogaster.UCSC.dm3.ensGene;Ensembl gene ID;dm3;org.Dm.eg.db;Entrez Gene ID;chr
+fruitfly;Drosophila melanogaster;dme;7227;TxDb.Dmelanogaster.UCSC.dm6.ensGene;Ensembl gene ID;dm6;org.Dm.eg.db;Entrez Gene ID;chr
+zebrafish;Danio rerio;dre;7955;TxDb.Drerio.UCSC.danRer10.refGene;Entrez Gene ID;danRer10;org.Dr.eg.db;Entrez Gene ID;chr
+zebrafish;Danio rerio;dre;7955;TxDb.Drerio.UCSC.danRer11.refGene;Entrez Gene ID;danRer11;org.Dr.eg.db;Entrez Gene ID;chr
+cattle;Bos taurus;bta;9913;TxDb.Btaurus.UCSC.bosTau8.refGene;Entrez Gene ID;bosTau8;org.Bt.eg.db;Entrez Gene ID;chr
+cattle;Bos taurus;bta;9913;TxDb.Btaurus.UCSC.bosTau9.refGene;Entrez Gene ID;bosTau9;org.Bt.eg.db;Entrez Gene ID;chr
+thale cress;Arabidopsis thaliana;ath;3702;TxDb.Athaliana.BioMart.plantsmart51;TAIR ID;araTha;org.At.tair.db;TAIR ID;
+thale cress;Arabidopsis thaliana;ath;3702;TxDb.Athaliana.BioMart.plantsmart22;TAIR ID;araTha;org.At.tair.db;TAIR ID;
+thale cress;Arabidopsis thaliana;ath;3702;TxDb.Athaliana.BioMart.plantsmart25;TAIR ID;araTha;org.At.tair.db;TAIR ID;
+thale cress;Arabidopsis thaliana;ath;3702;TxDb.Athaliana.BioMart.plantsmart28;TAIR ID;araTha;org.At.tair.db;TAIR ID;

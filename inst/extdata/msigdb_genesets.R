@@ -1,4 +1,4 @@
-all_gmt_files = list.files(path = "~/workspace/rGREAT/msigdb", pattern = "gmt$", full.names = TRUE)
+all_gmt_files = list.files(path = "~/project/development/rGREAT_genesets/msigdb", pattern = "gmt$", full.names = TRUE)
 
 
 read_gmt = function(x) {
@@ -15,6 +15,6 @@ read_gmt = function(x) {
 for(f in all_gmt_files) {
 	lt = read_gmt(f)
 
-	output = paste0("~/workspace/rGREAT/genesets_processed/msigdb/", basename(f), ".rds")
-	saveRDS(lt, file = output)
+	output = paste0("~/project/development/rGREAT_genesets/msigdb/", basename(f), ".rds")
+	saveRDS(lt, file = output, compress = "xz")
 }

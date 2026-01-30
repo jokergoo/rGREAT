@@ -102,6 +102,8 @@ getGenomeDataFromNCBI = function(refseq_assembly_accession, return_granges = FAL
 			sl = structure(tb_genome$length, names = tb_genome$chrName)
 			seqlengths(gene) = sl
 
+			genome(gene) = paste0(annotation_info$organism$organismName, " / ", annotation_info$accession)
+
 			return(gene)
 		} else {
 			stop_wrap("The genome is not assembled on the chromosome-level. Cannot automatically format it into a GRanges object. Please set `return_granges` to FALSE and construct it manually with the `genome` and `gene` data frames.")
